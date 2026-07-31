@@ -35,74 +35,98 @@
 
 <div class="topbar">
   <div class="brand">
-    <span class="brand-text"><strong>Dashibodi ya Msimamizi</strong><span>TANTRADE — Nanenane / 51st DITF</span></span>
+    <span class="brand-text">
+      <strong><span class="lang-sw">Dashibodi ya Msimamizi</span><span class="lang-en">Admin Dashboard</span></strong>
+      <span>TANTRADE — Nanenane / 51st DITF</span>
+    </span>
   </div>
-  <button type="button" class="logout-link" id="logoutBtn" style="display:none;" onclick="logout()">Toka / Log out</button>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <button type="button" class="logout-link" id="logoutBtn" style="display:none;" onclick="logout()">
+      <span class="lang-sw">Toka</span><span class="lang-en">Log out</span>
+    </button>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" id="btn-lang-sw" class="active" onclick="setLang('sw')">SW</button>
+      <button type="button" id="btn-lang-en" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
 </div>
 
 <div class="admin-shell">
   <div id="loginView">
     <div class="card login-card">
-      <h2 class="section-title">Ingia Kuona Majibu</h2>
+      <h2 class="section-title"><span class="lang-sw">Ingia Kuona Majibu</span><span class="lang-en">Sign In to View Responses</span></h2>
       <form id="loginForm" onsubmit="return handleLogin(event)">
-        <div class="field"><label class="field-label">Nenosiri / Password</label><input class="text-input" type="password" id="adminPass" required></div>
-        <p id="loginError" class="error-msg" style="display:none; color:var(--danger);">Nenosiri si sahihi.</p>
-        <button type="submit" class="btn btn-primary btn-block">Ingia</button>
+        <div class="field">
+          <label class="field-label"><span class="lang-sw">Nenosiri</span><span class="lang-en">Password</span></label>
+          <input class="text-input" type="password" id="adminPass" required>
+        </div>
+        <p id="loginError" class="error-msg" style="display:none; color:var(--danger);">
+          <span class="lang-sw">Nenosiri si sahihi.</span><span class="lang-en">Incorrect password.</span>
+        </p>
+        <button type="submit" class="btn btn-primary btn-block">
+          <span class="lang-sw">Ingia</span><span class="lang-en">Sign In</span>
+        </button>
       </form>
     </div>
   </div>
 
   <div id="dashboardView" style="display:none;">
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('responses', this)">Majibu (Responses)</button>
-      <button class="tab-btn" onclick="switchTab('questions', this)">Simamia Maswali (Manage Questions)</button>
+      <button class="tab-btn active" onclick="switchTab('responses', this)">
+        <span class="lang-sw">Majibu</span><span class="lang-en">Responses</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('questions', this)">
+        <span class="lang-sw">Simamia Maswali</span><span class="lang-en">Manage Questions</span>
+      </button>
     </div>
 
     <!-- RESPONSES TAB -->
     <div id="responsesTab">
       <div class="toolbar">
-        <span class="stat-pill" id="countPill">0 majibu</span>
-        <input class="text-input search-input" id="searchInput" type="search" placeholder="Tafuta..." oninput="renderTable()">
+        <span class="stat-pill" id="countPill">0 <span class="lang-sw">majibu</span><span class="lang-en">responses</span></span>
+        <input class="text-input search-input" id="searchInput" type="search" placeholder="Tafuta / Search..." oninput="renderTable()">
         <div style="display:flex; gap:10px;">
-          <button class="btn btn-ghost btn-sm" onclick="loadSubmissions()">Onyesha Upya</button>
-          <button class="btn btn-gold btn-sm" onclick="exportCsv()">Pakua CSV</button>
+          <button class="btn btn-ghost btn-sm" onclick="loadSubmissions()"><span class="lang-sw">Onyesha Upya</span><span class="lang-en">Refresh</span></button>
+          <button class="btn btn-gold btn-sm" onclick="exportCsv()"><span class="lang-sw">Pakua CSV</span><span class="lang-en">Export CSV</span></button>
         </div>
       </div>
-      <div id="tableHolder"><div class="state-msg">Inapakia majibu…</div></div>
+      <div id="tableHolder"><div class="state-msg"><span class="lang-sw">Inapakia majibu…</span><span class="lang-en">Loading responses…</span></div></div>
     </div>
 
     <!-- QUESTIONS TAB -->
     <div id="questionsTab" style="display:none;">
       <div class="card q-form">
-        <h3 style="margin-top:0;">Ongeza / Hariri Swali</h3>
+        <h3 style="margin-top:0;"><span class="lang-sw">Ongeza / Hariri Swali</span><span class="lang-en">Add / Edit Question</span></h3>
         <form id="questionForm" onsubmit="return saveQuestion(event)">
           <input type="hidden" id="q_id">
           <div class="grid-2">
-            <div class="field"><label>Step (0-7)</label><input type="number" id="q_step" min="0" max="7" required></div>
-            <div class="field"><label>Sort Order</label><input type="number" id="q_sort" value="0"></div>
+            <div class="field"><label><span class="lang-sw">Hatua (0-7)</span><span class="lang-en">Step (0-7)</span></label><input type="number" id="q_step" min="0" max="7" required></div>
+            <div class="field"><label><span class="lang-sw">Mpangilio</span><span class="lang-en">Sort Order</span></label><input type="number" id="q_sort" value="0"></div>
           </div>
-          <div class="field"><label>Field Name (no spaces, e.g., custom_q1)</label><input type="text" id="q_field" required></div>
+          <div class="field"><label><span class="lang-sw">Jina la Uwanja (bila nafasi, mf. swali_1)</span><span class="lang-en">Field Name (no spaces, e.g., custom_q1)</span></label><input type="text" id="q_field" required></div>
           <div class="grid-2">
-            <div class="field"><label>Label (Swahili)</label><input type="text" id="q_label_sw" required></div>
-            <div class="field"><label>Label (English)</label><input type="text" id="q_label_en" required></div>
+            <div class="field"><label><span class="lang-sw">Lebo (Kiswahili)</span><span class="lang-en">Label (Swahili)</span></label><input type="text" id="q_label_sw" required></div>
+            <div class="field"><label><span class="lang-sw">Lebo (Kiingereza)</span><span class="lang-en">Label (English)</span></label><input type="text" id="q_label_en" required></div>
           </div>
           <div class="grid-3">
-            <div class="field"><label>Type</label>
+            <div class="field"><label><span class="lang-sw">Aina</span><span class="lang-en">Type</span></label>
               <select id="q_type" onchange="toggleOptions()">
-                <option value="text">Text</option><option value="textarea">Textarea</option>
-                <option value="radio">Radio (Single Choice)</option><option value="checkbox">Checkbox (Multiple)</option>
+                <option value="text"><span class="lang-sw">Maandishi</span><span class="lang-en">Text</span></option>
+                <option value="textarea"><span class="lang-sw">Maandishi Marefu</span><span class="lang-en">Textarea</span></option>
+                <option value="radio"><span class="lang-sw">Chaguo Moja</span><span class="lang-en">Radio (Single)</span></option>
+                <option value="checkbox"><span class="lang-sw">Chaguo Nyingi</span><span class="lang-en">Checkbox (Multiple)</span></option>
               </select>
             </div>
-            <div class="field"><label>Required?</label><select id="q_required"><option value="true">Yes</option><option value="false">No</option></select></div>
-            <div class="field" id="optionsField" style="display:none;"><label>Options (comma separated)</label><input type="text" id="q_options" placeholder="Option 1, Option 2"></div>
+            <div class="field"><label><span class="lang-sw">Inahitajika?</span><span class="lang-en">Required?</span></label><select id="q_required"><option value="true"><span class="lang-sw">Ndiyo</span><span class="lang-en">Yes</span></option><option value="false"><span class="lang-sw">Hapana</span><span class="lang-en">No</span></option></select></div>
+            <div class="field" id="optionsField" style="display:none;"><label><span class="lang-sw">Machaguo (tenganisha kwa koma)</span><span class="lang-en">Options (comma separated)</span></label><input type="text" id="q_options" placeholder="Option 1, Option 2"></div>
           </div>
           <div style="display:flex; gap:10px; margin-top:10px;">
-            <button type="submit" class="btn btn-primary btn-sm">Hifadhi Swali</button>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="resetQForm()">Futa</button>
+            <button type="submit" class="btn btn-primary btn-sm"><span class="lang-sw">Hifadhi Swali</span><span class="lang-en">Save Question</span></button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="resetQForm()"><span class="lang-sw">Futa</span><span class="lang-en">Clear</span></button>
           </div>
         </form>
       </div>
-      <div id="questionsHolder"><div class="state-msg">Inapakia maswali…</div></div>
+      <div id="questionsHolder"><div class="state-msg"><span class="lang-sw">Inapakia maswali…</span><span class="lang-en">Loading questions…</span></div></div>
     </div>
   </div>
 </div>
