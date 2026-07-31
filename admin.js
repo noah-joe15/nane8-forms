@@ -65,8 +65,21 @@
     var query = (document.getElementById("searchInput").value || "").toLowerCase();
     var rows = allSubmissions.filter(sub => !query || Object.values(sub).some(v => String(v).toLowerCase().includes(query)));
     document.getElementById("countPill").innerHTML = rows.length + ' <span class="lang-sw">majibu</span><span class="lang-en">responses</span>';
-    if (!rows.length) { document.getElementById("tableHolder").innerHTML = '<div class="state-msg"><span class="lang-sw">Hakuna majibu bado.</span><span class="lang-en">No responses yet.</span></div>'; return; }
-    var cols = Object.keys(rows[0]).filter(k => k !== "form-name" && k !== "bot-field");
+    
+    if (!rows.length) { 
+      document.getElementById("tableHolder").innerHTML = '<div class="state-msg"><span class="lang-sw">Hakuna majibu bado.</span><span class="lang-en">No responses yet.</span></div>'; 
+      return; 
+    }
+    
+    // Collect ALL unique keys from ALL rows to ensure we don't miss columns
+    var allKeys = new Set();
+    rows.forEach(sub => {
+      Object.keys(sub).forEach(k => {
+        if (k !== "form-name" && k !== "bot-field") allKeys.add(k);
+      });
+    });
+    var cols = Array.from(allKeys);
+
     var html = '<table><thead><tr>' + cols.map(c => '<th>' + c.replace(/_/g, " ") + '</th>').join("") + '</tr></thead><tbody>';
     rows.forEach(sub => {
       html += '<tr>' + cols.map(c => '<td>' + (Array.isArray(sub[c]) ? sub[c].join(", ") : (sub[c] || "")) + '</td>').join("") + '</tr>';
@@ -76,7 +89,9 @@
 
   window.exportCsv = function () {
     if (!allSubmissions.length) return;
-    var cols = Object.keys(allSubmissions[0]).filter(k => k !== "form-name" && k !== "bot-field");
+    var allKeys = new Set();
+    allSubmissions.forEach(sub => Object.keys(sub).forEach(k => { if (k !== "form-name" && k !== "bot-field") allKeys.add(k); }));
+    var cols = Array.from(allKeys);
     var lines = [cols.join(",")].concat(allSubmissions.map(sub => cols.map(c => '"' + String(Array.isArray(sub[c]) ? sub[c].join(", ") : (sub[c] || "")).replace(/"/g, '""') + '"').join(",")));
     var blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
     var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "majibu.csv"; a.click();
@@ -157,7 +172,7 @@
   };
 
   window.deleteQuestion = async function (id) {
-    if (!confirm("Una uhakika unataka kufuta swali hili? / Are you sure you want to delete this question?")) return;
+    if (!confirm("Una uhakika? / Are you sure?")) return;
     await supabaseClient.from('survey_questions').delete().eq('id', id);
     loadQuestions();
   };
