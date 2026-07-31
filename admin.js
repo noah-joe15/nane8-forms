@@ -54,48 +54,48 @@
   };
 
   window.loadSubmissions = async function () {
-    var holder = document.getElementById("tableHolder");
-    holder.innerHTML = '<div class="state-msg"><span class="lang-' + lang + '">' +
-      (lang === "sw" ? "Inapakia majibu…" : "Loading responses…") + "</span></div>";
+  var holder = document.getElementById("tableHolder");
+  holder.innerHTML = '<div class="state-msg"><span class="lang-' + lang + '">' +
+    (lang === "sw" ? "Inapakia majibu…" : "Loading responses…") + "</span></div>";
 
-    try {
-      if (typeof supabase === 'undefined') {
-        throw new Error("Supabase client not initialized. Check admin.html script tags.");
-      }
-
-      // Fetch from Supabase
-      const { data, error } = await supabase
-        .from('nanenane_responses')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error("Supabase fetch error:", error);
-        renderSetupNotice(error.message);
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        allSubmissions = [];
-        renderTable();
-        return;
-      }
-
-      // Normalize the data from Supabase structure
-      allSubmissions = data.map(function (sub) {
-        var fields = sub.form_data || {};
-        if (!fields.submitted_at && sub.created_at) {
-          fields.submitted_at = sub.created_at;
-        }
-        return fields;
-      });
-
-      renderTable();
-    } catch (err) {
-      console.error("Fetch error:", err);
-      renderSetupNotice(err.message);
+  try {
+    if (typeof supabaseClient === 'undefined') {
+      throw new Error("Supabase client not initialized. Check admin.html script tags.");
     }
-  };
+
+    // Fetch from Supabase
+    const { data, error } = await supabaseClient
+      .from('nanenane_responses')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error("Supabase fetch error:", error);
+      renderSetupNotice(error.message);
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      allSubmissions = [];
+      renderTable();
+      return;
+    }
+
+    // Normalize the data from Supabase structure
+    allSubmissions = data.map(function (sub) {
+      var fields = sub.form_data || {};
+      if (!fields.submitted_at && sub.created_at) {
+        fields.submitted_at = sub.created_at;
+      }
+      return fields;
+    });
+
+    renderTable();
+  } catch (err) {
+    console.error("Fetch error:", err);
+    renderSetupNotice(err.message);
+  }
+};
 
   function renderSetupNotice(errMessage) {
     var holder = document.getElementById("tableHolder");
