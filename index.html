@@ -59,8 +59,14 @@
 
     <div class="step-nav" id="stepNav">
       <button type="button" class="btn btn-ghost" id="btnBack" onclick="goStep(-1)" style="visibility: hidden;"><span class="lang-sw">Nyuma</span><span class="lang-en">Back</span></button>
-      <button type="button" class="btn btn-primary" id="btnNext" onclick="goStep(1)"><span class="lang-sw">Endelea</span><span class="lang-en">Continue</span></button>
-      <button type="submit" class="btn btn-gold" id="btnSubmit" style="display: none;"><span class="lang-sw">Tuma Dodoso</span><span class="lang-en">Submit Survey</span></button>
+      
+      <!-- NEW: Start Over Button -->
+      <button type="button" class="btn btn-ghost" id="btnReset" onclick="resetForm()" style="display: none; color: var(--danger); border-color: var(--danger); margin-left: auto;">
+        <span class="lang-sw">Anza Upya</span><span class="lang-en">Start Over</span>
+      </button>
+
+      <button type="button" class="btn btn-primary" id="btnNext" onclick="goStep(1)" style="margin-left: 10px;"><span class="lang-sw">Endelea</span><span class="lang-en">Continue</span></button>
+      <button type="submit" class="btn btn-gold" id="btnSubmit" style="display: none; margin-left: 10px;"><span class="lang-sw">Tuma Dodoso</span><span class="lang-en">Submit Survey</span></button>
     </div>
   </form>
 
