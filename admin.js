@@ -1,11 +1,5 @@
 // ============================================================
-// Admin dashboard logic.
-// Password check is client-side only (matches the simple "1234"
-// gate requested) — fine for keeping casual visitors out of the
-// dashboard link, but it is NOT strong security.
-//
-// No localStorage/sessionStorage is used, so signing in only lasts
-// for the current page load — refreshing asks for the password again.
+// Admin dashboard logic - Supabase Version
 // ============================================================
 (function () {
   "use strict";
@@ -54,48 +48,48 @@
   };
 
   window.loadSubmissions = async function () {
-  var holder = document.getElementById("tableHolder");
-  holder.innerHTML = '<div class="state-msg"><span class="lang-' + lang + '">' +
-    (lang === "sw" ? "Inapakia majibu…" : "Loading responses…") + "</span></div>";
+    var holder = document.getElementById("tableHolder");
+    holder.innerHTML = '<div class="state-msg"><span class="lang-' + lang + '">' +
+      (lang === "sw" ? "Inapakia majibu…" : "Loading responses…") + "</span></div>";
 
-  try {
-    if (typeof supabaseClient === 'undefined') {
-      throw new Error("Supabase client not initialized. Check admin.html script tags.");
-    }
-
-    // Fetch from Supabase
-    const { data, error } = await supabaseClient
-      .from('nanenane_responses')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error("Supabase fetch error:", error);
-      renderSetupNotice(error.message);
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      allSubmissions = [];
-      renderTable();
-      return;
-    }
-
-    // Normalize the data from Supabase structure
-    allSubmissions = data.map(function (sub) {
-      var fields = sub.form_data || {};
-      if (!fields.submitted_at && sub.created_at) {
-        fields.submitted_at = sub.created_at;
+    try {
+      if (typeof supabaseClient === 'undefined') {
+        throw new Error("Supabase client not initialized. Check admin.html script tags.");
       }
-      return fields;
-    });
 
-    renderTable();
-  } catch (err) {
-    console.error("Fetch error:", err);
-    renderSetupNotice(err.message);
-  }
-};
+      // Fetch from Supabase
+      const { data, error } = await supabaseClient
+        .from('nanenane_responses')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error("Supabase fetch error:", error);
+        renderSetupNotice(error.message);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        allSubmissions = [];
+        renderTable();
+        return;
+      }
+
+      // Normalize the data from Supabase structure
+      allSubmissions = data.map(function (sub) {
+        var fields = sub.form_data || {};
+        if (!fields.submitted_at && sub.created_at) {
+          fields.submitted_at = sub.created_at;
+        }
+        return fields;
+      });
+
+      renderTable();
+    } catch (err) {
+      console.error("Fetch error:", err);
+      renderSetupNotice(err.message);
+    }
+  };
 
   function renderSetupNotice(errMessage) {
     var holder = document.getElementById("tableHolder");
@@ -147,7 +141,6 @@
       var tr = document.createElement("tr");
       columns.forEach(function (col) {
         var td = document.createElement("td");
-        // Handle arrays (from checkboxes) by joining them
         var val = sub[col];
         td.textContent = Array.isArray(val) ? val.join(", ") : (val || "");
         tr.appendChild(td);
@@ -209,7 +202,6 @@
       }).join(","));
     });
 
-    // Added BOM (\uFEFF) for proper Excel UTF-8 compatibility
     var blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
