@@ -14,20 +14,14 @@
   .stat-pill{background:var(--green-100); color:var(--green-900); font-weight:700; font-size:13px; padding:7px 14px; border-radius:999px;}
   .search-input{max-width:220px;}
   table{width:100%; border-collapse:collapse; font-size:13px; background:var(--white);}
-  thead th{
-    position:sticky; top:0; background:var(--green-900); color:var(--white);
-    text-align:left; padding:10px 12px; font-weight:600; white-space:nowrap;
-  }
+  thead th{position:sticky; top:0; background:var(--green-900); color:var(--white); text-align:left; padding:10px 12px; font-weight:600; white-space:nowrap;}
   tbody td{padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; max-width:240px;}
   tbody tr:nth-child(even){background:#FAFCFA;}
   tbody tr:hover{background:var(--green-100);}
   .table-wrap{overflow:auto; max-height:70vh; border:1px solid var(--line); border-radius:var(--radius-sm);}
   .state-msg{text-align:center; padding:40px 20px; color:var(--ink-soft);}
   .state-msg.err{color:var(--danger);}
-  .badge-setup{
-    background:var(--gold-100); border:1px solid var(--gold-300); color:#7A5A00;
-    padding:14px 16px; border-radius:var(--radius-sm); font-size:13.5px; line-height:1.6; text-align:left; margin-top:14px;
-  }
+  .badge-setup{background:var(--gold-100); border:1px solid var(--gold-300); color:#7A5A00; padding:14px 16px; border-radius:var(--radius-sm); font-size:13.5px; line-height:1.6; text-align:left; margin-top:14px;}
   .badge-setup code{background:rgba(0,0,0,.06); padding:1px 6px; border-radius:5px; font-size:12.5px;}
   .logout-link{background:none; border:0; color:var(--white); font-weight:600; font-size:13px; cursor:pointer; text-decoration:underline;}
 </style>
@@ -54,8 +48,6 @@
 </div>
 
 <div class="admin-shell">
-
-  <!-- LOGIN ================================================================= -->
   <div id="loginView">
     <div class="card login-card">
       <span class="section-eyebrow"><span class="lang-sw">Eneo la Wasimamizi</span><span class="lang-en">Admin Area</span></span>
@@ -74,7 +66,6 @@
     </div>
   </div>
 
-  <!-- DASHBOARD ============================================================== -->
   <div id="dashboardView" style="display:none;">
     <div class="toolbar">
       <div class="toolbar-left">
@@ -86,18 +77,15 @@
         <button class="btn btn-gold" onclick="exportCsv()"><span class="lang-sw">Pakua CSV</span><span class="lang-en">Export CSV</span></button>
       </div>
     </div>
-
     <div id="tableHolder">
       <div class="state-msg"><span class="lang-sw">Inapakia majibu…</span><span class="lang-en">Loading responses…</span></div>
     </div>
   </div>
-
 </div>
 
 <!-- Supabase JS Client -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // Initialize Supabase with your project credentials
   const SUPABASE_URL = 'https://ccddzluijwfdytfsuwza.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_wBacQmQqOGF0S6uDpVB7nQ_hBv4EC2P';
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
