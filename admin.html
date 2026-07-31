@@ -17,7 +17,7 @@
   tbody tr:nth-child(even) { background: #FAFCFA; }
   .table-wrap { overflow: auto; max-height: 70vh; border: 1px solid var(--line); border-radius: var(--radius-sm); margin-top: 16px; }
   .state-msg { text-align: center; padding: 40px 20px; color: var(--ink-soft); }
-  .tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid var(--line); }
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid var(--line); flex-wrap: wrap; }
   .tab-btn { background: none; border: none; padding: 10px 16px; font-weight: 600; color: var(--ink-soft); cursor: pointer; border-bottom: 3px solid transparent; }
   .tab-btn.active { color: var(--green-700); border-bottom-color: var(--green-700); }
   .q-form { background: var(--green-100); padding: 16px; border-radius: var(--radius-sm); margin-bottom: 20px; }
@@ -29,6 +29,14 @@
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
   .logout-link { background: none; border: 0; color: var(--white); font-weight: 600; font-size: 13px; cursor: pointer; text-decoration: underline; }
+  
+  /* NEW: Stats Dashboard Styles */
+  .stats-dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat-card { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px; text-align: center; box-shadow: var(--shadow-sm); }
+  .stat-card.highlight { background: var(--gold-100); border-color: var(--gold-300); }
+  .stat-value { font-size: 28px; font-weight: 800; color: var(--green-700); font-family: var(--font-head); line-height: 1; }
+  .stat-card.highlight .stat-value { color: var(--gold-700); }
+  .stat-label { font-size: 11px; font-weight: 700; color: var(--ink-soft); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
 </style>
 </head>
 <body class="lang-sw">
@@ -71,9 +79,33 @@
   </div>
 
   <div id="dashboardView" style="display:none;">
+    
+    <!-- NEW: Stats Dashboard -->
+    <div class="stats-dashboard">
+      <div class="stat-card">
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label"><span class="lang-sw">Jumla ya Majibu</span><span class="lang-en">Total Responses</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statRegions">0</div>
+        <div class="stat-label"><span class="lang-sw">Mikoa</span><span class="lang-en">Regions</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statDistricts">0</div>
+        <div class="stat-label"><span class="lang-sw">Wilaya</span><span class="lang-en">Districts</span></div>
+      </div>
+      <div class="stat-card highlight">
+        <div class="stat-value" id="statUnregistered">0</div>
+        <div class="stat-label"><span class="lang-sw">Hawajasajiliwa (MIT)</span><span class="lang-en">Unregistered (MIT)</span></div>
+      </div>
+    </div>
+
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('responses', this)">
-        <span class="lang-sw">Majibu</span><span class="lang-en">Responses</span>
+        <span class="lang-sw">Majibu Yote</span><span class="lang-en">All Responses</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('unregistered', this)">
+        <span class="lang-sw">Wanaohitaji Usajili</span><span class="lang-en">Need Registration</span>
       </button>
       <button class="tab-btn" onclick="switchTab('questions', this)">
         <span class="lang-sw">Simamia Maswali</span><span class="lang-en">Manage Questions</span>
@@ -93,6 +125,16 @@
       <div id="tableHolder"><div class="state-msg"><span class="lang-sw">Inapakia majibu…</span><span class="lang-en">Loading responses…</span></div></div>
     </div>
 
+    <!-- NEW: UNREGISTERED TAB -->
+    <div id="unregisteredTab" style="display:none;">
+      <div class="toolbar">
+        <span class="stat-pill" id="unregCountPill" style="background:var(--gold-100); color:var(--gold-700);">0</span>
+        <input class="text-input search-input" id="unregSearchInput" type="search" placeholder="Tafuta..." oninput="renderUnregisteredTable()">
+        <button class="btn btn-gold btn-sm" onclick="exportUnregisteredCsv()"><span class="lang-sw">Pakua CSV</span><span class="lang-en">Export CSV</span></button>
+      </div>
+      <div id="unregisteredTableHolder"><div class="state-msg"><span class="lang-sw">Inapakia...</span><span class="lang-en">Loading...</span></div></div>
+    </div>
+
     <!-- QUESTIONS TAB -->
     <div id="questionsTab" style="display:none;">
       <div class="card q-form">
@@ -103,7 +145,7 @@
             <div class="field"><label><span class="lang-sw">Hatua (0-7)</span><span class="lang-en">Step (0-7)</span></label><input type="number" id="q_step" min="0" max="7" required></div>
             <div class="field"><label><span class="lang-sw">Mpangilio</span><span class="lang-en">Sort Order</span></label><input type="number" id="q_sort" value="0"></div>
           </div>
-          <div class="field"><label><span class="lang-sw">Jina la Uwanja (bila nafasi, mf. swali_1)</span><span class="lang-en">Field Name (no spaces, e.g., custom_q1)</span></label><input type="text" id="q_field" required></div>
+          <div class="field"><label><span class="lang-sw">Jina la Uwanja</span><span class="lang-en">Field Name</span></label><input type="text" id="q_field" required></div>
           <div class="grid-2">
             <div class="field"><label><span class="lang-sw">Lebo (Kiswahili)</span><span class="lang-en">Label (Swahili)</span></label><input type="text" id="q_label_sw" required></div>
             <div class="field"><label><span class="lang-sw">Lebo (Kiingereza)</span><span class="lang-en">Label (English)</span></label><input type="text" id="q_label_en" required></div>
@@ -111,17 +153,15 @@
           <div class="grid-3">
             <div class="field"><label><span class="lang-sw">Aina</span><span class="lang-en">Type</span></label>
               <select id="q_type" onchange="toggleOptions()">
-                <option value="text">Text</option>
-                <option value="textarea">Textarea</option>
-                <option value="radio">Radio (Single Choice)</option>
-                <option value="checkbox">Checkbox (Multiple)</option>
+                <option value="text">Text</option><option value="textarea">Textarea</option>
+                <option value="radio">Radio</option><option value="checkbox">Checkbox</option>
               </select>
             </div>
             <div class="field"><label><span class="lang-sw">Inahitajika?</span><span class="lang-en">Required?</span></label><select id="q_required"><option value="true">Yes</option><option value="false">No</option></select></div>
-            <div class="field" id="optionsField" style="display:none;"><label><span class="lang-sw">Machaguo (tenganisha kwa koma)</span><span class="lang-en">Options (comma separated)</span></label><input type="text" id="q_options" placeholder="Option 1, Option 2"></div>
+            <div class="field" id="optionsField" style="display:none;"><label><span class="lang-sw">Machaguo (koma)</span><span class="lang-en">Options (comma)</span></label><input type="text" id="q_options"></div>
           </div>
           <div style="display:flex; gap:10px; margin-top:10px;">
-            <button type="submit" class="btn btn-primary btn-sm"><span class="lang-sw">Hifadhi Swali</span><span class="lang-en">Save Question</span></button>
+            <button type="submit" class="btn btn-primary btn-sm"><span class="lang-sw">Hifadhi</span><span class="lang-en">Save</span></button>
             <button type="button" class="btn btn-ghost btn-sm" onclick="resetQForm()"><span class="lang-sw">Futa</span><span class="lang-en">Clear</span></button>
           </div>
         </form>
