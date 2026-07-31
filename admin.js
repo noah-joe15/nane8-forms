@@ -5,6 +5,14 @@
   var allSubmissions = [];
   var allQuestions = [];
 
+  // --- LANGUAGE TOGGLE LOGIC ---
+  window.setLang = function (l) {
+    document.body.classList.remove("lang-sw", "lang-en");
+    document.body.classList.add("lang-" + l);
+    document.getElementById("btn-lang-sw").classList.toggle("active", l === "sw");
+    document.getElementById("btn-lang-en").classList.toggle("active", l === "en");
+  };
+
   window.handleLogin = function (e) {
     e.preventDefault();
     if (document.getElementById("adminPass").value === ADMIN_PASSWORD) {
@@ -38,7 +46,7 @@
   // --- RESPONSES LOGIC ---
   window.loadSubmissions = async function () {
     var holder = document.getElementById("tableHolder");
-    holder.innerHTML = '<div class="state-msg">Inapakia majibu…</div>';
+    holder.innerHTML = '<div class="state-msg"><span class="lang-sw">Inapakia majibu…</span><span class="lang-en">Loading responses…</span></div>';
     try {
       const { data, error } = await supabaseClient.from('nanenane_responses').select('*').order('created_at', { ascending: false });
       if (error) throw error;
@@ -49,15 +57,15 @@
       });
       renderTable();
     } catch (err) {
-      holder.innerHTML = '<div class="state-msg" style="color:var(--danger)">Hitilafu: ' + err.message + '</div>';
+      holder.innerHTML = '<div class="state-msg" style="color:var(--danger)">Hitilafu / Error: ' + err.message + '</div>';
     }
   };
 
   window.renderTable = function () {
     var query = (document.getElementById("searchInput").value || "").toLowerCase();
     var rows = allSubmissions.filter(sub => !query || Object.values(sub).some(v => String(v).toLowerCase().includes(query)));
-    document.getElementById("countPill").textContent = rows.length + " majibu";
-    if (!rows.length) { document.getElementById("tableHolder").innerHTML = '<div class="state-msg">Hakuna majibu bado.</div>'; return; }
+    document.getElementById("countPill").innerHTML = rows.length + ' <span class="lang-sw">majibu</span><span class="lang-en">responses</span>';
+    if (!rows.length) { document.getElementById("tableHolder").innerHTML = '<div class="state-msg"><span class="lang-sw">Hakuna majibu bado.</span><span class="lang-en">No responses yet.</span></div>'; return; }
     var cols = Object.keys(rows[0]).filter(k => k !== "form-name" && k !== "bot-field");
     var html = '<table><thead><tr>' + cols.map(c => '<th>' + c.replace(/_/g, " ") + '</th>').join("") + '</tr></thead><tbody>';
     rows.forEach(sub => {
@@ -83,12 +91,12 @@
       allQuestions = data || [];
       renderQuestions();
     } catch (err) {
-      holder.innerHTML = '<div class="state-msg" style="color:var(--danger)">Hitilafu: ' + err.message + '</div>';
+      holder.innerHTML = '<div class="state-msg" style="color:var(--danger)">Hitilafu / Error: ' + err.message + '</div>';
     }
   };
 
   window.renderQuestions = function () {
-    if (!allQuestions.length) { document.getElementById("questionsHolder").innerHTML = '<div class="state-msg">Hakuna maswali bado. Ongeza swali la kwanza hapa juu!</div>'; return; }
+    if (!allQuestions.length) { document.getElementById("questionsHolder").innerHTML = '<div class="state-msg"><span class="lang-sw">Hakuna maswali bado. Ongeza swali la kwanza hapa juu!</span><span class="lang-en">No questions yet. Add your first question above!</span></div>'; return; }
     var html = '<table><thead><tr><th>Step</th><th>Field</th><th>Label (SW)</th><th>Type</th><th>Actions</th></tr></thead><tbody>';
     allQuestions.forEach(q => {
       html += `<tr>
@@ -97,8 +105,8 @@
         <td>${q.label_sw}</td>
         <td>${q.input_type}</td>
         <td>
-          <button class="btn btn-ghost btn-sm" onclick='editQuestion(${JSON.stringify(q).replace(/'/g, "&#39;")})'>Hariri</button>
-          <button class="btn btn-sm btn-danger" onclick="deleteQuestion('${q.id}')">Futa</button>
+          <button class="btn btn-ghost btn-sm" onclick='editQuestion(${JSON.stringify(q).replace(/'/g, "&#39;")})'><span class="lang-sw">Hariri</span><span class="lang-en">Edit</span></button>
+          <button class="btn btn-sm btn-danger" onclick="deleteQuestion('${q.id}')"><span class="lang-sw">Futa</span><span class="lang-en">Delete</span></button>
         </td>
       </tr>`;
     });
@@ -129,8 +137,8 @@
     try {
       if (id) { await supabaseClient.from('survey_questions').update(payload).eq('id', id); } 
       else { await supabaseClient.from('survey_questions').insert([payload]); }
-      resetQForm(); loadQuestions(); alert("Swali limehifadhiwa!");
-    } catch (err) { alert("Hitilafu: " + err.message); }
+      resetQForm(); loadQuestions(); alert("Swali limehifadhiwa! / Question saved!");
+    } catch (err) { alert("Hitilafu / Error: " + err.message); }
     return false;
   };
 
@@ -149,7 +157,7 @@
   };
 
   window.deleteQuestion = async function (id) {
-    if (!confirm("Una uhakika unataka kufuta swali hili?")) return;
+    if (!confirm("Una uhakika unataka kufuta swali hili? / Are you sure you want to delete this question?")) return;
     await supabaseClient.from('survey_questions').delete().eq('id', id);
     loadQuestions();
   };
@@ -159,4 +167,7 @@
     document.getElementById("q_id").value = "";
     toggleOptions();
   };
+
+  // Initialize language on load
+  setLang("sw");
 })();
