@@ -4,10 +4,7 @@
   var loggedIn = false;
   var allSubmissions = [];
   var allQuestions = [];
-  var lang = "sw";
 
-  window.setLang = function (l) { lang = l; document.body.className = "lang-" + l; };
-  
   window.handleLogin = function (e) {
     e.preventDefault();
     if (document.getElementById("adminPass").value === ADMIN_PASSWORD) {
@@ -31,11 +28,11 @@
     document.getElementById("loginView").style.display = "block";
   };
 
-  window.switchTab = function (tab) {
+  window.switchTab = function (tab, btn) {
     document.getElementById("responsesTab").style.display = tab === "responses" ? "block" : "none";
     document.getElementById("questionsTab").style.display = tab === "questions" ? "block" : "none";
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-    event.target.classList.add("active");
+    btn.classList.add("active");
   };
 
   // --- RESPONSES LOGIC ---
@@ -60,9 +57,7 @@
     var query = (document.getElementById("searchInput").value || "").toLowerCase();
     var rows = allSubmissions.filter(sub => !query || Object.values(sub).some(v => String(v).toLowerCase().includes(query)));
     document.getElementById("countPill").textContent = rows.length + " majibu";
-    
     if (!rows.length) { document.getElementById("tableHolder").innerHTML = '<div class="state-msg">Hakuna majibu bado.</div>'; return; }
-    
     var cols = Object.keys(rows[0]).filter(k => k !== "form-name" && k !== "bot-field");
     var html = '<table><thead><tr>' + cols.map(c => '<th>' + c.replace(/_/g, " ") + '</th>').join("") + '</tr></thead><tbody>';
     rows.forEach(sub => {
@@ -93,7 +88,7 @@
   };
 
   window.renderQuestions = function () {
-    if (!allQuestions.length) { document.getElementById("questionsHolder").innerHTML = '<div class="state-msg">Hakuna maswali bado.</div>'; return; }
+    if (!allQuestions.length) { document.getElementById("questionsHolder").innerHTML = '<div class="state-msg">Hakuna maswali bado. Ongeza swali la kwanza hapa juu!</div>'; return; }
     var html = '<table><thead><tr><th>Step</th><th>Field</th><th>Label (SW)</th><th>Type</th><th>Actions</th></tr></thead><tbody>';
     allQuestions.forEach(q => {
       html += `<tr>
@@ -127,24 +122,15 @@
       is_required: document.getElementById("q_required").value === "true",
       sort_order: parseInt(document.getElementById("q_sort").value)
     };
-    
     var opts = document.getElementById("q_options").value;
     if (payload.input_type === "radio" || payload.input_type === "checkbox") {
       payload.options = opts.split(",").map(o => o.trim()).filter(o => o);
     }
-
     try {
-      if (id) {
-        await supabaseClient.from('survey_questions').update(payload).eq('id', id);
-      } else {
-        await supabaseClient.from('survey_questions').insert([payload]);
-      }
-      resetQForm();
-      loadQuestions();
-      alert("Swali limehifadhiwa!");
-    } catch (err) {
-      alert("Hitilafu: " + err.message);
-    }
+      if (id) { await supabaseClient.from('survey_questions').update(payload).eq('id', id); } 
+      else { await supabaseClient.from('survey_questions').insert([payload]); }
+      resetQForm(); loadQuestions(); alert("Swali limehifadhiwa!");
+    } catch (err) { alert("Hitilafu: " + err.message); }
     return false;
   };
 
@@ -173,6 +159,4 @@
     document.getElementById("q_id").value = "";
     toggleOptions();
   };
-
-  setLang("sw");
 })();
