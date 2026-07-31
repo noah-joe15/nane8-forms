@@ -13,7 +13,6 @@
       const { data, error } = await supabaseClient.from('survey_questions').select('*').order('step_number').order('sort_order');
       if (error) throw error;
       
-      // Group by step
       var grouped = {};
       data.forEach(q => {
         if (!grouped[q.step_number]) grouped[q.step_number] = [];
@@ -21,7 +20,7 @@
       });
       
       stepsData = Object.keys(grouped).map(k => ({ step: parseInt(k), questions: grouped[k] }));
-      totalSteps = stepsData.length + 1; // +1 for review step
+      totalSteps = stepsData.length + 1; 
       
       document.getElementById("stepTotal").textContent = totalSteps;
       buildHTML();
@@ -29,7 +28,7 @@
       form.style.display = "block";
       showStep(0);
     } catch (err) {
-      document.getElementById("formLoader").innerHTML = '<p style="color:var(--danger)">Hitilafu: ' + err.message + '</p>';
+      document.getElementById("formLoader").innerHTML = '<p style="color:var(--danger)">Hitilafu / Error: ' + err.message + '</p>';
     }
   }
 
@@ -78,17 +77,23 @@
     });
   }
 
-  // 2. Navigation & Validation
   function showStep(idx) {
     document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
     var target = document.querySelector(`.step[data-step="${idx}"]`) || document.querySelector(`.step[data-step="review"]`);
     if(target) target.classList.add("active");
     
-    document.getElementById("btnBack").style.visibility = idx === 0 ? "hidden" : "visible";
     var isReview = idx === stepsData.length;
+    
+    document.getElementById("btnBack").style.visibility = idx === 0 ? "hidden" : "visible";
     document.getElementById("btnNext").style.display = isReview ? "none" : "inline-flex";
     document.getElementById("btnSubmit").style.display = isReview ? "inline-flex" : "none";
     
+    // Show "Start Over" button ONLY on the review step
+    var btnReset = document.getElementById("btnReset");
+    if (btnReset) {
+      btnReset.style.display = isReview ? "inline-flex" : "none";
+    }
+
     if (isReview) renderReview();
     updateProgress(idx);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -104,6 +109,20 @@
     if (next < 0 || next > stepsData.length) return;
     current = next;
     showStep(current);
+  };
+
+  // NEW: Reset Form Function
+  window.resetForm = function () {
+    var confirmMsg = lang === "sw" 
+      ? "Una uhakika unataka kuanza upya? Majibu yako yote yatafutwa." 
+      : "Are you sure you want to start over? All your answers will be cleared.";
+      
+    if (confirm(confirmMsg)) {
+      form.reset(); // Clears all inputs
+      current = 0;  // Resets step counter
+      document.getElementById("errorBanner").classList.remove("show");
+      showStep(0);  // Goes back to step 0
+    }
   };
 
   function validateStep(idx) {
@@ -134,7 +153,6 @@
     document.getElementById("btn-lang-en").classList.toggle("active", l === "en");
   };
 
-  // 3. Review Screen
   function renderReview() {
     var out = document.getElementById("reviewOutput");
     out.innerHTML = "";
@@ -160,7 +178,6 @@
     });
   }
 
-  // 4. Submission
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
     var btn = document.getElementById("btnSubmit");
@@ -181,11 +198,11 @@
       document.getElementById("successStep").classList.add("active");
       document.getElementById("stepNav").style.display = "none";
     } catch (err) {
-      alert("Hitilafu: " + err.message);
+      alert("Hitilafu / Error: " + err.message);
       btn.disabled = false; btn.textContent = "Tuma Dodoso";
     }
   });
 
-  // Start
   initForm();
+  setLang("sw");
 })();
