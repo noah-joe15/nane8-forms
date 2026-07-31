@@ -3,36 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dodoso la Washiriki wa Maonesho ya Nanenane | 51st DITF — TANTRADE</title>
-<meta name="description" content="Dodoso la ukusanyaji wa taarifa kwa washiriki wa Maonesho ya Nanenane na 51st DITF.">
+<title>Dodoso la Washiriki wa Maonesho ya Nanenane | 51st DITF</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body class="lang-sw">
 
 <div class="topbar">
   <div class="brand">
-    <span class="brand-mark" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C7 6 4 10 4 14a8 8 0 0016 0c0-4-3-8-8-12z" fill="#fff"/></svg>
-    </span>
+    <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C7 6 4 10 4 14a8 8 0 0016 0c0-4-3-8-8-12z" fill="#fff"/></svg></span>
     <span class="brand-text">
       <strong><span class="lang-sw">Dodoso la Washiriki — Nanenane / 51st DITF</span><span class="lang-en">Participant Survey — Nanenane / 51st DITF</span></strong>
       <span><span class="lang-sw">TANTRADE — Wakala wa Maendeleo ya Biashara Tanzania</span><span class="lang-en">TANTRADE — Tanzania Trade Development Authority</span></span>
     </span>
   </div>
-  <div class="lang-switch" role="group" aria-label="Chagua lugha / Choose language">
+  <div class="lang-switch" role="group">
     <button type="button" id="btn-lang-sw" class="active" onclick="setLang('sw')">SW</button>
     <button type="button" id="btn-lang-en" onclick="setLang('en')">EN</button>
   </div>
 </div>
 
 <div class="shell">
-
   <div class="progress-wrap">
     <div class="progress-meta">
       <span class="step-label" id="stepLabel">—</span>
-      <span class="step-count"><span class="lang-sw">Hatua</span><span class="lang-en">Step</span> <span id="stepNow">1</span> / <span id="stepTotal">8</span></span>
+      <span class="step-count"><span class="lang-sw">Hatua</span><span class="lang-en">Step</span> <span id="stepNow">1</span> / <span id="stepTotal">0</span></span>
     </div>
-    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:12.5%"></div></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
     <div class="progress-dots" id="progressDots"></div>
   </div>
 
@@ -41,403 +37,38 @@
     <span class="lang-en">Please complete all fields marked with a star (*) before continuing.</span>
   </div>
 
-  <form id="surveyForm" class="survey-form" novalidate>
-    <input type="hidden" name="submitted_at" id="submittedAt">
-    <input type="hidden" name="bot-field" value="">
-
-    <!-- STEP 0: WELCOME -->
-    <div class="step active" data-step="0">
-      <div class="hero">
-        <span class="hero-eyebrow"><span class="lang-sw">Lengo la Dodoso</span><span class="lang-en">Purpose of this survey</span></span>
-        <h1><span class="lang-sw">Karibu kwenye Dodoso la Washiriki wa Maonesho ya Nanenane</span><span class="lang-en">Welcome to the Nanenane Exhibition Participant Survey</span></h1>
-        <p>
-          <span class="lang-sw">Tunakusanya taarifa kuhusu hali ya biashara, uzalishaji, masoko, usajili wa bidhaa za Made in Tanzania, changamoto na utayari wa kushiriki Maonesho ya 51 ya Biashara ya Kimataifa ya Dar es Salaam (51st DITF). Itachukua takribani dakika 5.</span>
-          <span class="lang-en">We are collecting information about the state of your business, production, markets, Made in Tanzania product registration, challenges, and readiness to take part in the 51st Dar es Salaam International Trade Fair (51st DITF). This takes about 5 minutes.</span>
-        </p>
-      </div>
-      <div class="card">
-        <span class="section-eyebrow"><span class="lang-sw">Anza Hapa</span><span class="lang-en">Start Here</span></span>
-        <h2 class="section-title"><span class="lang-sw">Taarifa Zako</span><span class="lang-en">Your Details</span></h2>
-        <p class="section-desc"><span class="lang-sw">Tafadhali ingiza jina na barua pepe yako kuanza dodoso.</span><span class="lang-en">Please enter your name and email to begin the survey.</span></p>
-        <div class="field" data-field="respondent_name">
-          <label class="field-label" for="respondent_name"><span class="lang-sw">Jina Kamili</span><span class="lang-en">Full Name</span><span class="req">*</span></label>
-          <input class="text-input" type="text" id="respondent_name" name="respondent_name" required autocomplete="name">
-          <p class="error-msg lang-sw">Tafadhali andika jina lako.</p>
-          <p class="error-msg lang-en">Please enter your name.</p>
-        </div>
-        <div class="field" data-field="respondent_email">
-          <label class="field-label" for="respondent_email"><span class="lang-sw">Barua Pepe</span><span class="lang-en">Email Address</span><span class="req">*</span></label>
-          <input class="text-input" type="email" id="respondent_email" name="respondent_email" required autocomplete="email">
-          <p class="error-msg lang-sw">Tafadhali andika barua pepe sahihi.</p>
-          <p class="error-msg lang-en">Please enter a valid email address.</p>
-        </div>
-        <div class="field" data-field="respondent_phone">
-          <label class="field-label" for="respondent_phone"><span class="lang-sw">Namba ya Simu (Hiari)</span><span class="lang-en">Phone Number (Optional)</span></label>
-          <input class="text-input" type="tel" id="respondent_phone" name="respondent_phone" autocomplete="tel">
-        </div>
-        <div class="field" data-field="location">
-          <label class="field-label" for="location"><span class="lang-sw">Mahali (Hiari)</span><span class="lang-en">Location / Venue (Optional)</span></label>
-          <input class="text-input" type="text" id="location" name="location" placeholder="Mf: Uwanja wa Nanenane, Themi">
-        </div>
-      </div>
-    </div>
-
-    <!-- STEP 1: SECTION A -->
-    <div class="step" data-step="1">
-      <div class="card">
-        <span class="section-eyebrow">Sehemu A</span>
-        <h2 class="section-title"><span class="lang-sw">Taarifa za Msingi</span><span class="lang-en">Basic Information</span></h2>
-        <div class="field" data-field="wewe_ni">
-          <label class="field-label"><span class="lang-sw">1. Wewe ni</span><span class="lang-en">1. You are</span><span class="req">*</span></label>
-          <div class="options">
-            <label class="option"><input type="radio" name="wewe_ni" value="Mfanyabiashara" required><span class="option-box"><span class="lang-sw">Mfanyabiashara</span><span class="lang-en">Trader</span></span></label>
-            <label class="option"><input type="radio" name="wewe_ni" value="Mkulima"><span class="option-box"><span class="lang-sw">Mkulima</span><span class="lang-en">Farmer</span></span></label>
-            <label class="option"><input type="radio" name="wewe_ni" value="Mwekezaji"><span class="option-box"><span class="lang-sw">Mwekezaji</span><span class="lang-en">Investor</span></span></label>
-            <label class="option"><input type="radio" name="wewe_ni" value="Mzalishaji"><span class="option-box"><span class="lang-sw">Mzalishaji</span><span class="lang-en">Producer</span></span></label>
-            <label class="option"><input type="radio" name="wewe_ni" value="Mwingine"><span class="option-box"><span class="lang-sw">Mwingine (taja)</span><span class="lang-en">Other (specify)</span></span></label>
-          </div>
-          <input class="text-input other-field" type="text" name="wewe_ni_other" data-other-for="wewe_ni" data-other-value="Mwingine" hidden placeholder="Taja / Specify">
-          <p class="error-msg lang-sw">Tafadhali chagua chaguo moja.</p>
-          <p class="error-msg lang-en">Please choose one option.</p>
-        </div>
-        <div class="field" data-field="jinsia">
-          <label class="field-label"><span class="lang-sw">2. Jinsia</span><span class="lang-en">2. Gender</span><span class="req">*</span></label>
-          <div class="options grid-2">
-            <label class="option"><input type="radio" name="jinsia" value="Me" required><span class="option-box"><span class="lang-sw">Me</span><span class="lang-en">Male</span></span></label>
-            <label class="option"><input type="radio" name="jinsia" value="Ke"><span class="option-box"><span class="lang-sw">Ke</span><span class="lang-en">Female</span></span></label>
-          </div>
-          <p class="error-msg lang-sw">Tafadhali chagua jinsia.</p>
-          <p class="error-msg lang-en">Please select a gender.</p>
-        </div>
-        <div class="field" data-field="mkoa">
-          <label class="field-label" for="mkoa"><span class="lang-sw">3. Mkoa</span><span class="lang-en">3. Region</span><span class="req">*</span></label>
-          <input class="text-input" type="text" id="mkoa" name="mkoa" required>
-          <p class="error-msg lang-sw">Tafadhali andika mkoa.</p>
-          <p class="error-msg lang-en">Please enter your region.</p>
-        </div>
-        <div class="field" data-field="wilaya">
-          <label class="field-label" for="wilaya"><span class="lang-sw">4. Wilaya</span><span class="lang-en">4. District</span><span class="req">*</span></label>
-          <input class="text-input" type="text" id="wilaya" name="wilaya" required>
-          <p class="error-msg lang-sw">Tafadhali andika wilaya.</p>
-          <p class="error-msg lang-en">Please enter your district.</p>
-        </div>
-        <div class="field" data-field="sekta">
-          <label class="field-label"><span class="lang-sw">5. Sekta unayojishughulisha nayo</span><span class="lang-en">5. Sector you are engaged in</span><span class="req">*</span></label>
-          <div class="options">
-            <label class="option"><input type="radio" name="sekta" value="Kilimo" required><span class="option-box"><span class="lang-sw">Kilimo</span><span class="lang-en">Agriculture</span></span></label>
-            <label class="option"><input type="radio" name="sekta" value="Mifugo"><span class="option-box"><span class="lang-sw">Mifugo</span><span class="lang-en">Livestock</span></span></label>
-            <label class="option"><input type="radio" name="sekta" value="Uvuvi"><span class="option-box"><span class="lang-sw">Uvuvi</span><span class="lang-en">Fisheries</span></span></label>
-            <label class="option"><input type="radio" name="sekta" value="Viwanda"><span class="option-box"><span class="lang-sw">Viwanda</span><span class="lang-en">Industry</span></span></label>
-            <label class="option"><input type="radio" name="sekta" value="Biashara"><span class="option-box"><span class="lang-sw">Biashara</span><span class="lang-en">Trade</span></span></label>
-            <label class="option"><input type="radio" name="sekta" value="Huduma"><span class="option-box"><span class="lang-sw">Huduma</span><span class="lang-en">Services</span></span></label>
-            <label class="option"><input type="radio" name="sekta" value="Nyingine"><span class="option-box"><span class="lang-sw">Nyingine</span><span class="lang-en">Other</span></span></label>
-          </div>
-          <input class="text-input other-field" type="text" name="sekta_other" data-other-for="sekta" data-other-value="Nyingine" hidden placeholder="Taja / Specify">
-          <p class="error-msg lang-sw">Tafadhali chagua sekta.</p>
-          <p class="error-msg lang-en">Please choose a sector.</p>
-        </div>
-        <div class="field" data-field="muda_shughuli">
-          <label class="field-label"><span class="lang-sw">6. Umekuwa kwenye shughuli hii kwa muda gani?</span><span class="lang-en">6. How long have you been in this activity?</span><span class="req">*</span></label>
-          <div class="options">
-            <label class="option"><input type="radio" name="muda_shughuli" value="Chini ya mwaka 1" required><span class="option-box"><span class="lang-sw">Chini ya mwaka 1</span><span class="lang-en">Less than 1 year</span></span></label>
-            <label class="option"><input type="radio" name="muda_shughuli" value="Miaka 1-3"><span class="option-box"><span class="lang-sw">Miaka 1–3</span><span class="lang-en">1–3 years</span></span></label>
-            <label class="option"><input type="radio" name="muda_shughuli" value="Miaka 4-10"><span class="option-box"><span class="lang-sw">Miaka 4–10</span><span class="lang-en">4–10 years</span></span></label>
-            <label class="option"><input type="radio" name="muda_shughuli" value="Zaidi ya miaka 10"><span class="option-box"><span class="lang-sw">Zaidi ya miaka 10</span><span class="lang-en">More than 10 years</span></span></label>
-          </div>
-          <p class="error-msg lang-sw">Tafadhali chagua muda.</p>
-          <p class="error-msg lang-en">Please choose a duration.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- STEP 2: SECTION B -->
-    <div class="step" data-step="2">
-      <div class="card">
-        <span class="section-eyebrow">Sehemu B</span>
-        <h2 class="section-title"><span class="lang-sw">Hali ya Biashara / Uzalishaji</span><span class="lang-en">Business / Production Status</span></h2>
-        <div class="field" data-field="hali_biashara">
-          <label class="field-label"><span class="lang-sw">7. Kwa sasa hali ya biashara yako ikoje?</span><span class="lang-en">7. How is your business currently?</span><span class="req">*</span></label>
-          <div class="options grid-2">
-            <label class="option"><input type="radio" name="hali_biashara" value="Nzuri sana" required><span class="option-box"><span class="lang-sw">Nzuri sana</span><span class="lang-en">Very good</span></span></label>
-            <label class="option"><input type="radio" name="hali_biashara" value="Nzuri"><span class="option-box"><span class="lang-sw">Nzuri</span><span class="lang-en">Good</span></span></label>
-            <label class="option"><input type="radio" name="hali_biashara" value="Wastani"><span class="option-box"><span class="lang-sw">Wastani</span><span class="lang-en">Average</span></span></label>
-            <label class="option"><input type="radio" name="hali_biashara" value="Mbaya"><span class="option-box"><span class="lang-sw">Mbaya</span><span class="lang-en">Poor</span></span></label>
-          </div>
-          <p class="error-msg lang-sw">Tafadhali chagua hali ya biashara.</p>
-          <p class="error-msg lang-en">Please choose a business status.</p>
-        </div>
-        <div class="field" data-field="uzalishaji_umeongezeka">
-          <label class="field-label"><span class="lang-sw">8. Uzalishaji au biashara yako umeongezeka kwa mwaka uliopita?</span><span class="lang-en">8. Has your production/business increased over the past year?</span><span class="req">*</span></label>
-          <div class="options">
-            <label class="option"><input type="radio" name="uzalishaji_umeongezeka" value="Ndiyo" required><span class="option-box"><span class="lang-sw">Ndiyo</span><span class="lang-en">Yes</span></span></label>
-            <label class="option"><input type="radio" name="uzalishaji_umeongezeka" value="Hapana"><span class="option-box"><span class="lang-sw">Hapana</span><span class="lang-en">No</span></span></label>
-            <label class="option"><input type="radio" name="uzalishaji_umeongezeka" value="Umebaki vilevile"><span class="option-box"><span class="lang-sw">Umebaki vilevile</span><span class="lang-en">Stayed the same</span></span></label>
-          </div>
-          <p class="error-msg lang-sw">Tafadhali chagua jibu.</p>
-          <p class="error-msg lang-en">Please choose an answer.</p>
-        </div>
-        <div class="field" data-field="mauzo">
-          <label class="field-label"><span class="lang-sw">9. Kwa wastani, mauzo yako yakoje?</span><span class="lang-en">9. On average, how are your sales?</span><span class="req">*</span></label>
-          <div class="options">
-            <label class="option"><input type="radio" name="mauzo" value="Yameongezeka" required><span class="option-box"><span class="lang-sw">Yameongezeka</span><span class="lang-en">Increased</span></span></label>
-            <label class="option"><input type="radio" name="mauzo" value="Hayajabadilika"><span class="option-box"><span class="lang-sw">Hayajabadilika</span><span class="lang-en">Unchanged</span></span></label>
-            <label class="option"><input type="radio" name="mauzo" value="Yamepungua"><span class="option-box"><span class="lang-sw">Yamepungua</span><span class="lang-en">Decreased</span></span></label>
-          </div>
-          <p class="error-msg lang-sw">Tafadhali chagua jibu.</p>
-          <p class="error-msg lang-en">Please choose an answer.</p>
-        </div>
-        <div class="field" data-field="sababu_zinazoathiri">
-          <label class="field-label"><span class="lang-sw">10. Sababu kuu zinazoathiri biashara yako ni zipi?</span><span class="lang-en">10. What are the main factors affecting your business?</span> <span class="field-hint"><span class="lang-sw">(chagua zaidi ya moja)</span><span class="lang-en">(select all that apply)</span></span></label>
-          <div class="options">
-            <label class="option checkbox"><input type="checkbox" name="sababu_zinazoathiri[]" value="Ukosefu wa masoko"><span class="option-box"><span class="lang-sw">Ukosefu wa masoko</span><span class="lang-en">Lack of markets</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="sababu_zinazoathiri[]" value="Gharama za uzalishaji"><span class="option-box"><span class="lang-sw">Gharama za uzalishaji</span><span class="lang-en">Production costs</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="sababu_zinazoathiri[]" value="Mtaji"><span class="option-box"><span class="lang-sw">Mtaji</span><span class="lang-en">Capital</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="sababu_zinazoathiri[]" value="Ushindani"><span class="option-box"><span class="lang-sw">Ushindani</span><span class="lang-en">Competition</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="sababu_zinazoathiri[]" value="Ubora wa bidhaa"><span class="option-box"><span class="lang-sw">Ubora wa bidhaa</span><span class="lang-en">Product quality</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="sababu_zinazoathiri[]" value="Miundombinu"><span class="option-box"><span class="lang-sw">Miundombinu</span><span class="lang-en">Infrastructure</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="sababu_zinazoathiri[]" value="Nyingine"><span class="option-box"><span class="lang-sw">Nyingine</span><span class="lang-en">Other</span></span></label>
-          </div>
-          <input class="text-input other-field" type="text" name="sababu_zinazoathiri_other" data-other-for="sababu_zinazoathiri[]" data-other-value="Nyingine" hidden placeholder="Taja / Specify">
-        </div>
-      </div>
-    </div>
-
-    <!-- STEP 3: SECTION C -->
-    <div class="step" data-step="3">
-      <div class="card">
-        <span class="section-eyebrow">Sehemu C</span>
-        <h2 class="section-title"><span class="lang-sw">Made in Tanzania</span><span class="lang-en">Made in Tanzania</span></h2>
-        <div class="field" data-field="bidhaa_zinazozalishwa_tz">
-          <label class="field-label"><span class="lang-sw">11. Je, bidhaa zako ni za kuzalishwa Tanzania?</span><span class="lang-en">11. Are your products manufactured in Tanzania?</span><span class="req">*</span></label>
-          <div class="options grid-2">
-            <label class="option"><input type="radio" name="bidhaa_zinazozalishwa_tz" value="Ndiyo" required><span class="option-box"><span class="lang-sw">Ndiyo</span><span class="lang-en">Yes</span></span></label>
-            <label class="option"><input type="radio" name="bidhaa_zinazozalishwa_tz" value="Hapana"><span class="option-box"><span class="lang-sw">Hapana</span><span class="lang-en">No</span></span></label>
-          </div>
-          <p class="error-msg lang-sw">Tafadhali chagua jibu.</p>
-          <p class="error-msg lang-en">Please choose an answer.</p>
-        </div>
-        <div class="field" data-field="bidhaa_zimesajiliwa">
-          <label class="field-label"><span class="lang-sw">12. Je, bidhaa zako zimesajiliwa au kutambuliwa kama Made in Tanzania?</span><span class="lang-en">12. Are your products registered/recognized as Made in Tanzania?</span><span class="req">*</span></label>
-          <div class="options">
-            <label class="option"><input type="radio" name="bidhaa_zimesajiliwa" value="Ndiyo" required><span class="option-box"><span class="lang-sw">Ndiyo</span><span class="lang-en">Yes</span></span></label>
-            <label class="option"><input type="radio" name="bidhaa_zimesajiliwa" value="Hapana"><span class="option-box"><span class="lang-sw">Hapana</span><span class="lang-en">No</span></span></label>
-            <label class="option"><input type="radio" name="bidhaa_zimesajiliwa" value="Sijui utaratibu"><span class="option-box"><span class="lang-sw">Sijui utaratibu</span><span class="lang-en">I don't know the procedure</span></span></label>
-          </div>
-          <p class="error-msg lang-sw">Tafadhali chagua jibu.</p>
-          <p class="error-msg lang-en">Please choose an answer.</p>
-        </div>
-        <div class="field" data-field="kama_hapana_sababu">
-          <label class="field-label"><span class="lang-sw">13. Kama hapana (swali la 12), sababu ni ipi?</span><span class="lang-en">13. If no (question 12), what is the reason?</span></label>
-          <div class="options">
-            <label class="option checkbox"><input type="checkbox" name="kama_hapana_sababu[]" value="Sina taarifa"><span class="option-box"><span class="lang-sw">Sina taarifa</span><span class="lang-en">No information</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="kama_hapana_sababu[]" value="Gharama"><span class="option-box"><span class="lang-sw">Gharama</span><span class="lang-en">Cost</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="kama_hapana_sababu[]" value="Taratibu ni ngumu"><span class="option-box"><span class="lang-sw">Taratibu ni ngumu</span><span class="lang-en">Procedures are difficult</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="kama_hapana_sababu[]" value="Sijaanza mchakato"><span class="option-box"><span class="lang-sw">Sijaanza mchakato</span><span class="lang-en">Haven't started the process</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="kama_hapana_sababu[]" value="Nyingine"><span class="option-box"><span class="lang-sw">Nyingine</span><span class="lang-en">Other</span></span></label>
-          </div>
-          <input class="text-input other-field" type="text" name="kama_hapana_sababu_other" data-other-for="kama_hapana_sababu[]" data-other-value="Nyingine" hidden placeholder="Taja / Specify">
-        </div>
-        <div class="field" data-field="msaada_mit">
-          <label class="field-label"><span class="lang-sw">14. Unahitaji msaada gani kuhusu Made in Tanzania?</span><span class="lang-en">14. What help do you need regarding Made in Tanzania?</span> <span class="field-hint"><span class="lang-sw">(chagua zaidi ya moja)</span><span class="lang-en">(select all that apply)</span></span></label>
-          <div class="options">
-            <label class="option checkbox"><input type="checkbox" name="msaada_mit[]" value="Elimu ya usajili"><span class="option-box"><span class="lang-sw">Elimu ya usajili</span><span class="lang-en">Registration education</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="msaada_mit[]" value="Viwango vya ubora"><span class="option-box"><span class="lang-sw">Viwango vya ubora</span><span class="lang-en">Quality standards</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="msaada_mit[]" value="Ufungashaji"><span class="option-box"><span class="lang-sw">Ufungashaji</span><span class="lang-en">Packaging</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="msaada_mit[]" value="Masoko"><span class="option-box"><span class="lang-sw">Masoko</span><span class="lang-en">Markets</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="msaada_mit[]" value="Ufadhili"><span class="option-box"><span class="lang-sw">Ufadhili</span><span class="lang-en">Funding</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="msaada_mit[]" value="Mwingine"><span class="option-box"><span class="lang-sw">Mwingine</span><span class="lang-en">Other</span></span></label>
-          </div>
-          <input class="text-input other-field" type="text" name="msaada_mit_other" data-other-for="msaada_mit[]" data-other-value="Mwingine" hidden placeholder="Taja / Specify">
-        </div>
-      </div>
-    </div>
-
-    <!-- STEP 4: SECTION D -->
-    <div class="step" data-step="4">
-      <div class="card">
-        <span class="section-eyebrow">Sehemu D</span>
-        <h2 class="section-title"><span class="lang-sw">Masoko na Mauzo</span><span class="lang-en">Markets & Sales</span></h2>
-        <div class="field" data-field="maeneo_mauzo">
-          <label class="field-label"><span class="lang-sw">15. Unauza bidhaa zako wapi?</span><span class="lang-en">15. Where do you sell your products?</span> <span class="field-hint"><span class="lang-sw">(chagua zaidi ya moja)</span><span class="lang-en">(select all that apply)</span></span></label>
-          <div class="options">
-            <label class="option checkbox"><input type="checkbox" name="maeneo_mauzo[]" value="Ndani ya Wilaya"><span class="option-box"><span class="lang-sw">Ndani ya Wilaya</span><span class="lang-en">Within the District</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="maeneo_mauzo[]" value="Mkoa"><span class="option-box"><span class="lang-sw">Mkoa</span><span class="lang-en">Region</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="maeneo_mauzo[]" value="Tanzania nzima"><span class="option-box"><span class="lang-sw">Tanzania nzima</span><span class="lang-en">Whole of Tanzania</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="maeneo_mauzo[]" value="Afrika Mashariki"><span class="option-box"><span class="lang-sw">Afrika Mashariki</span><span class="lang-en">East Africa</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="maeneo_mauzo[]" value="Kimataifa"><span class="option-box"><span class="lang-sw">Kimataifa</span><span class="lang-en">International</span></span></label>
-          </div>
-        </div>
-        <div class="field" data-field="njia_kupata_wateja">
-          <label class="field-label"><span class="lang-sw">16. Njia kuu unazotumia kupata wateja</span><span class="lang-en">16. Main channels you use to get customers</span> <span class="field-hint"><span class="lang-sw">(chagua zaidi ya moja)</span><span class="lang-en">(select all that apply)</span></span></label>
-          <div class="options">
-            <label class="option checkbox"><input type="checkbox" name="njia_kupata_wateja[]" value="Maduka"><span class="option-box"><span class="lang-sw">Maduka</span><span class="lang-en">Shops</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="njia_kupata_wateja[]" value="Maonesho"><span class="option-box"><span class="lang-sw">Maonesho</span><span class="lang-en">Exhibitions</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="njia_kupata_wateja[]" value="Mitandao ya kijamii"><span class="option-box"><span class="lang-sw">Mitandao ya kijamii</span><span class="lang-en">Social media</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="njia_kupata_wateja[]" value="Mawakala"><span class="option-box"><span class="lang-sw">Mawakala</span><span class="lang-en">Agents</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="njia_kupata_wateja[]" value="Serikali"><span class="option-box"><span class="lang-sw">Serikali</span><span class="lang-en">Government</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="njia_kupata_wateja[]" value="Nyingine"><span class="option-box"><span class="lang-sw">Nyingine</span><span class="lang-en">Other</span></span></label>
-          </div>
-          <input class="text-input other-field" type="text" name="njia_kupata_wateja_other" data-other-for="njia_kupata_wateja[]" data-other-value="Nyingine" hidden placeholder="Taja / Specify">
-        </div>
-        <div class="field" data-field="amewahi_kushiriki_maonesho">
-          <label class="field-label"><span class="lang-sw">17. Je, umewahi kushiriki maonesho ya biashara?</span><span class="lang-en">17. Have you ever participated in a business exhibition?</span><span class="req">*</span></label>
-          <div class="options grid-2">
-            <label class="option"><input type="radio" name="amewahi_kushiriki_maonesho" value="Ndiyo" required><span class="option-box"><span class="lang-sw">Ndiyo</span><span class="lang-en">Yes</span></span></label>
-            <label class="option"><input type="radio" name="amewahi_kushiriki_maonesho" value="Hapana"><span class="option-box"><span class="lang-sw">Hapana</span><span class="lang-en">No</span></span></label>
-          </div>
-          <p class="error-msg lang-sw">Tafadhali chagua jibu.</p>
-          <p class="error-msg lang-en">Please choose an answer.</p>
-        </div>
-        <div class="field" data-field="maonesho_yamesaidia">
-          <label class="field-label"><span class="lang-sw">18. Kama ndiyo, maonesho hayo yamekusaidia kupata</span><span class="lang-en">18. If yes, those exhibitions helped you gain</span> <span class="field-hint"><span class="lang-sw">(chagua zaidi ya moja)</span><span class="lang-en">(select all that apply)</span></span></label>
-          <div class="options">
-            <label class="option checkbox"><input type="checkbox" name="maonesho_yamesaidia[]" value="Wateja wapya"><span class="option-box"><span class="lang-sw">Wateja wapya</span><span class="lang-en">New customers</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="maonesho_yamesaidia[]" value="Masoko mapya"><span class="option-box"><span class="lang-sw">Masoko mapya</span><span class="lang-en">New markets</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="maonesho_yamesaidia[]" value="Washirika wa biashara"><span class="option-box"><span class="lang-sw">Washirika wa biashara</span><span class="lang-en">Business partners</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="maonesho_yamesaidia[]" value="Wawekezaji"><span class="option-box"><span class="lang-sw">Wawekezaji</span><span class="lang-en">Investors</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="maonesho_yamesaidia[]" value="Hakuna manufaa makubwa"><span class="option-box"><span class="lang-sw">Hakuna manufaa makubwa</span><span class="lang-en">No significant benefit</span></span></label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- STEP 5: SECTION E -->
-    <div class="step" data-step="5">
-      <div class="card">
-        <span class="section-eyebrow">Sehemu E</span>
-        <h2 class="section-title"><span class="lang-sw">Maandalizi ya Kushiriki 51st DITF</span><span class="lang-en">Preparations to Join the 51st DITF</span></h2>
-        <div class="field" data-field="mpango_kushiriki_51st">
-          <label class="field-label"><span class="lang-sw">19. Je, una mpango wa kushiriki Maonesho ya 51st DITF?</span><span class="lang-en">19. Do you plan to participate in the 51st DITF?</span><span class="req">*</span></label>
-          <div class="options">
-            <label class="option"><input type="radio" name="mpango_kushiriki_51st" value="Ndiyo" required><span class="option-box"><span class="lang-sw">Ndiyo</span><span class="lang-en">Yes</span></span></label>
-            <label class="option"><input type="radio" name="mpango_kushiriki_51st" value="Hapana"><span class="option-box"><span class="lang-sw">Hapana</span><span class="lang-en">No</span></span></label>
-            <label class="option"><input type="radio" name="mpango_kushiriki_51st" value="Bado sijafanya uamuzi"><span class="option-box"><span class="lang-sw">Bado sijafanya uamuzi</span><span class="lang-en">Haven't decided yet</span></span></label>
-          </div>
-          <p class="error-msg lang-sw">Tafadhali chagua jibu.</p>
-          <p class="error-msg lang-en">Please choose an answer.</p>
-        </div>
-        <div class="field" data-field="lengo_kushiriki">
-          <label class="field-label"><span class="lang-sw">20. Lengo lako kuu la kushiriki ni lipi?</span><span class="lang-en">20. What is your main goal for participating?</span><span class="req">*</span></label>
-          <div class="options">
-            <label class="option"><input type="radio" name="lengo_kushiriki" value="Kutafuta masoko" required><span class="option-box"><span class="lang-sw">Kutafuta masoko</span><span class="lang-en">Find markets</span></span></label>
-            <label class="option"><input type="radio" name="lengo_kushiriki" value="Kutangaza bidhaa"><span class="option-box"><span class="lang-sw">Kutangaza bidhaa</span><span class="lang-en">Promote products</span></span></label>
-            <label class="option"><input type="radio" name="lengo_kushiriki" value="Kupata wawekezaji"><span class="option-box"><span class="lang-sw">Kupata wawekezaji</span><span class="lang-en">Attract investors</span></span></label>
-            <label class="option"><input type="radio" name="lengo_kushiriki" value="Kujifunza"><span class="option-box"><span class="lang-sw">Kujifunza</span><span class="lang-en">Learn</span></span></label>
-            <label class="option"><input type="radio" name="lengo_kushiriki" value="Kujenga mtandao wa biashara"><span class="option-box"><span class="lang-sw">Kujenga mtandao wa biashara</span><span class="lang-en">Build business network</span></span></label>
-            <label class="option"><input type="radio" name="lengo_kushiriki" value="Nyingine"><span class="option-box"><span class="lang-sw">Nyingine</span><span class="lang-en">Other</span></span></label>
-          </div>
-          <input class="text-input other-field" type="text" name="lengo_kushiriki_other" data-other-for="lengo_kushiriki" data-other-value="Nyingine" hidden placeholder="Taja / Specify">
-          <p class="error-msg lang-sw">Tafadhali chagua lengo.</p>
-          <p class="error-msg lang-en">Please choose a goal.</p>
-        </div>
-        <div class="field" data-field="msaada_kabla_kushiriki">
-          <label class="field-label"><span class="lang-sw">21. Ni msaada gani ungependa kupata kabla ya kushiriki?</span><span class="lang-en">21. What help would you like before participating?</span> <span class="field-hint"><span class="lang-sw">(chagua zaidi ya moja)</span><span class="lang-en">(select all that apply)</span></span></label>
-          <div class="options">
-            <label class="option checkbox"><input type="checkbox" name="msaada_kabla_kushiriki[]" value="Mafunzo ya biashara"><span class="option-box"><span class="lang-sw">Mafunzo ya biashara</span><span class="lang-en">Business training</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="msaada_kabla_kushiriki[]" value="Ufungashaji na ubora"><span class="option-box"><span class="lang-sw">Ufungashaji na ubora</span><span class="lang-en">Packaging & quality</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="msaada_kabla_kushiriki[]" value="Masoko"><span class="option-box"><span class="lang-sw">Masoko</span><span class="lang-en">Markets</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="msaada_kabla_kushiriki[]" value="Taratibu za ushiriki"><span class="option-box"><span class="lang-sw">Taratibu za ushiriki</span><span class="lang-en">Participation procedures</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="msaada_kabla_kushiriki[]" value="Fedha"><span class="option-box"><span class="lang-sw">Fedha</span><span class="lang-en">Finance</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="msaada_kabla_kushiriki[]" value="Nyingine"><span class="option-box"><span class="lang-sw">Nyingine</span><span class="lang-en">Other</span></span></label>
-          </div>
-          <input class="text-input other-field" type="text" name="msaada_kabla_kushiriki_other" data-other-for="msaada_kabla_kushiriki[]" data-other-value="Nyingine" hidden placeholder="Taja / Specify">
-        </div>
-        <div class="field" data-field="changamoto_kuzuia">
-          <label class="field-label"><span class="lang-sw">22. Changamoto gani zinaweza kukuzuia kushiriki?</span><span class="lang-en">22. What challenges might prevent you from participating?</span> <span class="field-hint"><span class="lang-sw">(chagua zaidi ya moja)</span><span class="lang-en">(select all that apply)</span></span></label>
-          <div class="options">
-            <label class="option checkbox"><input type="checkbox" name="changamoto_kuzuia[]" value="Gharama"><span class="option-box"><span class="lang-sw">Gharama</span><span class="lang-en">Cost</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="changamoto_kuzuia[]" value="Taarifa hafifu"><span class="option-box"><span class="lang-sw">Taarifa hafifu</span><span class="lang-en">Limited information</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="changamoto_kuzuia[]" value="Usafiri"><span class="option-box"><span class="lang-sw">Usafiri</span><span class="lang-en">Transport</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="changamoto_kuzuia[]" value="Bidhaa kutokukidhi viwango"><span class="option-box"><span class="lang-sw">Bidhaa kutokukidhi viwango</span><span class="lang-en">Products not meeting standards</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="changamoto_kuzuia[]" value="Nyingine"><span class="option-box"><span class="lang-sw">Nyingine</span><span class="lang-en">Other</span></span></label>
-          </div>
-          <input class="text-input other-field" type="text" name="changamoto_kuzuia_other" data-other-for="changamoto_kuzuia[]" data-other-value="Nyingine" hidden placeholder="Taja / Specify">
-        </div>
-      </div>
-    </div>
-
-    <!-- STEP 6: SECTION F & G -->
-    <div class="step" data-step="6">
-      <div class="card">
-        <span class="section-eyebrow">Sehemu F & G</span>
-        <h2 class="section-title"><span class="lang-sw">Changamoto na Mahitaji</span><span class="lang-en">Challenges & Needs</span></h2>
-        <div class="field" data-field="changamoto_kukuza_biashara">
-          <label class="field-label"><span class="lang-sw">23. Changamoto kuu unazokutana nazo katika kukuza biashara yako ni zipi?</span><span class="lang-en">23. What are the main challenges you face in growing your business?</span> <span class="field-hint"><span class="lang-sw">(chagua zaidi ya moja)</span><span class="lang-en">(select all that apply)</span></span></label>
-          <div class="options">
-            <label class="option checkbox"><input type="checkbox" name="changamoto_kukuza_biashara[]" value="Mtaji"><span class="option-box"><span class="lang-sw">Mtaji</span><span class="lang-en">Capital</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="changamoto_kukuza_biashara[]" value="Kutangaza Masoko"><span class="option-box"><span class="lang-sw">Kutangaza Masoko</span><span class="lang-en">Market promotion</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="changamoto_kukuza_biashara[]" value="Ubora/viwango"><span class="option-box"><span class="lang-sw">Ubora/viwango</span><span class="lang-en">Quality/standards</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="changamoto_kukuza_biashara[]" value="Usafirishaji"><span class="option-box"><span class="lang-sw">Usafirishaji</span><span class="lang-en">Transportation</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="changamoto_kukuza_biashara[]" value="Taarifa za masoko"><span class="option-box"><span class="lang-sw">Taarifa za masoko</span><span class="lang-en">Market information</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="changamoto_kukuza_biashara[]" value="Nyingine"><span class="option-box"><span class="lang-sw">Nyingine (taja)</span><span class="lang-en">Other (specify)</span></span></label>
-          </div>
-          <input class="text-input other-field" type="text" name="changamoto_kukuza_biashara_other" data-other-for="changamoto_kukuza_biashara[]" data-other-value="Nyingine" hidden placeholder="Taja / Specify">
-        </div>
-        <div class="field" data-field="aina_msaada_unaohitaji">
-          <label class="field-label"><span class="lang-sw">24. Ni aina gani ya msaada unahitaji zaidi ili biashara yako ikue?</span><span class="lang-en">24. What kind of support do you need most for your business to grow?</span> <span class="field-hint"><span class="lang-sw">(chagua zaidi ya moja)</span><span class="lang-en">(select all that apply)</span></span></label>
-          <div class="options">
-            <label class="option checkbox"><input type="checkbox" name="aina_msaada_unaohitaji[]" value="Mitaji"><span class="option-box"><span class="lang-sw">Mitaji</span><span class="lang-en">Capital</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="aina_msaada_unaohitaji[]" value="Utafiti na taarifa za biashara"><span class="option-box"><span class="lang-sw">Utafiti na taarifa za biashara</span><span class="lang-en">Research & business information</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="aina_msaada_unaohitaji[]" value="Mafunzo"><span class="option-box"><span class="lang-sw">Mafunzo</span><span class="lang-en">Training</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="aina_msaada_unaohitaji[]" value="Masoko ya kikanda/kimataifa"><span class="option-box"><span class="lang-sw">Masoko ya kikanda/kimataifa</span><span class="lang-en">Regional/international markets</span></span></label>
-            <label class="option checkbox"><input type="checkbox" name="aina_msaada_unaohitaji[]" value="Uwezeshaji wa mnyororo wa biashara"><span class="option-box"><span class="lang-sw">Uwezeshaji wa mnyororo wa biashara</span><span class="lang-en">Business value-chain support</span></span></label>
-          </div>
-        </div>
-        <div class="field" data-field="mapendekezo">
-          <label class="field-label" for="mapendekezo"><span class="lang-sw">25. Ni mapendekezo gani unayo ili kuboresha huduma kwa wafanyabiashara, wakulima na wawekezaji kupitia maonesho?</span><span class="lang-en">25. What recommendations do you have to improve services to traders, farmers and investors through exhibitions?</span></label>
-          <textarea class="text-input" id="mapendekezo" name="mapendekezo" rows="4"></textarea>
-        </div>
-      </div>
-    </div>
-
-    <!-- STEP 7: REVIEW -->
-    <div class="step" data-step="7">
+  <div id="formLoader" class="card" style="text-align:center; padding:40px;">Inapakia maswali... / Loading questions...</div>
+  
+  <form id="surveyForm" class="survey-form" novalidate style="display:none;">
+    <div id="dynamicFormContainer"></div>
+    
+    <div class="step" data-step="review">
       <div class="card">
         <span class="section-eyebrow"><span class="lang-sw">Hatua ya Mwisho</span><span class="lang-en">Final Step</span></span>
         <h2 class="section-title"><span class="lang-sw">Kagua Majibu Yako</span><span class="lang-en">Review Your Answers</span></h2>
-        <p class="section-desc"><span class="lang-sw">Angalia majibu yako kabla ya kutuma. Bofya "Rekebisha" kubadilisha hatua yoyote.</span><span class="lang-en">Check your answers before submitting. Tap "Edit" to change any step.</span></p>
         <div id="reviewOutput"></div>
       </div>
     </div>
 
-    <!-- SUCCESS STEP -->
     <div class="step" data-step="success" id="successStep">
       <div class="card success-wrap">
-        <div class="success-badge">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
+        <div class="success-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <h2><span class="lang-sw">Asante kwa Ushiriki Wako!</span><span class="lang-en">Thank You for Participating!</span></h2>
-        <p>
-          <span class="lang-sw">Taarifa zako zinalindwa na zitatumika kwa madhumuni ya TANTRADE pekee.</span>
-          <span class="lang-en">Your information is protected and will be used for TANTRADE's purposes only.</span>
-        </p>
       </div>
     </div>
 
-    <!-- STEP NAVIGATION BUTTONS (THIS WAS MISSING!) -->
     <div class="step-nav" id="stepNav">
-      <button type="button" class="btn btn-ghost" id="btnBack" onclick="goStep(-1)" style="visibility: hidden;">
-        <span class="lang-sw">Nyuma</span><span class="lang-en">Back</span>
-      </button>
-      <button type="button" class="btn btn-primary" id="btnNext" onclick="goStep(1)">
-        <span class="lang-sw">Endelea</span><span class="lang-en">Continue</span>
-      </button>
-      <button type="submit" class="btn btn-gold" id="btnSubmit" style="display: none;">
-        <span class="lang-sw">Tuma Dodoso</span><span class="lang-en">Submit Survey</span>
-      </button>
+      <button type="button" class="btn btn-ghost" id="btnBack" onclick="goStep(-1)" style="visibility: hidden;"><span class="lang-sw">Nyuma</span><span class="lang-en">Back</span></button>
+      <button type="button" class="btn btn-primary" id="btnNext" onclick="goStep(1)"><span class="lang-sw">Endelea</span><span class="lang-en">Continue</span></button>
+      <button type="submit" class="btn btn-gold" id="btnSubmit" style="display: none;"><span class="lang-sw">Tuma Dodoso</span><span class="lang-en">Submit Survey</span></button>
     </div>
-
   </form>
 
-  <p class="footnote">
-    <a href="admin.html"><span class="lang-sw">Kwa Wasimamizi</span><span class="lang-en">Admin Login</span></a>
-  </p>
+  <p class="footnote"><a href="admin.html"><span class="lang-sw">Kwa Wasimamizi</span><span class="lang-en">Admin Login</span></a></p>
 </div>
 
-<!-- Supabase JS Client -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // Initialize Supabase with your project credentials
   const SUPABASE_URL = 'https://ccddzluijwfdytfsuwza.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_wBacQmQqOGF0S6uDpVB7nQ_hBv4EC2P';
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
