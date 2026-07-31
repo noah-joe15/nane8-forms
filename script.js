@@ -7,6 +7,9 @@
   var stepsData = [];
   var totalSteps = 0;
 
+  // Helper to escape CSS selectors
+  function cssEscape(s) { return s.replace(/([^\w-])/g, "\\$1"); }
+
   // 1. Fetch questions and build form
   async function initForm() {
     try {
@@ -24,6 +27,7 @@
       
       document.getElementById("stepTotal").textContent = totalSteps;
       buildHTML();
+      setupOtherToggles(); // Setup toggles after building HTML
       document.getElementById("formLoader").style.display = "none";
       form.style.display = "block";
       showStep(0);
@@ -68,12 +72,36 @@
             });
           }
           field.appendChild(optsDiv);
+          
+          // Add "Other" field placeholder if needed (handled by setupOtherToggles)
+          if (q.options.includes("Nyingine") || q.options.includes("Other") || q.options.includes("Mwingine")) {
+             field.innerHTML += `<input class="text-input other-field" type="text" name="${q.field_name}_other" data-other-for="${q.field_name}" data-other-value="Nyingine" hidden placeholder="Taja / Specify">`;
+             field.innerHTML += `<input class="text-input other-field" type="text" name="${q.field_name}_other" data-other-for="${q.field_name}" data-other-value="Other" hidden placeholder="Specify">`;
+             field.innerHTML += `<input class="text-input other-field" type="text" name="${q.field_name}_other" data-other-for="${q.field_name}" data-other-value="Mwingine" hidden placeholder="Taja">`;
+          }
         }
         field.innerHTML += `<p class="error-msg lang-sw">Tafadhali jaza sehemu hii.</p><p class="error-msg lang-en">Please fill this field.</p>`;
         card.appendChild(field);
       });
       div.appendChild(card);
       container.appendChild(div);
+    });
+  }
+
+  function setupOtherToggles() {
+    document.querySelectorAll(".other-field").forEach(function (otherInput) {
+      var groupName = otherInput.dataset.otherFor;
+      var triggerValue = otherInput.dataset.otherValue;
+      var group = form.querySelectorAll('[name="' + cssEscape(groupName) + '"]');
+      function refresh() {
+        var active = Array.prototype.some.call(group, function (inp) {
+          return inp.checked && inp.value === triggerValue;
+        });
+        otherInput.hidden = !active;
+        if (!active) otherInput.value = "";
+      }
+      group.forEach(function (inp) { inp.addEventListener("change", refresh); });
+      refresh();
     });
   }
 
@@ -88,7 +116,6 @@
     document.getElementById("btnNext").style.display = isReview ? "none" : "inline-flex";
     document.getElementById("btnSubmit").style.display = isReview ? "inline-flex" : "none";
     
-    // Show "Start Over" button ONLY on the review step
     var btnReset = document.getElementById("btnReset");
     if (btnReset) {
       btnReset.style.display = isReview ? "inline-flex" : "none";
@@ -111,17 +138,36 @@
     showStep(current);
   };
 
-  // NEW: Reset Form Function
+  // --- FIXED: DEEP RESET FUNCTION ---
   window.resetForm = function () {
     var confirmMsg = lang === "sw" 
       ? "Una uhakika unataka kuanza upya? Majibu yako yote yatafutwa." 
       : "Are you sure you want to start over? All your answers will be cleared.";
       
     if (confirm(confirmMsg)) {
-      form.reset(); // Clears all inputs
-      current = 0;  // Resets step counter
+      // 1. Clear all standard form inputs
+      form.reset();
+      
+      // 2. Reset internal step counter
+      current = 0;
+      
+      // 3. Hide error banners and remove error highlights
       document.getElementById("errorBanner").classList.remove("show");
-      showStep(0);  // Goes back to step 0
+      document.querySelectorAll(".has-error").forEach(function(el) {
+        el.classList.remove("has-error");
+      });
+      
+      // 4. Force hide and clear ALL "other" specify fields
+      document.querySelectorAll(".other-field").forEach(function(el) {
+        el.hidden = true;
+        el.value = "";
+      });
+      
+      // 5. Re-evaluate toggles to ensure perfect clean state
+      setupOtherToggles();
+      
+      // 6. Return to step 0
+      showStep(0);
     }
   };
 
@@ -163,13 +209,13 @@
       stepObj.questions.forEach(q => {
         var val = "";
         if (q.input_type === 'radio') {
-          var r = document.querySelector(`input[name="${q.field_name}"]:checked`);
+          var r = document.querySelector(`input[name="${cssEscape(q.field_name)}"]:checked`);
           val = r ? r.value : "—";
         } else if (q.input_type === 'checkbox') {
-          var cs = document.querySelectorAll(`input[name="${q.field_name}"]:checked`);
+          var cs = document.querySelectorAll(`input[name="${cssEscape(q.field_name)}"]:checked`);
           val = cs.length ? Array.from(cs).map(c => c.value).join(", ") : "—";
         } else {
-          var t = document.querySelector(`[name="${q.field_name}"]`);
+          var t = document.querySelector(`[name="${cssEscape(q.field_name)}"]`);
           val = t && t.value.trim() ? t.value.trim() : "—";
         }
         wrap.innerHTML += `<div class="review-row"><span class="rq">${lang === 'sw' ? q.label_sw : q.label_en}</span><span class="ra">${val}</span></div>`;
@@ -186,6 +232,7 @@
     var fd = new FormData(form);
     var payload = {};
     fd.forEach((v, k) => {
+      if (k.includes("bot-field") || k.includes("form-name")) return;
       if (payload[k]) { payload[k] = Array.isArray(payload[k]) ? [...payload[k], v] : [payload[k], v]; } 
       else { payload[k] = v; }
     });
@@ -197,6 +244,7 @@
       document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
       document.getElementById("successStep").classList.add("active");
       document.getElementById("stepNav").style.display = "none";
+      document.querySelector(".progress-wrap").style.display = "none";
     } catch (err) {
       alert("Hitilafu / Error: " + err.message);
       btn.disabled = false; btn.textContent = "Tuma Dodoso";
