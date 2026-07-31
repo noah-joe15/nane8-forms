@@ -2,8 +2,7 @@
 // Admin dashboard logic.
 // Password check is client-side only (matches the simple "1234"
 // gate requested) — fine for keeping casual visitors out of the
-// dashboard link, but it is NOT strong security. See README for
-// notes on tightening this if the data is sensitive.
+// dashboard link, but it is NOT strong security.
 //
 // No localStorage/sessionStorage is used, so signing in only lasts
 // for the current page load — refreshing asks for the password again.
@@ -54,53 +53,59 @@
     document.getElementById("loginView").style.display = "block";
   };
 
-  window.loadSubmissions = function () {
+  window.loadSubmissions = async function () {
     var holder = document.getElementById("tableHolder");
     holder.innerHTML = '<div class="state-msg"><span class="lang-' + lang + '">' +
       (lang === "sw" ? "Inapakia majibu…" : "Loading responses…") + "</span></div>";
 
-    fetch("/.netlify/functions/submissions")
-      .then(function (res) {
-        return res.json().then(function (data) { return { ok: res.ok, data: data }; });
-      })
-      .then(function (result) {
-        if (!result.ok || result.data.error) {
-          renderSetupNotice(result.data && result.data.error);
-          return;
-        }
-        allSubmissions = (result.data.submissions || []).map(normalizeSubmission);
-        renderTable();
-      })
-      .catch(function () {
-        renderSetupNotice(null);
-      });
-  };
+    try {
+      if (typeof supabase === 'undefined') {
+        throw new Error("Supabase client not initialized. Check admin.html script tags.");
+      }
 
-  function normalizeSubmission(sub) {
-    // Netlify's API returns { data: {...fields}, created_at, ... }
-    var fields = sub.data || sub.fields || sub;
-    var out = Object.assign({}, fields);
-    if (sub.created_at && !out.submitted_at) out.submitted_at = sub.created_at;
-    return out;
-  }
+      // Fetch from Supabase
+      const { data, error } = await supabase
+        .from('nanenane_responses')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error("Supabase fetch error:", error);
+        renderSetupNotice(error.message);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        allSubmissions = [];
+        renderTable();
+        return;
+      }
+
+      // Normalize the data from Supabase structure
+      allSubmissions = data.map(function (sub) {
+        var fields = sub.form_data || {};
+        if (!fields.submitted_at && sub.created_at) {
+          fields.submitted_at = sub.created_at;
+        }
+        return fields;
+      });
+
+      renderTable();
+    } catch (err) {
+      console.error("Fetch error:", err);
+      renderSetupNotice(err.message);
+    }
+  };
 
   function renderSetupNotice(errMessage) {
     var holder = document.getElementById("tableHolder");
     holder.innerHTML =
       '<div class="state-msg err">' +
-      '<p><span class="lang-sw">Haikuweza kupata majibu kutoka Netlify.</span>' +
-      '<span class="lang-en">Could not load responses from Netlify.</span></p>' +
+      '<p><span class="lang-sw">Haikuweza kupata majibu kutoka kwenye hifadhidata.</span>' +
+      '<span class="lang-en">Could not load responses from the database.</span></p>' +
       '<div class="badge-setup">' +
-      '<span class="lang-sw">Hii kawaida hutokea kama tovuti bado haijapelekwa Netlify, au Kazi (Functions) hazijawekewa mazingira sahihi. Hakikisha:</span>' +
-      '<span class="lang-en">This usually happens if the site is not deployed on Netlify yet, or the Function is missing its environment variables. Make sure:</span>' +
-      "<ol>" +
-      '<li><span class="lang-sw">Tovuti imepelekwa Netlify (si kufunguliwa kama faili la kawaida).</span><span class="lang-en">The site is deployed on Netlify (not opened as a local file).</span></li>' +
-      '<li><span class="lang-sw">Umeweka </span><code>NETLIFY_API_TOKEN</code><span class="lang-sw"> na </span><code>NETLIFY_SITE_ID</code><span class="lang-sw"> kwenye Site settings → Environment variables.</span>' +
-      '<span class="lang-en">You have set </span><code>NETLIFY_API_TOKEN</code><span class="lang-en"> and </span><code>NETLIFY_SITE_ID</code><span class="lang-en"> under Site settings → Environment variables.</span></li>' +
-      '<li><span class="lang-sw">Angalau jibu moja limewahi kutumwa kupitia fomu kuu.</span><span class="lang-en">At least one response has been submitted through the main form.</span></li>' +
-      "</ol>" +
-      '<span class="lang-sw">Angalia faili la README.md kwa maelekezo kamili.</span>' +
-      '<span class="lang-en">See README.md for full setup steps.</span>' +
+      '<span class="lang-sw">Hakikisha: 1) Umeweka URL na API Key sahihi za Supabase kwenye faili za HTML. 2) Jedwali la "nanenane_responses" lipo kwenye Supabase. 3) Angalau jibu moja limewasilishwa kupitia fomu kuu.</span>' +
+      '<span class="lang-en">Make sure: 1) Supabase URL and API Key are correctly set in the HTML files. 2) The "nanenane_responses" table exists in Supabase. 3) At least one response has been submitted through the main form.</span>' +
       (errMessage ? '<p style="margin-top:10px; opacity:.75;">Debug: ' + escapeHtml(errMessage) + "</p>" : "") +
       "</div></div>";
   }
@@ -142,7 +147,9 @@
       var tr = document.createElement("tr");
       columns.forEach(function (col) {
         var td = document.createElement("td");
-        td.textContent = sub[col] || "";
+        // Handle arrays (from checkboxes) by joining them
+        var val = sub[col];
+        td.textContent = Array.isArray(val) ? val.join(", ") : (val || "");
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
@@ -196,10 +203,14 @@
     var columns = collectColumns(rows);
     var lines = [columns.map(csvCell).join(",")];
     rows.forEach(function (sub) {
-      lines.push(columns.map(function (c) { return csvCell(sub[c] || ""); }).join(","));
+      lines.push(columns.map(function (c) { 
+        var val = sub[c];
+        return csvCell(Array.isArray(val) ? val.join(", ") : (val || "")); 
+      }).join(","));
     });
 
-    var blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    // Added BOM (\uFEFF) for proper Excel UTF-8 compatibility
+    var blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
     a.href = url;
