@@ -57,7 +57,6 @@
         throw new Error("Supabase client not initialized. Check admin.html script tags.");
       }
 
-      // Fetch from Supabase
       const { data, error } = await supabaseClient
         .from('nanenane_responses')
         .select('*')
@@ -75,7 +74,6 @@
         return;
       }
 
-      // Normalize the data from Supabase structure
       allSubmissions = data.map(function (sub) {
         var fields = sub.form_data || {};
         if (!fields.submitted_at && sub.created_at) {
@@ -98,8 +96,8 @@
       '<p><span class="lang-sw">Haikuweza kupata majibu kutoka kwenye hifadhidata.</span>' +
       '<span class="lang-en">Could not load responses from the database.</span></p>' +
       '<div class="badge-setup">' +
-      '<span class="lang-sw">Hakikisha: 1) Umeweka URL na API Key sahihi za Supabase kwenye faili za HTML. 2) Jedwali la "nanenane_responses" lipo kwenye Supabase. 3) Angalau jibu moja limewasilishwa kupitia fomu kuu.</span>' +
-      '<span class="lang-en">Make sure: 1) Supabase URL and API Key are correctly set in the HTML files. 2) The "nanenane_responses" table exists in Supabase. 3) At least one response has been submitted through the main form.</span>' +
+      '<span class="lang-sw">Hakikisha: 1) Umeweka URL na API Key sahihi za Supabase. 2) Jedwali la "nanenane_responses" lipo. 3) Angalau jibu moja limewasilishwa.</span>' +
+      '<span class="lang-en">Make sure: 1) Supabase URL and API Key are set. 2) The "nanenane_responses" table exists. 3) At least one response has been submitted.</span>' +
       (errMessage ? '<p style="margin-top:10px; opacity:.75;">Debug: ' + escapeHtml(errMessage) + "</p>" : "") +
       "</div></div>";
   }
@@ -124,7 +122,6 @@
     }
 
     var columns = collectColumns(rows);
-
     var table = document.createElement("table");
     var thead = document.createElement("thead");
     var headRow = document.createElement("tr");
