@@ -5,7 +5,6 @@
   var allSubmissions = [];
   var allQuestions = [];
 
-  // --- LANGUAGE TOGGLE LOGIC ---
   window.setLang = function (l) {
     document.body.classList.remove("lang-sw", "lang-en");
     document.body.classList.add("lang-" + l);
@@ -71,7 +70,7 @@
       return; 
     }
     
-    // Collect ALL unique keys from ALL rows to ensure we don't miss columns
+    // FIX: Collect ALL unique keys from ALL rows so no columns are hidden!
     var allKeys = new Set();
     rows.forEach(sub => {
       Object.keys(sub).forEach(k => {
@@ -183,6 +182,5 @@
     toggleOptions();
   };
 
-  // Initialize language on load
   setLang("sw");
 })();
