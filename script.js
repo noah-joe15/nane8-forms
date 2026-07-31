@@ -1,8 +1,6 @@
 // ============================================================
 // Nanenane / 51st DITF Survey — client logic
-// Pure vanilla JS. No external state persisted (no localStorage),
-// so nothing survives a hard refresh — that's fine for a one-pass
-// survey filled out on the spot.
+// Pure vanilla JS. Updated for Supabase submission.
 // ============================================================
 (function () {
   "use strict";
@@ -147,7 +145,7 @@
     { titleSw: "Taarifa Zako", titleEn: "Your Details", step: 0, fields: ["respondent_name", "respondent_email", "respondent_phone", "location"] },
     { titleSw: "Sehemu A", titleEn: "Section A", step: 1, fields: ["wewe_ni", "jinsia", "mkoa", "wilaya", "sekta", "muda_shughuli"] },
     { titleSw: "Sehemu B", titleEn: "Section B", step: 2, fields: ["hali_biashara", "uzalishaji_umeongezeka", "mauzo", "sababu_zinazoathiri[]"] },
-    { titleSw: "Sehemu C", titleEn: "Section C", step: 3, fields: ["bidhaa_zinazozalishwa_tz", "bidhaa_zimesajiliwa", "kama_hapana_sababu", "msaada_mit[]"] },
+    { titleSw: "Sehemu C", titleEn: "Section C", step: 3, fields: ["bidhaa_zinazozalishwa_tz", "bidhaa_zimesajiliwa", "kama_hapana_sababu[]", "msaada_mit[]"] },
     { titleSw: "Sehemu D", titleEn: "Section D", step: 4, fields: ["maeneo_mauzo[]", "njia_kupata_wateja[]", "amewahi_kushiriki_maonesho", "maonesho_yamesaidia[]"] },
     { titleSw: "Sehemu E", titleEn: "Section E", step: 5, fields: ["mpango_kushiriki_51st", "lengo_kushiriki", "msaada_kabla_kushiriki[]", "changamoto_kuzuia[]"] },
     { titleSw: "Sehemu F & G", titleEn: "Section F & G", step: 6, fields: ["changamoto_kukuza_biashara[]", "aina_msaada_unaohitaji[]", "mapendekezo"] }
@@ -226,50 +224,69 @@
     });
   }
 
-  // ---------- submission (Netlify AJAX pattern) --------------------------------
-  function encodeForm(data) {
-    return Object.keys(data).map(function (k) {
-      return encodeURIComponent(k) + "=" + encodeURIComponent(data[k]);
-    }).join("&");
-  }
-
-  form.addEventListener("submit", function (e) {
+  // ---------- submission (Supabase pattern) --------------------------------
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
-    if (!validateStep(current)) { showBanner(); return; }
-
-    document.getElementById("submittedAt").value = new Date().toISOString();
+    if (!validateStep(current)) { 
+      showBanner(); 
+      return; 
+    }
 
     var submitBtn = document.getElementById("btnSubmit");
+    var originalBtnText = submitBtn.textContent;
     submitBtn.disabled = true;
+    submitBtn.textContent = lang === "sw" ? "Inatuma..." : "Submitting...";
 
     var fd = new FormData(form);
     var payload = {};
+    
+    // Gather form data, ignoring the honeypot
     fd.forEach(function (value, key) {
+      if (key === "bot-field") return; 
+      
       if (payload.hasOwnProperty(key)) {
-        payload[key] = payload[key] + "; " + value; // Netlify Forms flattens repeats — keep them readable
+        // Handle multiple selections (checkboxes)
+        if (Array.isArray(payload[key])) {
+          payload[key].push(value);
+        } else {
+          payload[key] = [payload[key], value];
+        }
       } else {
         payload[key] = value;
       }
     });
 
-    fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: encodeForm(payload)
-    })
-      .then(function () {
-        document.getElementById("stepNav").style.display = "none";
-        formSteps.forEach(function (s) { s.classList.remove("active"); });
-        document.getElementById("successStep").classList.add("active");
-        document.querySelector(".progress-wrap").style.display = "none";
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      })
-      .catch(function () {
-        submitBtn.disabled = false;
-        alert(lang === "sw"
-          ? "Imeshindikana kutuma. Tafadhali hakikisha una mtandao kisha jaribu tena."
-          : "Submission failed. Please check your connection and try again.");
-      });
+    // Add a timestamp for the admin dashboard
+    payload.submitted_at = new Date().toISOString();
+
+    try {
+      // Ensure the Supabase client is available from index.html
+      if (typeof supabaseClient === 'undefined') {
+        throw new Error("Supabase client not initialized. Check index.html");
+      }
+
+      // Insert data into Supabase
+      const { error } = await supabaseClient
+        .from('nanenane_responses')
+        .insert([{ form_data: payload }]);
+
+      if (error) throw error;
+
+      // Success: Hide form, show success screen
+      document.getElementById("stepNav").style.display = "none";
+      formSteps.forEach(function (s) { s.classList.remove("active"); });
+      document.getElementById("successStep").classList.add("active");
+      document.querySelector(".progress-wrap").style.display = "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+    } catch (err) {
+      console.error("Submission error:", err);
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
+      alert(lang === "sw" 
+        ? "Imeshindikana kutuma. Tafadhali hakikisha una mtandao kisha jaribu tena." 
+        : "Submission failed. Please check your connection and try again.");
+    }
   });
 
   // ---------- init ----------------------------------------------------------------
