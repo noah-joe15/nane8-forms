@@ -6,27 +6,29 @@
 <title>Dashibodi ya Msimamizi | Nanenane / 51st DITF</title>
 <link rel="stylesheet" href="styles.css">
 <style>
-  .admin-shell{max-width:1080px; margin:0 auto; padding:20px 16px 60px;}
-  .login-card{max-width:380px; margin:60px auto 0;}
-  .toolbar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; margin-bottom:16px;}
-  .stat-pill{background:var(--green-100); color:var(--green-900); font-weight:700; font-size:13px; padding:7px 14px; border-radius:999px;}
-  .search-input{max-width:220px;}
-  table{width:100%; border-collapse:collapse; font-size:13px; background:var(--white);}
-  thead th{position:sticky; top:0; background:var(--green-900); color:var(--white); text-align:left; padding:10px 12px; font-weight:600;}
-  tbody td{padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top;}
-  tbody tr:nth-child(even){background:#FAFCFA;}
-  .table-wrap{overflow:auto; max-height:70vh; border:1px solid var(--line); border-radius:var(--radius-sm); margin-top:16px;}
-  .state-msg{text-align:center; padding:40px 20px; color:var(--ink-soft);}
-  .badge-setup{background:var(--gold-100); border:1px solid var(--gold-300); color:#7A5A00; padding:14px; border-radius:var(--radius-sm); font-size:13px; margin-top:14px;}
-  .tabs{display:flex; gap:8px; margin-bottom:20px; border-bottom:2px solid var(--line);}
-  .tab-btn{background:none; border:none; padding:10px 16px; font-weight:600; color:var(--ink-soft); cursor:pointer; border-bottom:3px solid transparent;}
-  .tab-btn.active{color:var(--green-700); border-bottom-color:var(--green-700);}
-  .q-form{background:var(--green-100); padding:16px; border-radius:var(--radius-sm); margin-bottom:20px;}
-  .q-form .field{margin-bottom:12px;}
-  .q-form .field label{font-size:12px; font-weight:600; display:block; margin-bottom:4px;}
-  .q-form input, .q-form select, .q-form textarea{width:100%; padding:8px; border:1px solid var(--line); border-radius:6px;}
-  .btn-sm{padding:6px 12px; font-size:12px; border-radius:6px;}
-  .btn-danger{background:var(--danger); color:white;}
+  .admin-shell { max-width: 1080px; margin: 0 auto; padding: 20px 16px 60px; }
+  .login-card { max-width: 380px; margin: 60px auto 0; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .stat-pill { background: var(--green-100); color: var(--green-900); font-weight: 700; font-size: 13px; padding: 7px 14px; border-radius: 999px; }
+  .search-input { max-width: 220px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--white); }
+  thead th { position: sticky; top: 0; background: var(--green-900); color: var(--white); text-align: left; padding: 10px 12px; font-weight: 600; }
+  tbody td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tbody tr:nth-child(even) { background: #FAFCFA; }
+  .table-wrap { overflow: auto; max-height: 70vh; border: 1px solid var(--line); border-radius: var(--radius-sm); margin-top: 16px; }
+  .state-msg { text-align: center; padding: 40px 20px; color: var(--ink-soft); }
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid var(--line); }
+  .tab-btn { background: none; border: none; padding: 10px 16px; font-weight: 600; color: var(--ink-soft); cursor: pointer; border-bottom: 3px solid transparent; }
+  .tab-btn.active { color: var(--green-700); border-bottom-color: var(--green-700); }
+  .q-form { background: var(--green-100); padding: 16px; border-radius: var(--radius-sm); margin-bottom: 20px; }
+  .q-form .field { margin-bottom: 12px; }
+  .q-form .field label { font-size: 12px; font-weight: 600; display: block; margin-bottom: 4px; }
+  .q-form input, .q-form select, .q-form textarea { width: 100%; padding: 8px; border: 1px solid var(--line); border-radius: 6px; font-family: inherit; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+  .btn-danger { background: var(--danger); color: white; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .logout-link { background: none; border: 0; color: var(--white); font-weight: 600; font-size: 13px; cursor: pointer; text-decoration: underline; }
 </style>
 </head>
 <body class="lang-sw">
@@ -43,10 +45,7 @@
     <div class="card login-card">
       <h2 class="section-title">Ingia Kuona Majibu</h2>
       <form id="loginForm" onsubmit="return handleLogin(event)">
-        <div class="field">
-          <label class="field-label">Nenosiri / Password</label>
-          <input class="text-input" type="password" id="adminPass" required>
-        </div>
+        <div class="field"><label class="field-label">Nenosiri / Password</label><input class="text-input" type="password" id="adminPass" required></div>
         <p id="loginError" class="error-msg" style="display:none; color:var(--danger);">Nenosiri si sahihi.</p>
         <button type="submit" class="btn btn-primary btn-block">Ingia</button>
       </form>
@@ -55,8 +54,8 @@
 
   <div id="dashboardView" style="display:none;">
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('responses')">Majibu (Responses)</button>
-      <button class="tab-btn" onclick="switchTab('questions')">Simamia Maswali (Manage Questions)</button is>
+      <button class="tab-btn active" onclick="switchTab('responses', this)">Majibu (Responses)</button>
+      <button class="tab-btn" onclick="switchTab('questions', this)">Simamia Maswali (Manage Questions)</button>
     </div>
 
     <!-- RESPONSES TAB -->
@@ -78,27 +77,23 @@
         <h3 style="margin-top:0;">Ongeza / Hariri Swali</h3>
         <form id="questionForm" onsubmit="return saveQuestion(event)">
           <input type="hidden" id="q_id">
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div class="grid-2">
             <div class="field"><label>Step (0-7)</label><input type="number" id="q_step" min="0" max="7" required></div>
             <div class="field"><label>Sort Order</label><input type="number" id="q_sort" value="0"></div>
           </div>
           <div class="field"><label>Field Name (no spaces, e.g., custom_q1)</label><input type="text" id="q_field" required></div>
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div class="grid-2">
             <div class="field"><label>Label (Swahili)</label><input type="text" id="q_label_sw" required></div>
             <div class="field"><label>Label (English)</label><input type="text" id="q_label_en" required></div>
           </div>
-          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px;">
+          <div class="grid-3">
             <div class="field"><label>Type</label>
               <select id="q_type" onchange="toggleOptions()">
-                <option value="text">Text</option>
-                <option value="textarea">Textarea</option>
-                <option value="radio">Radio (Single Choice)</option>
-                <option value="checkbox">Checkbox (Multiple Choice)</option>
+                <option value="text">Text</option><option value="textarea">Textarea</option>
+                <option value="radio">Radio (Single Choice)</option><option value="checkbox">Checkbox (Multiple)</option>
               </select>
             </div>
-            <div class="field"><label>Required?</label>
-              <select id="q_required"><option value="true">Yes</option><option value="false">No</option></select>
-            </div>
+            <div class="field"><label>Required?</label><select id="q_required"><option value="true">Yes</option><option value="false">No</option></select></div>
             <div class="field" id="optionsField" style="display:none;"><label>Options (comma separated)</label><input type="text" id="q_options" placeholder="Option 1, Option 2"></div>
           </div>
           <div style="display:flex; gap:10px; margin-top:10px;">
@@ -107,7 +102,7 @@
           </div>
         </form>
       </div>
-      <div id="questionsHolder"><div class="state-msg">Inapakia maswali…</div></div if>
+      <div id="questionsHolder"><div class="state-msg">Inapakia maswali…</div></div>
     </div>
   </div>
 </div>
