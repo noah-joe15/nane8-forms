@@ -23,11 +23,21 @@
       });
       
       stepsData = Object.keys(grouped).map(k => ({ step: parseInt(k), questions: grouped[k] }));
+      
+      // SAFEGUARD: If admin hasn't added questions yet, show a clear message
+      if (stepsData.length === 0) {
+        document.getElementById("formLoader").innerHTML = 
+          '<p style="color:var(--danger); font-weight:600;">Hakuna maswali yaliyowekwa bado.<br>No questions have been configured yet.</p>' +
+          '<p style="color:var(--ink-soft); font-size:13px; margin-top:8px;">Tafadhali wasiliana na msimamizi wa mfumo.<br>Please contact the system administrator.</p>';
+        return;
+      }
+
       totalSteps = stepsData.length + 1; 
       
       document.getElementById("stepTotal").textContent = totalSteps;
       buildHTML();
-      setupOtherToggles(); // Setup toggles after building HTML
+      setupOtherToggles();
+      
       document.getElementById("formLoader").style.display = "none";
       form.style.display = "block";
       showStep(0);
@@ -73,7 +83,7 @@
           }
           field.appendChild(optsDiv);
           
-          // Add "Other" field placeholder if needed (handled by setupOtherToggles)
+          // Add "Other" field placeholders
           if (q.options.includes("Nyingine") || q.options.includes("Other") || q.options.includes("Mwingine")) {
              field.innerHTML += `<input class="text-input other-field" type="text" name="${q.field_name}_other" data-other-for="${q.field_name}" data-other-value="Nyingine" hidden placeholder="Taja / Specify">`;
              field.innerHTML += `<input class="text-input other-field" type="text" name="${q.field_name}_other" data-other-for="${q.field_name}" data-other-value="Other" hidden placeholder="Specify">`;
@@ -106,11 +116,17 @@
   }
 
   function showStep(idx) {
+    // Hide ALL steps, including the success screen
     document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
-    var target = document.querySelector(`.step[data-step="${idx}"]`) || document.querySelector(`.step[data-step="review"]`);
-    if(target) target.classList.add("active");
     
-    var isReview = idx === stepsData.length;
+    // Show the target step
+    var target = document.querySelector(`.step[data-step="${idx}"]`);
+    if (!target && idx === stepsData.length) {
+      target = document.querySelector(`.step[data-step="review"]`);
+    }
+    if (target) target.classList.add("active");
+    
+    var isReview = (idx === stepsData.length);
     
     document.getElementById("btnBack").style.visibility = idx === 0 ? "hidden" : "visible";
     document.getElementById("btnNext").style.display = isReview ? "none" : "inline-flex";
@@ -138,7 +154,7 @@
     showStep(current);
   };
 
-  // --- FIXED: DEEP RESET FUNCTION ---
+  // --- BULLETPROOF RESET FUNCTION ---
   window.resetForm = function () {
     var confirmMsg = lang === "sw" 
       ? "Una uhakika unataka kuanza upya? Majibu yako yote yatafutwa." 
@@ -151,22 +167,27 @@
       // 2. Reset internal step counter
       current = 0;
       
-      // 3. Hide error banners and remove error highlights
+      // 3. FORCE hide success screen and show form elements
+      document.getElementById("successStep").classList.remove("active");
+      document.getElementById("stepNav").style.display = "flex";
+      document.querySelector(".progress-wrap").style.display = "block";
+      
+      // 4. Hide error banners and remove error highlights
       document.getElementById("errorBanner").classList.remove("show");
       document.querySelectorAll(".has-error").forEach(function(el) {
         el.classList.remove("has-error");
       });
       
-      // 4. Force hide and clear ALL "other" specify fields
+      // 5. Force hide and clear ALL "other" specify fields
       document.querySelectorAll(".other-field").forEach(function(el) {
         el.hidden = true;
         el.value = "";
       });
       
-      // 5. Re-evaluate toggles to ensure perfect clean state
+      // 6. Re-evaluate toggles to ensure perfect clean state
       setupOtherToggles();
       
-      // 6. Return to step 0
+      // 7. Return to step 0
       showStep(0);
     }
   };
@@ -241,10 +262,13 @@
     try {
       const { error } = await supabaseClient.from('nanenane_responses').insert([{ form_data: payload }]);
       if (error) throw error;
+      
+      // Hide form, show success
       document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
       document.getElementById("successStep").classList.add("active");
       document.getElementById("stepNav").style.display = "none";
       document.querySelector(".progress-wrap").style.display = "none";
+      document.getElementById("errorBanner").classList.remove("show");
     } catch (err) {
       alert("Hitilafu / Error: " + err.message);
       btn.disabled = false; btn.textContent = "Tuma Dodoso";
