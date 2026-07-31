@@ -88,6 +88,22 @@
     btn.classList.add("active");
   };
 
+  // Check if a submission has meaningful data (not just timestamp)
+  function hasRealData(sub) {
+    var keys = Object.keys(sub);
+    // If it only has submitted_at (or submitted_at + created_at), it's empty
+    var meaningfulKeys = keys.filter(function(k) {
+      return k !== "submitted_at" && 
+             k !== "created_at" && 
+             k !== "form-name" && 
+             k !== "bot-field" &&
+             sub[k] !== null && 
+             sub[k] !== "" &&
+             sub[k] !== undefined;
+    });
+    return meaningfulKeys.length > 0;
+  }
+
   // Load submissions from Supabase
   window.loadSubmissions = async function () {
     var holder = document.getElementById("tableHolder");
@@ -106,13 +122,18 @@
 
       if (error) throw error;
 
-      allSubmissions = (data || []).map(function(sub) {
-        var fields = sub.form_data || {};
-        if (!fields.submitted_at && sub.created_at) {
-          fields.submitted_at = sub.created_at;
-        }
-        return fields;
-      });
+      // Map and filter out empty submissions
+      allSubmissions = (data || [])
+        .map(function(sub) {
+          var fields = sub.form_data || {};
+          if (!fields.submitted_at && sub.created_at) {
+            fields.submitted_at = sub.created_at;
+          }
+          return fields;
+        })
+        .filter(function(sub) {
+          return hasRealData(sub); // Only keep submissions with real data
+        });
 
       renderTable();
     } catch (err) {
