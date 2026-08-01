@@ -256,3 +256,43 @@ textarea.text-input{resize:vertical; min-height:96px;}
 
 /* Utility ------------------------------------------------------------------------ */
 .visually-hidden{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;}
+
+/* --- NEW: TANTRADE Background & Logo Styling --- */
+
+/* 1. Background Image with a dark green overlay so text is easy to read */
+body {
+  /* If you don't have bg.jpg yet, this green gradient will show instead */
+  background-color: #004d33; 
+  background-image: 
+    linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
+    url('bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* Make the main form container slightly transparent to show the background */
+.shell {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+/* 2. Style the new TANTRADE Logo */
+.brand-logo {
+  height: 45px; /* Adjust this number to make the logo bigger or smaller */
+  width: auto;
+  object-fit: contain;
+  background: #fff; /* White background behind logo in case it's transparent */
+  padding: 4px;
+  border-radius: 6px;
+  margin-right: 12px;
+}
+
+/* Hide the old SVG icon just in case */
+.brand-mark {
+  display: none;
+}
