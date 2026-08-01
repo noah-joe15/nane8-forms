@@ -40,7 +40,7 @@
   <form id="surveyForm" class="survey-form" novalidate>
     <input type="hidden" name="bot-field" value="">
 
-    <!-- STEP 0: WELCOME / DETAILS -->
+        <!-- STEP 0: WELCOME / DETAILS -->
     <div class="step active" data-step="0">
       <div class="hero">
         <span class="hero-eyebrow"><span class="lang-sw">Lengo la Dodoso</span><span class="lang-en">Purpose of this survey</span></span>
@@ -52,11 +52,32 @@
       </div>
       <div class="card">
         <span class="section-eyebrow"><span class="lang-sw">Anza Hapa</span><span class="lang-en">Start Here</span></span>
-        <h2 class="section-title"><span class="lang-sw">Taarifa Zako</span><span class="lang-en">Your Details</span></h2>
-        <p class="section-desc"><span class="lang-sw">Tafadhali ingiza jina na barua pepe yako kuanza dodoso.</span><span class="lang-en">Please enter your name and email to begin the survey.</span></p>
+        <h2 class="section-title"><span class="lang-sw">Taarifa za Kampuni na Mwitikio</span><span class="lang-en">Company & Respondent Details</span></h2>
+        <p class="section-desc"><span class="lang-sw">Tafadhali ingiza taarifa za kampuni na mawasiliano yako kuanza dodoso.</span><span class="lang-en">Please enter your company and contact details to begin the survey.</span></p>
         
+        <div class="field" data-field="jina_la_kampuni">
+          <label class="field-label" for="jina_la_kampuni"><span class="lang-sw">Jina la Kampuni</span><span class="lang-en">Company Name</span><span class="req">*</span></label>
+          <input class="text-input" type="text" id="jina_la_kampuni" name="jina_la_kampuni" required>
+          <p class="error-msg lang-sw">Tafadhali andika jina la kampuni.</p>
+          <p class="error-msg lang-en">Please enter the company name.</p>
+        </div>
+
+        <div class="field" data-field="tin_number">
+          <label class="field-label" for="tin_number"><span class="lang-sw">Namba ya Mlipa Kodi (TIN)</span><span class="lang-en">Company TIN Number</span><span class="req">*</span></label>
+          <input class="text-input" type="text" id="tin_number" name="tin_number" required>
+          <p class="error-msg lang-sw">Tafadhali andika namba ya TIN.</p>
+          <p class="error-msg lang-en">Please enter the TIN number.</p>
+        </div>
+
+        <div class="field" data-field="anwani_kampuni">
+          <label class="field-label" for="anwani_kampuni"><span class="lang-sw">Anwani ya Kampuni</span><span class="lang-en">Company Address</span><span class="req">*</span></label>
+          <input class="text-input" type="text" id="anwani_kampuni" name="anwani_kampuni" required>
+          <p class="error-msg lang-sw">Tafadhali andika anwani ya kampuni.</p>
+          <p class="error-msg lang-en">Please enter the company address.</p>
+        </div>
+
         <div class="field" data-field="respondent_name">
-          <label class="field-label" for="respondent_name"><span class="lang-sw">Jina Kamili</span><span class="lang-en">Full Name</span><span class="req">*</span></label>
+          <label class="field-label" for="respondent_name"><span class="lang-sw">Jina Kamili la Mwitikio</span><span class="lang-en">Your Full Name</span><span class="req">*</span></label>
           <input class="text-input" type="text" id="respondent_name" name="respondent_name" required autocomplete="name">
           <p class="error-msg lang-sw">Tafadhali andika jina lako.</p>
           <p class="error-msg lang-en">Please enter your name.</p>
@@ -75,7 +96,7 @@
         </div>
 
         <div class="field" data-field="location">
-          <label class="field-label" for="location"><span class="lang-sw">Mahali (Hiari)</span><span class="lang-en">Location / Venue (Optional)</span></label>
+          <label class="field-label" for="location"><span class="lang-sw">Mahali / Eneo la Maonesho (Hiari)</span><span class="lang-en">Location / Venue (Optional)</span></label>
           <input class="text-input" type="text" id="location" name="location" placeholder="Mf: Uwanja wa Nanenane, Themi">
         </div>
       </div>
