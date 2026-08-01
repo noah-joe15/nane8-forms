@@ -1,6 +1,6 @@
 /* ============================================================
    NANENANE / 51st DITF Participant Survey — Theme
-   Palette: deep trade-green, royal blue, harvest gold
+   Palette: deep trade-green, royal blue, harvest gold, ivory
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
@@ -34,16 +34,33 @@
 
 *,*::before,*::after{box-sizing:border-box;}
 html{-webkit-text-size-adjust:100%;}
+
+/* --- 1. ANIMATED IVORY BACKGROUND SLIDESHOW --- */
 body{
   margin:0;
   font-family:var(--font-body);
   color:var(--ink);
-  background:
-    radial-gradient(1100px 500px at 100% -10%, rgba(212,160,23,.10), transparent 60%),
-    radial-gradient(900px 500px at -10% 110%, rgba(11,110,79,.10), transparent 60%),
-    var(--cream);
+  background-color: #FFFFF0; /* Ivory fallback */
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  animation: bgSlideshow 20s infinite;
   min-height:100vh;
   line-height:1.5;
+}
+
+@keyframes bgSlideshow {
+  0%, 100% {
+    background-image: 
+      linear-gradient(rgba(255, 255, 240, 0.7), rgba(255, 255, 240, 0.7)), 
+      url('UFI.jpg');
+  }
+  50% {
+    background-image: 
+      linear-gradient(rgba(255, 255, 240, 0.7), rgba(255, 255, 240, 0.7)), 
+      url('national emblem .jpg');
+  }
 }
 
 h1,h2,h3{font-family:var(--font-head); margin:0; color:var(--green-900);}
@@ -67,16 +84,41 @@ a,button,input,select,textarea{font-family:inherit;}
   box-shadow:var(--shadow-md);
 }
 .brand{display:flex; align-items:center; gap:10px; min-width:0;}
-.brand-mark{
-  width:38px; height:38px; flex:none; border-radius:10px;
-  background:conic-gradient(from 200deg, var(--gold-500), var(--blue-500), var(--green-500), var(--gold-500));
-  display:flex; align-items:center; justify-content:center;
-  box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);
+
+/* --- 2. TANTRADE LOGO STYLING --- */
+.brand-logo {
+  height: 45px;
+  width: auto;
+  object-fit: contain;
+  background: #fff;
+  padding: 4px;
+  border-radius: 6px;
+  margin-right: 12px;
 }
-.brand-mark svg{width:20px; height:20px;}
+.brand-mark { display: none; } /* Hide old SVG */
+
+/* --- 3. RESPONSIVE & CLEAN HEADING (No dashes, fits screen) --- */
 .brand-text{min-width:0;}
-.brand-text strong{display:block; font-family:var(--font-head); font-size:14.5px; letter-spacing:.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-.brand-text span{display:block; font-size:11.5px; color:var(--gold-300); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.brand-text strong{
+  display:block; 
+  font-family:var(--font-head); 
+  font-size: min(1.5rem, 5vw); /* Responsive sizing */
+  font-weight: 700 !important; /* Bold */
+  line-height: 1.3;
+  margin-bottom: 4px;
+  white-space: normal !important; /* Allows wrapping on small screens */
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+.brand-text > span{
+  display:block; 
+  font-size: min(0.85rem, 3.5vw); 
+  font-weight: 500;
+  color:var(--gold-300); 
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
 
 .lang-switch{
   display:flex; background:rgba(255,255,255,.12); border-radius:999px; padding:3px; flex:none;
@@ -89,7 +131,17 @@ a,button,input,select,textarea{font-family:inherit;}
 .lang-switch button.active{background:var(--gold-500); color:var(--green-900);}
 
 /* Page shell ---------------------------------------------------- */
-.shell{max-width:720px; margin:0 auto; padding:20px 16px 60px;}
+.shell{
+  max-width:720px; 
+  margin:0 auto; 
+  padding:20px 16px 60px;
+  /* Make the main form container slightly transparent to show the background */
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
 
 /* Progress ------------------------------------------------------- */
 .progress-wrap{margin:18px 0 22px;}
@@ -99,7 +151,7 @@ a,button,input,select,textarea{font-family:inherit;}
 .progress-track{height:8px; border-radius:999px; background:var(--line); overflow:hidden;}
 .progress-fill{
   height:100%; border-radius:999px;
-  background:linear-gradient(90deg,var(--green-600,#0B6E4F),var(--gold-500));
+  background:linear-gradient(90deg,var(--green-500),var(--gold-500));
   transition:width .35s ease;
 }
 .progress-dots{display:flex; justify-content:space-between; margin-top:9px;}
@@ -257,112 +309,14 @@ textarea.text-input{resize:vertical; min-height:96px;}
 /* Utility ------------------------------------------------------------------------ */
 .visually-hidden{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;}
 
-/* --- NEW: TANTRADE Background & Logo Styling --- */
-
-/* --- Animated Background Slideshow with Ivory Tint --- */
-body {
-  background-color: #FFFFF0; /* Ivory fallback */
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  animation: bgSlideshow 20s infinite;
-}
-
-@keyframes bgSlideshow {
-  0%, 100% {
-    /* The rgba(255, 255, 240, 0.7) makes the tint Ivory instead of dark green */
-    background-image: 
-      linear-gradient(rgba(255, 255, 240, 0.7), rgba(255, 255, 240, 0.7)), 
-      url('UFI.jpg');
-  }
-  50% {
-    background-image: 
-      linear-gradient(rgba(255, 255, 240, 0.7), rgba(255, 255, 240, 0.7)), 
-      url('national emblem .jpg');
-  }
-}
-  }
-}
-  }
-  100% {
-    background-image: 
-      linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
-      url('Tantrade logo.jpg');
-  }
-}
-
-/* Make the main form container slightly transparent to show the background */
-.shell {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  margin-top: 20px;
-  margin-bottom: 40px;
-}
-
-/* 2. Style the new TANTRADE Logo */
-.brand-logo {
-  height: 45px; /* Adjust this number to make the logo bigger or smaller */
-  width: auto;
-  object-fit: contain;
-  background: #fff; /* White background behind logo in case it's transparent */
-  padding: 4px;
-  border-radius: 6px;
-  margin-right: 12px;
-}
-
-/* Hide the old SVG icon just in case */
-.brand-mark {
-  display: none;
-}
-
-/* --- Responsive & Clean Heading Styles --- */
-
-/* Main heading - bold and responsive */
-.brand-text strong {
-  font-size: min(1.5rem, 4.5vw); /* Responsive: max 24px or 4.5% of viewport width */
-  font-weight: 700; /* Bold */
-  line-height: 1.3;
-  display: block;
-  margin-bottom: 4px;
-}
-
-/* Subtitle text */
-.brand-text > span {
-  font-size: min(0.9rem, 3.5vw); /* Smaller responsive size */
-  font-weight: 500;
-  opacity: 0.9;
-}
-
-/* Remove the em-dashes (—) by hiding them */
-.brand-text strong::before,
-.brand-text strong::after,
-.brand-text > span::before,
-.brand-text > span::after {
-  content: none;
-}
-
-/* Alternative: Replace dashes with clean spaces or dots */
-/* If you want to keep some separation, uncomment this: */
-/*
-.brand-text strong {
-  white-space: nowrap;
-}
-*/
-
-/* Mobile optimization - stack text better */
-@media (max-width: 768px) {
+/* Mobile optimization for heading ---------------------------------------------- */
+@media (max-width: 480px) {
   .brand-text strong {
-    font-size: min(1.3rem, 5vw);
-    white-space: normal; /* Allow wrapping on small screens */
+    font-size: 1.2rem;
   }
-  
   .brand-text > span {
-    font-size: min(0.8rem, 3.5vw);
+    font-size: 0.8rem;
   }
-  
-  /* On very small screens, reduce logo size too */
   .brand-logo {
     height: 35px;
   }
