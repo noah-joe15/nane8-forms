@@ -273,22 +273,22 @@ body {
   0% {
     background-image: 
       linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
-      url('bg1.jpg');
+      url('Tantrade logo.jpg');
   }
   33% {
     background-image: 
       linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
-      url('bg2.jpg');
+      url('ufi.jpg');
   }
   66% {
     background-image: 
       linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
-      url('bg3.jpg');
+      url('national emblem.jpg');
   }
   100% {
     background-image: 
       linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
-      url('bg1.jpg');
+      url('Tantrade logo.jpg');
   }
 }
 
