@@ -1,7 +1,5 @@
 (function () {
   "use strict";
-  var ADMIN_PASSWORD = "1234";
-  var loggedIn = false;
   var allSubmissions = [];
   var allQuestions = [];
 
@@ -12,36 +10,70 @@
     document.getElementById("btn-lang-en").classList.toggle("active", l === "en");
   };
 
-  window.handleLogin = function (e) {
-    e.preventDefault();
-    if (document.getElementById("adminPass").value === ADMIN_PASSWORD) {
-      loggedIn = true;
-      document.getElementById("loginView").style.display = "none";
-      document.getElementById("dashboardView").style.display = "block";
-      document.getElementById("logoutBtn").style.display = "inline-block";
-      loadSubmissions();
-      loadQuestions();
+  // --- AUTHENTICATION ---
+  async function checkAuth() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) {
+      showDashboard();
     } else {
+      showLogin();
+    }
+  }
+
+  window.handleLogin = async function (e) {
+    e.preventDefault();
+    var email = document.getElementById("adminEmail").value;
+    var password = document.getElementById("adminPass").value;
+    var loginBtn = document.getElementById("loginBtn");
+    
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = '<span class="lang-sw">Inaingia...</span><span class="lang-en">Signing in...</span>';
+    document.getElementById("loginError").style.display = "none";
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+    if (error) {
       document.getElementById("loginError").style.display = "block";
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = '<span class="lang-sw">Ingia</span><span class="lang-en">Sign In</span>';
+    } else {
+      showDashboard();
     }
     return false;
   };
 
-  window.logout = function () {
-    loggedIn = false;
-    document.getElementById("adminPass").value = "";
-    document.getElementById("dashboardView").style.display = "none";
-    document.getElementById("logoutBtn").style.display = "none";
-    document.getElementById("loginView").style.display = "block";
+  window.handleLogout = async function () {
+    await supabaseClient.auth.signOut();
+    showLogin();
   };
 
+  function showLogin() {
+    document.getElementById("loginView").style.display = "block";
+    document.getElementById("dashboardView").style.display = "none";
+    document.getElementById("logoutBtn").style.display = "none";
+    document.getElementById("loginForm").reset();
+    document.getElementById("loginBtn").disabled = false;
+    document.getElementById("loginBtn").innerHTML = '<span class="lang-sw">Ingia</span><span class="lang-en">Sign In</span>';
+  }
+
+  function showDashboard() {
+    document.getElementById("loginView").style.display = "none";
+    document.getElementById("dashboardView").style.display = "block";
+    document.getElementById("logoutBtn").style.display = "inline-block";
+    loadSubmissions();
+    loadQuestions();
+  }
+
+  // --- TAB SWITCHING ---
   window.switchTab = function (tab, btn) {
     document.getElementById("responsesTab").style.display = tab === "responses" ? "block" : "none";
     document.getElementById("unregisteredTab").style.display = tab === "unregistered" ? "block" : "none";
     document.getElementById("questionsTab").style.display = tab === "questions" ? "block" : "none";
     document.querySelectorAll(".tab-btn").forEach(function(b) { b.classList.remove("active"); });
     btn.classList.add("active");
-    
     if (tab === "unregistered") renderUnregisteredTable();
   };
 
@@ -71,7 +103,6 @@
 
   function updateStats() {
     document.getElementById("statTotal").textContent = allSubmissions.length;
-    
     var regions = new Set();
     var districts = new Set();
     var unregisteredCount = 0;
@@ -79,7 +110,6 @@
     allSubmissions.forEach(function(sub) {
       if (sub.mkoa) regions.add(sub.mkoa.trim().toLowerCase());
       if (sub.wilaya) districts.add(sub.wilaya.trim().toLowerCase());
-      
       if (sub.bidhaa_zimesajiliwa === "Hapana" || sub.bidhaa_zimesajiliwa === "Sijui utaratibu") {
         unregisteredCount++;
       }
@@ -104,7 +134,6 @@
   // --- UNREGISTERED TABLE ---
   window.renderUnregisteredTable = function () {
     var query = (document.getElementById("unregSearchInput").value || "").toLowerCase();
-    
     var rows = allSubmissions.filter(function (sub) {
       return (sub.bidhaa_zimesajiliwa === "Hapana" || sub.bidhaa_zimesajiliwa === "Sijui utaratibu");
     }).filter(function (sub) {
@@ -130,7 +159,6 @@
       });
     });
     
-    // UPDATED: Company fields are now at the very front!
     var priorityCols = isUnregisteredView 
       ? ["respondent_name", "respondent_phone", "mkoa", "wilaya", "sekta", "bidhaa_zinazozalishwa_tz", "bidhaa_zimesajiliwa", "submitted_at"]
       : ["jina_la_kampuni", "tin_number", "anwani_kampuni", "submitted_at", "respondent_name", "respondent_phone", "respondent_email", "mkoa", "wilaya"];
@@ -172,7 +200,6 @@
       }); 
     });
     
-    // Ensure CSV columns match the table view priority
     var priorityCols = isUnregisteredView 
       ? ["respondent_name", "respondent_phone", "mkoa", "wilaya", "sekta", "bidhaa_zinazozalishwa_tz", "bidhaa_zimesajiliwa", "submitted_at"]
       : ["jina_la_kampuni", "tin_number", "anwani_kampuni", "submitted_at", "respondent_name", "respondent_phone", "respondent_email", "mkoa", "wilaya"];
@@ -281,5 +308,7 @@
     toggleOptions();
   };
 
+  // Initialize
   setLang("sw");
+  checkAuth();
 })();
