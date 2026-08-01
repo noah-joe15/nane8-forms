@@ -266,24 +266,21 @@ body {
   background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
-  animation: bgSlideshow 30s infinite;
+  animation: bgSlideshow 20s infinite;
 }
 
 @keyframes bgSlideshow {
-  0% {
+  0%, 100% {
     background-image: 
       linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
-      url('Tantrade logo.jpg');
+      url('UFI.jpg');
   }
-  33% {
+  50% {
     background-image: 
       linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
-      url('ufi.jpg');
+      url('national emblem .jpg');
   }
-  66% {
-    background-image: 
-      linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
-      url('national emblem.jpg');
+}
   }
   100% {
     background-image: 
