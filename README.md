@@ -25,7 +25,7 @@ The survey form submits data directly to a **Supabase** PostgreSQL database usin
 
 Before deploying, ensure your Supabase project is configured:
 
-1. Go to your [Supabase Dashboard](https://supabase.com/dashboard) and open your project.
+1. Go to [Supabase Dashboard](https://supabase.com/dashboard) and open the project.
 2. Go to the **SQL Editor** and run the following script to create the table and set up secure access:
 
 ```sql
