@@ -259,18 +259,17 @@ textarea.text-input{resize:vertical; min-height:96px;}
 
 /* --- NEW: TANTRADE Background & Logo Styling --- */
 
-/* 1. Background Image with a dark green overlay so text is easy to read */
+/* --- Dynamic Background from Unsplash --- */
 body {
-  /* If you don't have bg.jpg yet, this green gradient will show instead */
-  background-color: #004d33; 
-  background-image: 
-    linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
-    url('bg.jpg');
+  background-color: #004d33;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
-}
+  /* Random professional business/trade images */
+  background-image: 
+  linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
+  url('https://source.unsplash.com/1920x1080/?business,conference,trade');
 
 /* Make the main form container slightly transparent to show the background */
 .shell {
