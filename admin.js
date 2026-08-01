@@ -42,7 +42,6 @@
     document.querySelectorAll(".tab-btn").forEach(function(b) { b.classList.remove("active"); });
     btn.classList.add("active");
     
-    // Re-render tables when switching tabs to ensure they are up to date
     if (tab === "unregistered") renderUnregisteredTable();
   };
 
@@ -59,7 +58,6 @@
         if (!fields.submitted_at && sub.created_at) fields.submitted_at = sub.created_at;
         return fields;
       }).filter(function(sub) {
-        // Filter out completely empty test submissions
         var keys = Object.keys(sub).filter(function(k) { return k !== "submitted_at" && k !== "created_at"; });
         return keys.length > 0;
       });
@@ -82,7 +80,6 @@
       if (sub.mkoa) regions.add(sub.mkoa.trim().toLowerCase());
       if (sub.wilaya) districts.add(sub.wilaya.trim().toLowerCase());
       
-      // Check if they need MIT registration (Answered "Hapana" or "Sijui utaratibu")
       if (sub.bidhaa_zimesajiliwa === "Hapana" || sub.bidhaa_zimesajiliwa === "Sijui utaratibu") {
         unregisteredCount++;
       }
@@ -101,14 +98,13 @@
       return Object.values(sub).some(function (v) { return String(v).toLowerCase().includes(query); });
     });
     document.getElementById("countPill").innerHTML = rows.length + ' <span class="lang-sw">majibu</span><span class="lang-en">responses</span>';
-    renderGenericTable(rows, "tableHolder");
+    renderGenericTable(rows, "tableHolder", false);
   };
 
   // --- UNREGISTERED TABLE ---
   window.renderUnregisteredTable = function () {
     var query = (document.getElementById("unregSearchInput").value || "").toLowerCase();
     
-    // Auto-sort: Only show those who need registration
     var rows = allSubmissions.filter(function (sub) {
       return (sub.bidhaa_zimesajiliwa === "Hapana" || sub.bidhaa_zimesajiliwa === "Sijui utaratibu");
     }).filter(function (sub) {
@@ -134,10 +130,10 @@
       });
     });
     
-    // If it's the unregistered view, prioritize these columns
+    // UPDATED: Company fields are now at the very front!
     var priorityCols = isUnregisteredView 
       ? ["respondent_name", "respondent_phone", "mkoa", "wilaya", "sekta", "bidhaa_zinazozalishwa_tz", "bidhaa_zimesajiliwa", "submitted_at"]
-      : ["submitted_at", "respondent_name", "respondent_phone", "respondent_email", "mkoa", "wilaya"];
+      : ["jina_la_kampuni", "tin_number", "anwani_kampuni", "submitted_at", "respondent_name", "respondent_phone", "respondent_email", "mkoa", "wilaya"];
 
     var cols = Array.from(allKeys).sort(function(a, b) {
       var idxA = priorityCols.indexOf(a);
@@ -159,19 +155,37 @@
   }
 
   // --- CSV EXPORTS ---
-  window.exportCsv = function () { exportGenericCsv(allSubmissions, "majibu-yote"); };
+  window.exportCsv = function () { exportGenericCsv(allSubmissions, "majibu-yote", false); };
   window.exportUnregisteredCsv = function () { 
     var rows = allSubmissions.filter(function (sub) {
       return (sub.bidhaa_zimesajiliwa === "Hapana" || sub.bidhaa_zimesajiliwa === "Sijui utaratibu");
     });
-    exportGenericCsv(rows, "wanaohitaji-usajili"); 
+    exportGenericCsv(rows, "wanaohitaji-usajili", true); 
   };
 
-  function exportGenericCsv(rows, filename) {
+  function exportGenericCsv(rows, filename, isUnregisteredView) {
     if (!rows.length) { alert("Hakuna majibu"); return; }
     var allKeys = new Set();
-    rows.forEach(function(sub) { Object.keys(sub).forEach(function(k) { if (k !== "form-name" && k !== "bot-field") allKeys.add(k); }); });
-    var cols = Array.from(allKeys);
+    rows.forEach(function(sub) { 
+      Object.keys(sub).forEach(function(k) { 
+        if (k !== "form-name" && k !== "bot-field") allKeys.add(k); 
+      }); 
+    });
+    
+    // Ensure CSV columns match the table view priority
+    var priorityCols = isUnregisteredView 
+      ? ["respondent_name", "respondent_phone", "mkoa", "wilaya", "sekta", "bidhaa_zinazozalishwa_tz", "bidhaa_zimesajiliwa", "submitted_at"]
+      : ["jina_la_kampuni", "tin_number", "anwani_kampuni", "submitted_at", "respondent_name", "respondent_phone", "respondent_email", "mkoa", "wilaya"];
+
+    var cols = Array.from(allKeys).sort(function(a, b) {
+      var idxA = priorityCols.indexOf(a);
+      var idxB = priorityCols.indexOf(b);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      return a.localeCompare(b);
+    });
+
     var lines = [cols.join(",")].concat(rows.map(function(sub) { 
       return cols.map(function(c) { 
         var val = sub[c]; 
@@ -182,7 +196,7 @@
     var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename + ".csv"; a.click();
   }
 
-  // --- QUESTIONS MANAGEMENT (Unchanged from before) ---
+  // --- QUESTIONS MANAGEMENT ---
   window.loadQuestions = async function () {
     var holder = document.getElementById("questionsHolder");
     try {
