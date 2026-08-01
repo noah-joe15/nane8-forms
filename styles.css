@@ -259,9 +259,9 @@ textarea.text-input{resize:vertical; min-height:96px;}
 
 /* --- NEW: TANTRADE Background & Logo Styling --- */
 
-/* --- Animated Background Slideshow --- */
+/* --- Animated Background Slideshow with Ivory Tint --- */
 body {
-  background-color: #004d33;
+  background-color: #FFFFF0; /* Ivory fallback */
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -271,13 +271,14 @@ body {
 
 @keyframes bgSlideshow {
   0%, 100% {
+    /* The rgba(255, 255, 240, 0.7) makes the tint Ivory instead of dark green */
     background-image: 
-      linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
+      linear-gradient(rgba(255, 255, 240, 0.7), rgba(255, 255, 240, 0.7)), 
       url('UFI.jpg');
   }
   50% {
     background-image: 
-      linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
+      linear-gradient(rgba(255, 255, 240, 0.7), rgba(255, 255, 240, 0.7)), 
       url('national emblem .jpg');
   }
 }
