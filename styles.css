@@ -259,17 +259,38 @@ textarea.text-input{resize:vertical; min-height:96px;}
 
 /* --- NEW: TANTRADE Background & Logo Styling --- */
 
-/* --- Dynamic Background from Unsplash --- */
+/* --- Animated Background Slideshow --- */
 body {
   background-color: #004d33;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
-  /* Random professional business/trade images */
-  background-image: 
-  linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
-  url('https://source.unsplash.com/1920x1080/?business,conference,trade');
+  animation: bgSlideshow 30s infinite;
+}
+
+@keyframes bgSlideshow {
+  0% {
+    background-image: 
+      linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
+      url('bg1.jpg');
+  }
+  33% {
+    background-image: 
+      linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
+      url('bg2.jpg');
+  }
+  66% {
+    background-image: 
+      linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
+      url('bg3.jpg');
+  }
+  100% {
+    background-image: 
+      linear-gradient(rgba(0, 60, 40, 0.85), rgba(0, 60, 40, 0.85)), 
+      url('bg1.jpg');
+  }
+}
 
 /* Make the main form container slightly transparent to show the background */
 .shell {
