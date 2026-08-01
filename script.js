@@ -149,7 +149,7 @@
 
   // ---------- review screen -----------------------------------------------------
   var REVIEW_GROUPS = [
-    { titleSw: "Taarifa Zako", titleEn: "Your Details", step: 0, fields: ["respondent_name", "respondent_email", "respondent_phone", "location"] },
+    { titleSw: "Taarifa za Kampuni na Mwitikio", titleEn: "Company & Respondent Details", step: 0, fields: ["jina_la_kampuni", "tin_number", "anwani_kampuni", "respondent_name", "respondent_email", "respondent_phone", "location"] },
     { titleSw: "Sehemu A", titleEn: "Section A", step: 1, fields: ["wewe_ni", "jinsia", "mkoa", "wilaya", "sekta", "muda_shughuli"] },
     { titleSw: "Sehemu B", titleEn: "Section B", step: 2, fields: ["hali_biashara", "uzalishaji_umeongezeka", "mauzo", "sababu_zinazoathiri[]"] },
     { titleSw: "Sehemu C", titleEn: "Section C", step: 3, fields: ["bidhaa_zinazozalishwa_tz", "bidhaa_zimesajiliwa", "kama_hapana_sababu[]", "msaada_mit[]"] },
