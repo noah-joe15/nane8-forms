@@ -310,5 +310,143 @@
 
   // Initialize
   setLang("sw");
+  // --- KPI/CHARTS FUNCTIONS ---
+var chartsInitialized = false;
+var regionsChart, sectorsChart, genderChart, businessChart;
+
+window.switchTab = function (tab, btn) {
+  document.getElementById("responsesTab").style.display = tab === "responses" ? "block" : "none";
+  document.getElementById("unregisteredTab").style.display = tab === "unregistered" ? "block" : "none";
+  document.getElementById("kpiTab").style.display = tab === "kpi" ? "block" : "none";
+  document.getElementById("questionsTab").style.display = tab === "questions" ? "block" : "none";
+  document.querySelectorAll(".tab-btn").forEach(function(b) { b.classList.remove("active"); });
+  btn.classList.add("active");
+  
+  if (tab === "unregistered") renderUnregisteredTable();
+  if (tab === "kpi") renderKPICharts();
+};
+
+function renderKPICharts() {
+  // Update stat cards
+  document.getElementById("kpiTotal").textContent = allSubmissions.length;
+  
+  var unregisteredCount = allSubmissions.filter(function(sub) {
+    return sub.bidhaa_zimesajiliwa === "Hapana" || sub.bidhaa_zimesajiliwa === "Sijui utaratibu";
+  }).length;
+  document.getElementById("kpiUnregistered").textContent = unregisteredCount;
+  
+  // Calculate completion rate (simple: % with all required fields)
+  var completeCount = allSubmissions.filter(function(sub) {
+    return sub.respondent_name && sub.respondent_email && sub.mkoa;
+  }).length;
+  var completionRate = allSubmissions.length > 0 ? Math.round((completeCount / allSubmissions.length) * 100) : 0;
+  document.getElementById("kpiCompletion").textContent = completionRate + "%";
+  
+  // Initialize charts if not already done
+  if (!chartsInitialized) {
+    initCharts();
+    chartsInitialized = true;
+  } else {
+    updateCharts();
+  }
+}
+
+function initCharts() {
+  // Chart.js default config
+  Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+  Chart.defaults.color = '#4B5B54';
+  
+  // 1. Regions Pie Chart
+  var regionsCtx = document.getElementById('regionsChart').getContext('2d');
+  regionsChart = new Chart(regionsCtx, {
+    type: 'pie',
+    data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
+    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } }
+  });
+  
+  // 2. Sectors Pie Chart
+  var sectorsCtx = document.getElementById('sectorsChart').getContext('2d');
+  sectorsChart = new Chart(sectorsCtx, {
+    type: 'pie',
+    data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
+    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } }
+  });
+  
+  // 3. Gender Bar Chart
+  var genderCtx = document.getElementById('genderChart').getContext('2d');
+  genderChart = new Chart(genderCtx, {
+    type: 'bar',
+    data: { labels: [], datasets: [{ label: '', data: [], backgroundColor: [] }] },
+    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } }
+  });
+  
+  // 4. Business Status Bar Chart
+  var businessCtx = document.getElementById('businessChart').getContext('2d');
+  businessChart = new Chart(businessCtx, {
+    type: 'bar',
+    data: { labels: [], datasets: [{ label: '', data: [], backgroundColor: [] }] },
+    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } }
+  });
+  
+  updateCharts();
+}
+
+function updateCharts() {
+  // Count data
+  var regions = {}, sectors = {}, gender = {}, business = {};
+  
+  allSubmissions.forEach(function(sub) {
+    // Regions
+    if (sub.mkoa) {
+      regions[sub.mkoa] = (regions[sub.mkoa] || 0) + 1;
+    }
+    // Sectors
+    if (sub.sekta) {
+      sectors[sub.sekta] = (sectors[sub.sekta] || 0) + 1;
+    }
+    // Gender
+    if (sub.jinsia) {
+      gender[sub.jinsia] = (gender[sub.jinsia] || 0) + 1;
+    }
+    // Business Status
+    if (sub.hali_biashara) {
+      business[sub.hali_biashara] = (business[sub.hali_biashara] || 0) + 1;
+    }
+  });
+  
+  // Color palettes
+  var colors = {
+    regions: ['#0B6E4F', '#1E6BB8', '#D4A017', '#063C2C', '#164C82', '#B8860B', '#128A64', '#4B5B54'],
+    sectors: ['#0B6E4F', '#1E6BB8', '#D4A017', '#063C2C', '#164C82', '#B8860B', '#128A64'],
+    gender: ['#0B6E4F', '#D4A017', '#1E6BB8'],
+    business: ['#0B6E4F', '#D4A017', '#1E6BB8', '#B3261E']
+  };
+  
+  // Update Regions Chart
+  regionsChart.data.labels = Object.keys(regions);
+  regionsChart.data.datasets[0].data = Object.values(regions);
+  regionsChart.data.datasets[0].backgroundColor = colors.regions.slice(0, Object.keys(regions).length);
+  regionsChart.update();
+  
+  // Update Sectors Chart
+  sectorsChart.data.labels = Object.keys(sectors);
+  sectorsChart.data.datasets[0].data = Object.values(sectors);
+  sectorsChart.data.datasets[0].backgroundColor = colors.sectors.slice(0, Object.keys(sectors).length);
+  sectorsChart.update();
+  
+  // Update Gender Chart
+  genderChart.data.labels = Object.keys(gender).map(function(g) {
+    return g === 'Me' ? 'Me (Male)' : g === 'Ke' ? 'Ke (Female)' : g;
+  });
+  genderChart.data.datasets[0].data = Object.values(gender);
+  genderChart.data.datasets[0].backgroundColor = colors.gender.slice(0, Object.keys(gender).length);
+  genderChart.update();
+  
+  // Update Business Chart
+  businessChart.data.labels = Object.keys(business);
+  businessChart.data.datasets[0].data = Object.values(business);
+  businessChart.data.datasets[0].backgroundColor = colors.business.slice(0, Object.keys(business).length);
+  businessChart.update();
+}
   checkAuth();
 })();
