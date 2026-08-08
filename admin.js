@@ -1,3 +1,18 @@
+// ═══════════════════════════════════════════════════
+// SELF-CONTAINED SUPABASE CLIENT
+// Fixes: "ReferenceError: supabaseClient is not defined"
+// ═══════════════════════════════════════════════════
+if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "undefined") {
+  window.supabaseClient = window.supabase.createClient(
+    "https://ccddzluijwfdytfsuwza.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjZGR6bHVpandmZHl0ZnN1d3phIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU0Nzg1MzYsImV4cCI6MjEwMTA1NDUzNn0.4N0-49NXrwUdA9F1kpW_7OXemE1iiS5NrBcih8RbWps"
+  );
+}
+
+(function () {
+  "use strict";
+  // ... admin.js
+
 (function () {
   "use strict";
   var allSubmissions = [];
