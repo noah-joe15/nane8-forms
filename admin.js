@@ -450,3 +450,316 @@ function updateCharts() {
 }
   checkAuth();
 })();
+
+// Chart instances
+let regionsChart, sectorsChart, genderChart, businessChart;
+
+// ═══════════════════════════════════════════════════
+// PERCENTAGE BREAKDOWN WITH VISUAL PROGRESS BARS
+// ═══════════════════════════════════════════════════
+function renderPercentageBreakdowns(submissions) {
+  const total = submissions.length;
+  if (total === 0) return;
+
+  // Helper: Build HTML for a single breakdown with progress bars
+  function buildBreakdown(data, field, limit = null) {
+    const counts = {};
+    data.forEach(s => {
+      const value = s[field] || 'Haijatajwa';
+      counts[value] = (counts[value] || 0) + 1;
+    });
+
+    let entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    if (limit) entries = entries.slice(0, limit);
+
+    return entries.map(([label, count]) => {
+      const pct = ((count / total) * 100).toFixed(1);
+      const pctNum = parseFloat(pct);
+      // Color logic: green >50%, gold 20-50%, red <20%
+      const barColor = pctNum > 50 ? 'var(--green-700)' : 
+                       pctNum > 20 ? 'var(--gold-500)' : 
+                       'var(--danger)';
+      
+      return `
+        <div style="margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="font-weight:600;">${label}</span>
+            <span style="color:var(--ink-soft);">${count} <strong style="color:${barColor};">(${pct}%)</strong></span>
+          </div>
+          <div style="background:var(--line); height:6px; border-radius:3px; overflow:hidden;">
+            <div style="background:${barColor}; height:100%; width:${pct}%; border-radius:3px; transition:width 0.6s ease;"></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Render all 4 breakdowns
+  document.getElementById('genderBreakdown').innerHTML = buildBreakdown(submissions, 'gender');
+  document.getElementById('businessBreakdown').innerHTML = buildBreakdown(submissions, 'business_status');
+  document.getElementById('regionsBreakdown').innerHTML = buildBreakdown(submissions, 'region', 5);
+  document.getElementById('sectorsBreakdown').innerHTML = buildBreakdown(submissions, 'sector', 5);
+}
+  // Business status breakdown
+  const businessCounts = {};
+  submissions.forEach(s => {
+    const status = s.business_status || 'Haijatajwa';
+    businessCounts[status] = (businessCounts[status] || 0) + 1;
+  });
+  
+  const businessHtml = Object.entries(businessCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, count]) => {
+      const pct = ((count / total) * 100).toFixed(1);
+      return `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line);">
+        <span>${label}</span>
+        <strong>${count} (${pct}%)</strong>
+      </div>`;
+    }).join('');
+  document.getElementById('businessBreakdown').innerHTML = businessHtml;
+
+  // Top 5 regions breakdown
+  const regionCounts = {};
+  submissions.forEach(s => {
+    const region = s.region || 'Haijatajwa';
+    regionCounts[region] = (regionCounts[region] || 0) + 1;
+  });
+  
+  const regionsHtml = Object.entries(regionCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([label, count]) => {
+      const pct = ((count / total) * 100).toFixed(1);
+      return `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line);">
+        <span>${label}</span>
+        <strong>${count} (${pct}%)</strong>
+      </div>`;
+    }).join('');
+  document.getElementById('regionsBreakdown').innerHTML = regionsHtml;
+
+  // Top 5 sectors breakdown
+  const sectorCounts = {};
+  submissions.forEach(s => {
+    const sector = s.sector || 'Haijatajwa';
+    sectorCounts[sector] = (sectorCounts[sector] || 0) + 1;
+  });
+  
+  const sectorsHtml = Object.entries(sectorCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([label, count]) => {
+      const pct = ((count / total) * 100).toFixed(1);
+      return `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line);">
+        <span>${label}</span>
+        <strong>${count} (${pct}%)</strong>
+      </div>`;
+    }).join('');
+  document.getElementById('sectorsBreakdown').innerHTML = sectorsHtml;
+}
+
+// Export dashboard as PNG image
+async function exportDashboardImage() {
+  const exportBtn = document.getElementById('exportBtn');
+  const originalText = exportBtn.innerHTML;
+  exportBtn.innerHTML = '<span class="lang-sw">Inapakua...</span><span class="lang-en">Generating...</span>';
+  exportBtn.disabled = true;
+
+  try {
+    // Show export header
+    const exportHeader = document.getElementById('exportHeader');
+    const exportDate = document.getElementById('exportDate');
+    exportDate.textContent = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+    exportHeader.style.display = 'block';
+
+    // Wait for any animations to complete
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    // Capture the dashboard area
+    const element = document.getElementById('dashboardExportArea');
+    const canvas = await html2canvas(element, {
+      scale: 2, // Higher quality
+      backgroundColor: '#ffffff',
+      logging: false,
+      useCORS: true
+    });
+
+    // Hide export header again
+    exportHeader.style.display = 'none';
+
+    // Convert to blob and download
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Nanenane_2026_Dashboard_${new Date().toISOString().split('T')[0]}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 'image/png', 0.95);
+
+  } catch (error) {
+    console.error('Export failed:', error);
+    alert('Export failed. Please try again.');
+  } finally {
+    exportBtn.innerHTML = originalText;
+    exportBtn.disabled = false;
+  }
+}
+
+// Update your existing chart rendering function to include percentage labels
+function renderCharts(submissions) {
+  const total = submissions.length;
+  
+  // Destroy existing charts
+  if (regionsChart) regionsChart.destroy();
+  if (sectorsChart) sectorsChart.destroy();
+  if (genderChart) genderChart.destroy();
+  if (businessChart) businessChart.destroy();
+
+  // Count data
+  const regionCounts = {};
+  const sectorCounts = {};
+  const genderCounts = {};
+  const businessCounts = {};
+
+  submissions.forEach(s => {
+    const region = s.region || 'Haijatajwa';
+    const sector = s.sector || 'Haijatajwa';
+    const gender = s.gender || 'Haijatajwa';
+    const business = s.business_status || 'Haijatajwa';
+
+    regionCounts[region] = (regionCounts[region] || 0) + 1;
+    sectorCounts[sector] = (sectorCounts[sector] || 0) + 1;
+    genderCounts[gender] = (genderCounts[gender] || 0) + 1;
+    businessCounts[business] = (businessCounts[business] || 0) + 1;
+  });
+
+  // Color palette
+  const colors = [
+    '#0B6E4F', '#D4A017', '#B3261E', '#128A64', '#E9C766',
+    '#063C2C', '#8B4513', '#2E8B57', '#FF6347', '#4682B4'
+  ];
+
+  // Regions Pie Chart
+  const regionsCtx = document.getElementById('regionsChart').getContext('2d');
+  regionsChart = new Chart(regionsCtx, {
+    type: 'pie',
+    data: {
+      labels: Object.keys(regionCounts).slice(0, 10),
+      datasets: [{
+        data: Object.values(regionCounts).slice(0, 10),
+        backgroundColor: colors
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'right' },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.parsed || 0;
+              const percentage = ((value / total) * 100).toFixed(1);
+              return `${label}: ${value} (${percentage}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Sectors Pie Chart
+  const sectorsCtx = document.getElementById('sectorsChart').getContext('2d');
+  sectorsChart = new Chart(sectorsCtx, {
+    type: 'pie',
+    data: {
+      labels: Object.keys(sectorCounts).slice(0, 10),
+      datasets: [{
+        data: Object.values(sectorCounts).slice(0, 10),
+        backgroundColor: colors
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'right' },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.parsed || 0;
+              const percentage = ((value / total) * 100).toFixed(1);
+              return `${label}: ${value} (${percentage}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Gender Bar Chart
+  const genderCtx = document.getElementById('genderChart').getContext('2d');
+  genderChart = new Chart(genderCtx, {
+    type: 'bar',
+    data: {
+      labels: Object.keys(genderCounts),
+      datasets: [{
+        label: 'Count',
+        data: Object.values(genderCounts),
+        backgroundColor: colors.slice(0, Object.keys(genderCounts).length)
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const value = context.parsed.y;
+              const percentage = ((value / total) * 100).toFixed(1);
+              return `${value} (${percentage}%)`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  // Business Status Bar Chart
+  const businessCtx = document.getElementById('businessChart').getContext('2d');
+  businessChart = new Chart(businessCtx, {
+    type: 'bar',
+    data: {
+      labels: Object.keys(businessCounts),
+      datasets: [{
+        label: 'Count',
+        data: Object.values(businessCounts),
+        backgroundColor: colors.slice(0, Object.keys(businessCounts).length)
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const value = context.parsed.y;
+              const percentage = ((value / total) * 100).toFixed(1);
+              return `${value} (${percentage}%)`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
