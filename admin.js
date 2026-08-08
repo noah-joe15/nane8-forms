@@ -1,12 +1,21 @@
 // ═══════════════════════════════════════════════════
-// SELF-CONTAINED SUPABASE CLIENT
+// SELF-CONTAINED SUPABASE CLIENT + ERROR HANDLING
 // ═══════════════════════════════════════════════════
-if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "undefined") {
-  window.supabaseClient = window.supabase.createClient(
-    "https://ccddzluijwfdytfsuwza.supabase.co",
-    "sb_publishable_wBacQmQqOGF0S6uDpVB7nQ_hBv4EC2P"
-  );
-}
+(function() {
+  try {
+    if (typeof window.supabase !== "undefined" && typeof window.supabaseClient === "undefined") {
+      window.supabaseClient = window.supabase.createClient(
+        "https://ccddzluijwfdytfsuwza.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjZGR6bHVpandmZHl0ZnN1d3phIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU3NzQ1MzYsImV4cCI6MjA1MTM1MDUzNn0.4N0-49NXrwUdA9F1kpW_7OXemE1iiS5NrBcih8RbWps"
+      );
+      console.log("✅ Supabase client initialized");
+    } else if (typeof window.supabase === "undefined") {
+      console.error("❌ Supabase library not loaded!");
+    }
+  } catch (err) {
+    console.error("❌ Failed to create Supabase client:", err);
+  }
+})();
 
 (function () {
   "use strict";
@@ -15,18 +24,45 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
   var chartsInitialized = false;
   var regionsChart, sectorsChart, genderChart, businessChart;
 
+  // Global error handler
+  window.onerror = function(msg, url, line, col, error) {
+    console.error("🔥 Global error:", msg, "at", url + ":" + line + ":" + col);
+    console.error(error);
+    return false;
+  };
+
   // --- LANGUAGE ---
   window.setLang = function (l) {
-    document.body.classList.remove("lang-sw", "lang-en");
-    document.body.classList.add("lang-" + l);
-    document.getElementById("btn-lang-sw").classList.toggle("active", l === "sw");
-    document.getElementById("btn-lang-en").classList.toggle("active", l === "en");
+    try {
+      document.body.classList.remove("lang-sw", "lang-en");
+      document.body.classList.add("lang-" + l);
+      document.getElementById("btn-lang-sw").classList.toggle("active", l === "sw");
+      document.getElementById("btn-lang-en").classList.toggle("active", l === "en");
+    } catch (err) {
+      console.error("setLang error:", err);
+    }
   };
 
   // --- AUTH ---
   async function checkAuth() {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (session) { showDashboard(); } else { showLogin(); }
+    try {
+      console.log("🔐 Checking auth...");
+      if (typeof supabaseClient === "undefined") {
+        throw new Error("supabaseClient is undefined - library not loaded");
+      }
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      if (error) throw error;
+      console.log("✅ Auth check complete, session:", session ? "exists" : "none");
+      if (session) { 
+        showDashboard(); 
+      } else { 
+        showLogin(); 
+      }
+    } catch (err) {
+      console.error("❌ Auth check failed:", err);
+      // Fallback: show login form
+      showLogin();
+    }
   }
 
   window.handleLogin = async function (e) {
@@ -34,26 +70,42 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
     var email = document.getElementById("adminEmail").value;
     var password = document.getElementById("adminPass").value;
     var loginBtn = document.getElementById("loginBtn");
+    var loginError = document.getElementById("loginError");
+    
     loginBtn.disabled = true;
     loginBtn.innerHTML = '<span class="lang-sw">Inaingia...</span><span class="lang-en">Signing in...</span>';
-    document.getElementById("loginError").style.display = "none";
-    const { error } = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
-    if (error) {
-      document.getElementById("loginError").style.display = "block";
+    loginError.style.display = "none";
+    
+    try {
+      const { error } = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
+      if (error) {
+        console.error("Login error:", error);
+        loginError.style.display = "block";
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = '<span class="lang-sw">Ingia</span><span class="lang-en">Sign In</span>';
+      } else {
+        showDashboard();
+      }
+    } catch (err) {
+      console.error("Login exception:", err);
+      alert("Login failed: " + err.message);
       loginBtn.disabled = false;
       loginBtn.innerHTML = '<span class="lang-sw">Ingia</span><span class="lang-en">Sign In</span>';
-    } else {
-      showDashboard();
     }
     return false;
   };
 
   window.handleLogout = async function () {
-    await supabaseClient.auth.signOut();
+    try {
+      await supabaseClient.auth.signOut();
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
     showLogin();
   };
 
   function showLogin() {
+    console.log("👉 Showing login view");
     document.getElementById("loginView").style.display = "block";
     document.getElementById("dashboardView").style.display = "none";
     document.getElementById("logoutBtn").style.display = "none";
@@ -63,6 +115,7 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
   }
 
   function showDashboard() {
+    console.log("👉 Showing dashboard view");
     document.getElementById("loginView").style.display = "none";
     document.getElementById("dashboardView").style.display = "block";
     document.getElementById("logoutBtn").style.display = "inline-block";
@@ -70,26 +123,30 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
     loadQuestions();
   }
 
-  // --- TABS (fixed: kpi + questions now refresh every time) ---
+  // --- TABS ---
   window.switchTab = function (tab, btn) {
-    document.getElementById("responsesTab").style.display = tab === "responses" ? "block" : "none";
-    document.getElementById("unregisteredTab").style.display = tab === "unregistered" ? "block" : "none";
-    document.getElementById("kpiTab").style.display = tab === "kpi" ? "block" : "none";
-    document.getElementById("questionsTab").style.display = tab === "questions" ? "block" : "none";
-    document.querySelectorAll(".tab-btn").forEach(function (b) { b.classList.remove("active"); });
-    if (btn) btn.classList.add("active");
-    if (tab === "unregistered") renderUnregisteredTable();
-    if (tab === "questions") loadQuestions();
-    if (tab === "kpi") renderKPICharts();
+    try {
+      document.getElementById("responsesTab").style.display = tab === "responses" ? "block" : "none";
+      document.getElementById("unregisteredTab").style.display = tab === "unregistered" ? "block" : "none";
+      document.getElementById("kpiTab").style.display = tab === "kpi" ? "block" : "none";
+      document.getElementById("questionsTab").style.display = tab === "questions" ? "block" : "none";
+      document.querySelectorAll(".tab-btn").forEach(function (b) { b.classList.remove("active"); });
+      if (btn) btn.classList.add("active");
+      if (tab === "unregistered") renderUnregisteredTable();
+      if (tab === "questions") loadQuestions();
+      if (tab === "kpi") renderKPICharts();
+    } catch (err) {
+      console.error("switchTab error:", err);
+    }
   };
 
-  // --- MIT REGISTRATION HELPER (robust matching) ---
+  // --- MIT REGISTRATION HELPER ---
   function isUnregistered(sub) {
     var v = String(sub.bidhaa_zimesajiliwa || "").trim().toLowerCase();
     return v.indexOf("hapana") !== -1 || v.indexOf("sijui") !== -1;
   }
 
-  // --- DATA LOADING (fixed: KPI refreshes when data arrives) ---
+  // --- DATA LOADING ---
   window.loadSubmissions = async function () {
     var holder = document.getElementById("tableHolder");
     holder.innerHTML = '<div class="state-msg"><span class="lang-sw">Inapakia majibu…</span><span class="lang-en">Loading responses…</span></div>';
@@ -104,49 +161,63 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
         var keys = Object.keys(sub).filter(function (k) { return k !== "submitted_at" && k !== "created_at"; });
         return keys.length > 0;
       });
+      console.log("✅ Loaded", allSubmissions.length, "submissions");
       updateStats();
       renderTable();
       renderPercentageBreakdowns(allSubmissions);
       renderKPICharts();
     } catch (err) {
+      console.error("❌ Load submissions error:", err);
       holder.innerHTML = '<div class="state-msg" style="color:var(--danger)">Hitilafu: ' + err.message + '</div>';
     }
   };
 
   function updateStats() {
-    document.getElementById("statTotal").textContent = allSubmissions.length;
-    var regions = new Set();
-    var districts = new Set();
-    var unregisteredCount = 0;
-    allSubmissions.forEach(function (sub) {
-      if (sub.mkoa) regions.add(String(sub.mkoa).trim().toLowerCase());
-      if (sub.wilaya) districts.add(String(sub.wilaya).trim().toLowerCase());
-      if (isUnregistered(sub)) unregisteredCount++;
-    });
-    document.getElementById("statRegions").textContent = regions.size;
-    document.getElementById("statDistricts").textContent = districts.size;
-    document.getElementById("statUnregistered").textContent = unregisteredCount;
+    try {
+      document.getElementById("statTotal").textContent = allSubmissions.length;
+      var regions = new Set();
+      var districts = new Set();
+      var unregisteredCount = 0;
+      allSubmissions.forEach(function (sub) {
+        if (sub.mkoa) regions.add(String(sub.mkoa).trim().toLowerCase());
+        if (sub.wilaya) districts.add(String(sub.wilaya).trim().toLowerCase());
+        if (isUnregistered(sub)) unregisteredCount++;
+      });
+      document.getElementById("statRegions").textContent = regions.size;
+      document.getElementById("statDistricts").textContent = districts.size;
+      document.getElementById("statUnregistered").textContent = unregisteredCount;
+    } catch (err) {
+      console.error("updateStats error:", err);
+    }
   }
 
   // --- TABLES ---
   window.renderTable = function () {
-    var query = (document.getElementById("searchInput").value || "").toLowerCase();
-    var rows = allSubmissions.filter(function (sub) {
-      if (!query) return true;
-      return Object.values(sub).some(function (v) { return String(v).toLowerCase().includes(query); });
-    });
-    document.getElementById("countPill").innerHTML = rows.length + ' <span class="lang-sw">majibu</span><span class="lang-en">responses</span>';
-    renderGenericTable(rows, "tableHolder", false);
+    try {
+      var query = (document.getElementById("searchInput").value || "").toLowerCase();
+      var rows = allSubmissions.filter(function (sub) {
+        if (!query) return true;
+        return Object.values(sub).some(function (v) { return String(v).toLowerCase().includes(query); });
+      });
+      document.getElementById("countPill").innerHTML = rows.length + ' <span class="lang-sw">majibu</span><span class="lang-en">responses</span>';
+      renderGenericTable(rows, "tableHolder", false);
+    } catch (err) {
+      console.error("renderTable error:", err);
+    }
   };
 
   window.renderUnregisteredTable = function () {
-    var query = (document.getElementById("unregSearchInput").value || "").toLowerCase();
-    var rows = allSubmissions.filter(isUnregistered).filter(function (sub) {
-      if (!query) return true;
-      return Object.values(sub).some(function (v) { return String(v).toLowerCase().includes(query); });
-    });
-    document.getElementById("unregCountPill").textContent = rows.length;
-    renderGenericTable(rows, "unregisteredTableHolder", true);
+    try {
+      var query = (document.getElementById("unregSearchInput").value || "").toLowerCase();
+      var rows = allSubmissions.filter(isUnregistered).filter(function (sub) {
+        if (!query) return true;
+        return Object.values(sub).some(function (v) { return String(v).toLowerCase().includes(query); });
+      });
+      document.getElementById("unregCountPill").textContent = rows.length;
+      renderGenericTable(rows, "unregisteredTableHolder", true);
+    } catch (err) {
+      console.error("renderUnregisteredTable error:", err);
+    }
   };
 
   function renderGenericTable(rows, holderId, isUnregisteredView) {
@@ -226,12 +297,16 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
       allQuestions = data || [];
       renderQuestions();
     } catch (err) {
+      console.error("loadQuestions error:", err);
       holder.innerHTML = '<div class="state-msg" style="color:var(--danger)">Hitilafu: ' + err.message + '</div>';
     }
   };
 
   window.renderQuestions = function () {
-    if (!allQuestions.length) { document.getElementById("questionsHolder").innerHTML = '<div class="state-msg"><span class="lang-sw">Hakuna maswali bado.</span><span class="lang-en">No questions yet.</span></div>'; return; }
+    if (!allQuestions.length) { 
+      document.getElementById("questionsHolder").innerHTML = '<div class="state-msg"><span class="lang-sw">Hakuna maswali bado.</span><span class="lang-en">No questions yet.</span></div>'; 
+      return; 
+    }
     var html = '<table><thead><tr><th>Step</th><th>Field</th><th>Label (SW)</th><th>Type</th><th>Actions</th></tr></thead><tbody>';
     allQuestions.forEach(function (q) {
       html += '<tr><td>' + q.step_number + '</td><td><code>' + q.field_name + '</code></td><td>' + q.label_sw + '</td><td>' + q.input_type + '</td><td>' +
@@ -265,8 +340,12 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
     try {
       if (id) { await supabaseClient.from('survey_questions').update(payload).eq('id', id); }
       else { await supabaseClient.from('survey_questions').insert([payload]); }
-      resetQForm(); loadQuestions(); alert("Swali limehifadhiwa!");
-    } catch (err) { alert("Hitilafu: " + err.message); }
+      resetQForm(); 
+      loadQuestions(); 
+      alert("Swali limehifadhiwa!");
+    } catch (err) { 
+      alert("Hitilafu: " + err.message); 
+    }
     return false;
   };
 
@@ -296,7 +375,7 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
     toggleOptions();
   };
 
-  // --- KPI / CHARTS (fixed: stats + charts refresh correctly) ---
+  // --- KPI / CHARTS ---
   function kpiTabVisible() {
     var el = document.getElementById("kpiTab");
     return !!el && el.style.display !== "none";
@@ -307,19 +386,23 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
   }
 
   function renderKPICharts() {
-    document.getElementById("kpiTotal").textContent = allSubmissions.length;
-    var unregisteredCount = allSubmissions.filter(isUnregistered).length;
-    document.getElementById("kpiUnregistered").textContent = unregisteredCount;
-    var completeCount = allSubmissions.filter(function (sub) {
-      return sub.respondent_name && sub.mkoa;
-    }).length;
-    var completionRate = allSubmissions.length > 0 ? Math.round((completeCount / allSubmissions.length) * 100) : 0;
-    document.getElementById("kpiCompletion").textContent = completionRate + "%";
+    try {
+      document.getElementById("kpiTotal").textContent = allSubmissions.length;
+      var unregisteredCount = allSubmissions.filter(isUnregistered).length;
+      document.getElementById("kpiUnregistered").textContent = unregisteredCount;
+      var completeCount = allSubmissions.filter(function (sub) {
+        return sub.respondent_name && sub.mkoa;
+      }).length;
+      var completionRate = allSubmissions.length > 0 ? Math.round((completeCount / allSubmissions.length) * 100) : 0;
+      document.getElementById("kpiCompletion").textContent = completionRate + "%";
 
-    if (kpiTabVisible() && typeof Chart !== "undefined") {
-      if (!chartsInitialized) { initCharts(); chartsInitialized = true; }
-      else { updateCharts(); }
-      setTimeout(resizeAllCharts, 60);
+      if (kpiTabVisible() && typeof Chart !== "undefined") {
+        if (!chartsInitialized) { initCharts(); chartsInitialized = true; }
+        else { updateCharts(); }
+        setTimeout(resizeAllCharts, 60);
+      }
+    } catch (err) {
+      console.error("renderKPICharts error:", err);
     }
   }
 
@@ -449,6 +532,7 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
   };
 
   // Initialize
+  console.log("🚀 Admin app initializing...");
   setLang("sw");
   checkAuth();
 })();
