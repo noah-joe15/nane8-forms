@@ -246,14 +246,19 @@
   </div>
 </div>
 
-  <!-- Chart.js for KPI visualizations -->
+<!-- ══════════ SCRIPTS (correct order matters!) ══════════ -->
+
+<!-- 1. Chart.js for KPI visualizations -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- html2canvas for image export -->
+
+<!-- 2. html2canvas for image export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  const SUPABASE_URL = 'https://ccddzluijwfdytfsuwza.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_wBacQmQqOGF0S6uDpVB7nQ_hBv4EC2P';
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-</script>
+
+<!-- 3. Supabase Library (THIS WAS MISSING!) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- 4. App logic (self-contained with guard) -->
 <script src="admin.js"></script>
+
 </body>
 </html>
