@@ -1,19 +1,21 @@
-// ═══════════════════════════════════════════════════
-// SELF-CONTAINED SUPABASE CLIENT + ERROR HANDLING
-// ═══════════════════════════════════════════════════
-(function() {
+// =====================================================
+// NANENANE 2026 - ADMIN DASHBOARD (admin.js)
+// =====================================================
+
+// --- Supabase client (self-contained) ---
+(function () {
   try {
     if (typeof window.supabase !== "undefined" && typeof window.supabaseClient === "undefined") {
       window.supabaseClient = window.supabase.createClient(
         "https://ccddzluijwfdytfsuwza.supabase.co",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjZGR6bHVpandmZHl0ZnN1d3phIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU3NzQ1MzYsImV4cCI6MjA1MTM1MDUzNn0.4N0-49NXrwUdA9F1kpW_7OXemE1iiS5NrBcih8RbWps"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjZGR6bHVpandmZHl0ZnN1d3phIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU0Nzg1MzYsImV4cCI6MjEwMTA1NDUzNn0.4N0-49NXrwUdA9F1kpW_7OXemE1iiS5NrBcih8RbWps"
       );
-      console.log("✅ Supabase client initialized");
+      console.log("[OK] Supabase client initialized");
     } else if (typeof window.supabase === "undefined") {
-      console.error("❌ Supabase library not loaded!");
+      console.error("[ERROR] Supabase library not loaded");
     }
   } catch (err) {
-    console.error("❌ Failed to create Supabase client:", err);
+    console.error("[ERROR] Failed to create Supabase client:", err);
   }
 })();
 
@@ -24,10 +26,8 @@
   var chartsInitialized = false;
   var regionsChart, sectorsChart, genderChart, businessChart;
 
-  // Global error handler
-  window.onerror = function(msg, url, line, col, error) {
-    console.error("🔥 Global error:", msg, "at", url + ":" + line + ":" + col);
-    console.error(error);
+  window.onerror = function (msg, url, line, col, error) {
+    console.error("[GLOBAL ERROR]", msg, "at", url + ":" + line + ":" + col);
     return false;
   };
 
@@ -39,28 +39,23 @@
       document.getElementById("btn-lang-sw").classList.toggle("active", l === "sw");
       document.getElementById("btn-lang-en").classList.toggle("active", l === "en");
     } catch (err) {
-      console.error("setLang error:", err);
+      console.error("[ERROR] setLang:", err);
     }
   };
 
   // --- AUTH ---
   async function checkAuth() {
     try {
-      console.log("🔐 Checking auth...");
+      console.log("[AUTH] Checking session...");
       if (typeof supabaseClient === "undefined") {
         throw new Error("supabaseClient is undefined - library not loaded");
       }
       const { data: { session }, error } = await supabaseClient.auth.getSession();
       if (error) throw error;
-      console.log("✅ Auth check complete, session:", session ? "exists" : "none");
-      if (session) { 
-        showDashboard(); 
-      } else { 
-        showLogin(); 
-      }
+      console.log("[AUTH] Session:", session ? "exists" : "none");
+      if (session) { showDashboard(); } else { showLogin(); }
     } catch (err) {
-      console.error("❌ Auth check failed:", err);
-      // Fallback: show login form
+      console.error("[ERROR] Auth check failed:", err);
       showLogin();
     }
   }
@@ -71,15 +66,15 @@
     var password = document.getElementById("adminPass").value;
     var loginBtn = document.getElementById("loginBtn");
     var loginError = document.getElementById("loginError");
-    
+
     loginBtn.disabled = true;
     loginBtn.innerHTML = '<span class="lang-sw">Inaingia...</span><span class="lang-en">Signing in...</span>';
     loginError.style.display = "none";
-    
+
     try {
       const { error } = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
       if (error) {
-        console.error("Login error:", error);
+        console.error("[ERROR] Login:", error);
         loginError.style.display = "block";
         loginBtn.disabled = false;
         loginBtn.innerHTML = '<span class="lang-sw">Ingia</span><span class="lang-en">Sign In</span>';
@@ -87,7 +82,7 @@
         showDashboard();
       }
     } catch (err) {
-      console.error("Login exception:", err);
+      console.error("[ERROR] Login exception:", err);
       alert("Login failed: " + err.message);
       loginBtn.disabled = false;
       loginBtn.innerHTML = '<span class="lang-sw">Ingia</span><span class="lang-en">Sign In</span>';
@@ -96,16 +91,12 @@
   };
 
   window.handleLogout = async function () {
-    try {
-      await supabaseClient.auth.signOut();
-    } catch (err) {
-      console.error("Logout error:", err);
-    }
+    try { await supabaseClient.auth.signOut(); } catch (err) { console.error("[ERROR] Logout:", err); }
     showLogin();
   };
 
   function showLogin() {
-    console.log("👉 Showing login view");
+    console.log("[UI] Showing login view");
     document.getElementById("loginView").style.display = "block";
     document.getElementById("dashboardView").style.display = "none";
     document.getElementById("logoutBtn").style.display = "none";
@@ -115,7 +106,7 @@
   }
 
   function showDashboard() {
-    console.log("👉 Showing dashboard view");
+    console.log("[UI] Showing dashboard view");
     document.getElementById("loginView").style.display = "none";
     document.getElementById("dashboardView").style.display = "block";
     document.getElementById("logoutBtn").style.display = "inline-block";
@@ -136,7 +127,7 @@
       if (tab === "questions") loadQuestions();
       if (tab === "kpi") renderKPICharts();
     } catch (err) {
-      console.error("switchTab error:", err);
+      console.error("[ERROR] switchTab:", err);
     }
   };
 
@@ -161,13 +152,13 @@
         var keys = Object.keys(sub).filter(function (k) { return k !== "submitted_at" && k !== "created_at"; });
         return keys.length > 0;
       });
-      console.log("✅ Loaded", allSubmissions.length, "submissions");
+      console.log("[OK] Loaded", allSubmissions.length, "submissions");
       updateStats();
       renderTable();
       renderPercentageBreakdowns(allSubmissions);
       renderKPICharts();
     } catch (err) {
-      console.error("❌ Load submissions error:", err);
+      console.error("[ERROR] Load submissions:", err);
       holder.innerHTML = '<div class="state-msg" style="color:var(--danger)">Hitilafu: ' + err.message + '</div>';
     }
   };
@@ -187,7 +178,7 @@
       document.getElementById("statDistricts").textContent = districts.size;
       document.getElementById("statUnregistered").textContent = unregisteredCount;
     } catch (err) {
-      console.error("updateStats error:", err);
+      console.error("[ERROR] updateStats:", err);
     }
   }
 
@@ -202,7 +193,7 @@
       document.getElementById("countPill").innerHTML = rows.length + ' <span class="lang-sw">majibu</span><span class="lang-en">responses</span>';
       renderGenericTable(rows, "tableHolder", false);
     } catch (err) {
-      console.error("renderTable error:", err);
+      console.error("[ERROR] renderTable:", err);
     }
   };
 
@@ -216,7 +207,7 @@
       document.getElementById("unregCountPill").textContent = rows.length;
       renderGenericTable(rows, "unregisteredTableHolder", true);
     } catch (err) {
-      console.error("renderUnregisteredTable error:", err);
+      console.error("[ERROR] renderUnregisteredTable:", err);
     }
   };
 
@@ -297,15 +288,15 @@
       allQuestions = data || [];
       renderQuestions();
     } catch (err) {
-      console.error("loadQuestions error:", err);
+      console.error("[ERROR] loadQuestions:", err);
       holder.innerHTML = '<div class="state-msg" style="color:var(--danger)">Hitilafu: ' + err.message + '</div>';
     }
   };
 
   window.renderQuestions = function () {
-    if (!allQuestions.length) { 
-      document.getElementById("questionsHolder").innerHTML = '<div class="state-msg"><span class="lang-sw">Hakuna maswali bado.</span><span class="lang-en">No questions yet.</span></div>'; 
-      return; 
+    if (!allQuestions.length) {
+      document.getElementById("questionsHolder").innerHTML = '<div class="state-msg"><span class="lang-sw">Hakuna maswali bado.</span><span class="lang-en">No questions yet.</span></div>';
+      return;
     }
     var html = '<table><thead><tr><th>Step</th><th>Field</th><th>Label (SW)</th><th>Type</th><th>Actions</th></tr></thead><tbody>';
     allQuestions.forEach(function (q) {
@@ -340,11 +331,11 @@
     try {
       if (id) { await supabaseClient.from('survey_questions').update(payload).eq('id', id); }
       else { await supabaseClient.from('survey_questions').insert([payload]); }
-      resetQForm(); 
-      loadQuestions(); 
+      resetQForm();
+      loadQuestions();
       alert("Swali limehifadhiwa!");
-    } catch (err) { 
-      alert("Hitilafu: " + err.message); 
+    } catch (err) {
+      alert("Hitilafu: " + err.message);
     }
     return false;
   };
@@ -402,7 +393,7 @@
         setTimeout(resizeAllCharts, 60);
       }
     } catch (err) {
-      console.error("renderKPICharts error:", err);
+      console.error("[ERROR] renderKPICharts:", err);
     }
   }
 
@@ -523,7 +514,7 @@
         URL.revokeObjectURL(url);
       }, 'image/png', 0.95);
     } catch (error) {
-      console.error('Export failed:', error);
+      console.error('[ERROR] Export failed:', error);
       alert('Export failed. Please try again.');
     } finally {
       exportBtn.innerHTML = originalText;
@@ -532,7 +523,7 @@
   };
 
   // Initialize
-  console.log("🚀 Admin app initializing...");
+  console.log("[INIT] Admin app starting...");
   setLang("sw");
   checkAuth();
 })();
