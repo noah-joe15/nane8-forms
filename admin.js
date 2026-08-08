@@ -70,19 +70,26 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
     loadQuestions();
   }
 
-  // --- TABS ---
+  // --- TABS (fixed: kpi + questions now refresh every time) ---
   window.switchTab = function (tab, btn) {
     document.getElementById("responsesTab").style.display = tab === "responses" ? "block" : "none";
     document.getElementById("unregisteredTab").style.display = tab === "unregistered" ? "block" : "none";
     document.getElementById("kpiTab").style.display = tab === "kpi" ? "block" : "none";
     document.getElementById("questionsTab").style.display = tab === "questions" ? "block" : "none";
     document.querySelectorAll(".tab-btn").forEach(function (b) { b.classList.remove("active"); });
-    btn.classList.add("active");
+    if (btn) btn.classList.add("active");
     if (tab === "unregistered") renderUnregisteredTable();
+    if (tab === "questions") loadQuestions();
     if (tab === "kpi") renderKPICharts();
   };
 
-  // --- DATA LOADING ---
+  // --- MIT REGISTRATION HELPER (robust matching) ---
+  function isUnregistered(sub) {
+    var v = String(sub.bidhaa_zimesajiliwa || "").trim().toLowerCase();
+    return v.indexOf("hapana") !== -1 || v.indexOf("sijui") !== -1;
+  }
+
+  // --- DATA LOADING (fixed: KPI refreshes when data arrives) ---
   window.loadSubmissions = async function () {
     var holder = document.getElementById("tableHolder");
     holder.innerHTML = '<div class="state-msg"><span class="lang-sw">Inapakia majibu…</span><span class="lang-en">Loading responses…</span></div>';
@@ -100,6 +107,7 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
       updateStats();
       renderTable();
       renderPercentageBreakdowns(allSubmissions);
+      renderKPICharts();
     } catch (err) {
       holder.innerHTML = '<div class="state-msg" style="color:var(--danger)">Hitilafu: ' + err.message + '</div>';
     }
@@ -111,9 +119,9 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
     var districts = new Set();
     var unregisteredCount = 0;
     allSubmissions.forEach(function (sub) {
-      if (sub.mkoa) regions.add(sub.mkoa.trim().toLowerCase());
-      if (sub.wilaya) districts.add(sub.wilaya.trim().toLowerCase());
-      if (sub.bidhaa_zimesajiliwa === "Hapana" || sub.bidhaa_zimesajiliwa === "Sijui utaratibu") unregisteredCount++;
+      if (sub.mkoa) regions.add(String(sub.mkoa).trim().toLowerCase());
+      if (sub.wilaya) districts.add(String(sub.wilaya).trim().toLowerCase());
+      if (isUnregistered(sub)) unregisteredCount++;
     });
     document.getElementById("statRegions").textContent = regions.size;
     document.getElementById("statDistricts").textContent = districts.size;
@@ -133,9 +141,7 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
 
   window.renderUnregisteredTable = function () {
     var query = (document.getElementById("unregSearchInput").value || "").toLowerCase();
-    var rows = allSubmissions.filter(function (sub) {
-      return (sub.bidhaa_zimesajiliwa === "Hapana" || sub.bidhaa_zimesajiliwa === "Sijui utaratibu");
-    }).filter(function (sub) {
+    var rows = allSubmissions.filter(isUnregistered).filter(function (sub) {
       if (!query) return true;
       return Object.values(sub).some(function (v) { return String(v).toLowerCase().includes(query); });
     });
@@ -179,10 +185,7 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
   // --- CSV ---
   window.exportCsv = function () { exportGenericCsv(allSubmissions, "majibu-yote", false); };
   window.exportUnregisteredCsv = function () {
-    var rows = allSubmissions.filter(function (sub) {
-      return (sub.bidhaa_zimesajiliwa === "Hapana" || sub.bidhaa_zimesajiliwa === "Sijui utaratibu");
-    });
-    exportGenericCsv(rows, "wanaohitaji-usajili", true);
+    exportGenericCsv(allSubmissions.filter(isUnregistered), "wanaohitaji-usajili", true);
   };
 
   function exportGenericCsv(rows, filename, isUnregisteredView) {
@@ -293,19 +296,31 @@ if (typeof window.supabaseClient === "undefined" && typeof window.supabase !== "
     toggleOptions();
   };
 
-  // --- KPI / CHARTS ---
+  // --- KPI / CHARTS (fixed: stats + charts refresh correctly) ---
+  function kpiTabVisible() {
+    var el = document.getElementById("kpiTab");
+    return !!el && el.style.display !== "none";
+  }
+
+  function resizeAllCharts() {
+    [regionsChart, sectorsChart, genderChart, businessChart].forEach(function (c) { if (c) c.resize(); });
+  }
+
   function renderKPICharts() {
     document.getElementById("kpiTotal").textContent = allSubmissions.length;
-    var unregisteredCount = allSubmissions.filter(function (sub) {
-      return sub.bidhaa_zimesajiliwa === "Hapana" || sub.bidhaa_zimesajiliwa === "Sijui utaratibu";
-    }).length;
+    var unregisteredCount = allSubmissions.filter(isUnregistered).length;
     document.getElementById("kpiUnregistered").textContent = unregisteredCount;
     var completeCount = allSubmissions.filter(function (sub) {
-      return sub.respondent_name && sub.respondent_email && sub.mkoa;
+      return sub.respondent_name && sub.mkoa;
     }).length;
     var completionRate = allSubmissions.length > 0 ? Math.round((completeCount / allSubmissions.length) * 100) : 0;
     document.getElementById("kpiCompletion").textContent = completionRate + "%";
-    if (!chartsInitialized) { initCharts(); chartsInitialized = true; } else { updateCharts(); }
+
+    if (kpiTabVisible() && typeof Chart !== "undefined") {
+      if (!chartsInitialized) { initCharts(); chartsInitialized = true; }
+      else { updateCharts(); }
+      setTimeout(resizeAllCharts, 60);
+    }
   }
 
   function initCharts() {
