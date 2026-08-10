@@ -10,66 +10,341 @@
   * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
   button, a, input, select, textarea { touch-action: manipulation; }
   
-  /* Language switching CSS */
-  body.lang-sw .lang-en { display: none; }
-  body.lang-en .lang-sw { display: none; }
-  
-  .admin-shell { max-width: 1080px; margin: 0 auto; padding: 20px 16px 60px; }
-  .login-card { max-width: 380px; margin: 60px auto 0; }
-  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .stat-pill { background: var(--green-100); color: var(--green-900); font-weight: 700; font-size: 13px; padding: 7px 14px; border-radius: 999px; }
-  .search-input { max-width: 220px; font-size: 16px; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--white); }
-  thead th { position: sticky; top: 0; background: var(--green-900); color: var(--white); text-align: left; padding: 10px 12px; font-weight: 600; }
-  tbody td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  tbody tr:nth-child(even) { background: #FAFCFA; }
-  .table-wrap { overflow: auto; max-height: 70vh; border: 1px solid var(--line); border-radius: var(--radius-sm); margin-top: 16px; }
-  .state-msg { text-align: center; padding: 40px 20px; color: var(--ink-soft); }
-  .tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid var(--line); flex-wrap: wrap; }
-  .tab-btn { background: none; border: none; padding: 10px 16px; font-weight: 600; color: var(--ink-soft); cursor: pointer; border-bottom: 3px solid transparent; min-height: 48px; }
-  .tab-btn.active { color: var(--green-700); border-bottom-color: var(--green-700); }
-  .q-form { background: var(--green-100); padding: 16px; border-radius: var(--radius-sm); margin-bottom: 20px; }
-  .q-form .field { margin-bottom: 12px; }
-  .q-form .field label { font-size: 12px; font-weight: 600; display: block; margin-bottom: 4px; }
-  .q-form input, .q-form select, .q-form textarea { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 6px; font-family: inherit; font-size: 16px; }
-  .btn-sm { padding: 8px 14px; font-size: 13px; border-radius: 6px; min-height: 40px; }
-  .btn-danger { background: var(--danger); color: white; }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  .logout-link { background: none; border: 0; color: var(--white); font-weight: 600; font-size: 13px; cursor: pointer; text-decoration: underline; }
-  
-  .stats-dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
-  .stat-card { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px; text-align: center; box-shadow: var(--shadow-sm); }
-  .stat-card.highlight { background: var(--gold-100); border-color: var(--gold-300); }
-  .stat-value { font-size: 28px; font-weight: 800; color: var(--green-700); font-family: var(--font-head); line-height: 1; }
+  .admin-shell { max-width: 1080px; margin: 0 auto; padding: 24px 20px 60px; position: relative; }
+
+  .login-card {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    max-width: 400px;
+    margin: 60px auto 0;
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -50%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(212, 160, 23, 0.2), transparent 70%);
+    border-radius: 50%;
+    filter: blur(30px);
+    animation: liquidFloat1 12s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .stats-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 200%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    transition: left 0.8s ease;
+    pointer-events: none;
+  }
+
+  .stat-card:hover::before { left: 100%; }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.28);
+  }
+
+  .stat-card.highlight {
+    background: rgba(251, 240, 210, 0.4);
+    border-color: rgba(233, 199, 102, 0.5);
+  }
+
+  .stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--green-700);
+    font-family: var(--font-head);
+    line-height: 1;
+    margin-bottom: 8px;
+    animation: liquidCountIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    z-index: 2;
+  }
+
   .stat-card.highlight .stat-value { color: var(--gold-700); }
-  .stat-label { font-size: 11px; font-weight: 700; color: var(--ink-soft); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-  /* Language switch buttons */
-  .lang-switch { display: flex; gap: 4px; }
-  .lang-switch button { 
-    padding: 6px 12px; 
-    border: 1px solid rgba(255,255,255,0.3); 
-    background: rgba(255,255,255,0.1); 
-    color: var(--white); 
-    border-radius: 4px; 
-    cursor: pointer;
-    font-size: 12px;
+  .stat-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 2;
+  }
+
+  @keyframes liquidCountIn {
+    0% { opacity: 0; transform: translateY(10px) scale(0.8); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 18px;
     font-weight: 600;
-  }
-  .lang-switch button.active { 
-    background: var(--white); 
-    color: var(--green-900); 
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    min-height: 48px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
   }
 
-  /* Prevent iOS zoom on inputs */
-  input.text-input, select, textarea { font-size: 16px !important; }
-  
-  @media (max-width: 480px) {
-    .admin-shell { padding: 12px 10px 40px; }
+  .tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    width: 0; height: 3px;
+    background: linear-gradient(90deg, var(--green-700), var(--gold-500));
+    transform: translateX(-50%);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .tab-btn:hover { background: rgba(255, 255, 255, 0.2); color: var(--green-700); }
+  .tab-btn.active { background: rgba(255, 255, 255, 0.3); color: var(--green-700); }
+  .tab-btn.active::after { width: 100%; }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .stat-pill {
+    background: rgba(228, 243, 236, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--green-900);
+    font-weight: 700;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(228, 243, 236, 0.5);
+    animation: liquidCountIn 0.5s ease-out;
+  }
+
+  .search-input {
+    max-width: 240px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    transition: all 0.3s ease;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--green-700);
+    box-shadow: 0 0 0 4px rgba(11, 110, 79, 0.15);
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .table-wrap {
+    overflow: auto;
+    max-height: 70vh;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-sm);
+    margin-top: 16px;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; background: rgba(255, 255, 255, 0.3); }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    background: rgba(6, 60, 44, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--white);
+    text-align: left;
+    padding: 12px 14px;
+    font-weight: 600;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  }
+
+  tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    vertical-align: top;
+  }
+
+  tbody tr { transition: all 0.2s ease; }
+  tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.1); }
+  tbody tr:hover { background: rgba(255, 255, 255, 0.25); transform: translateX(2px); }
+
+  .q-form {
+    background: rgba(228, 243, 236, 0.3);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(228, 243, 236, 0.4);
+    padding: 20px;
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+  }
+
+  .logout-link {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+  }
+
+  .logout-link:hover { background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.4); }
+
+  .state-msg {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--ink-soft);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: var(--radius-sm);
+  }
+
+  .btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: var(--radius-sm);
+    min-height: 40px;
+  }
+
+  .btn-danger {
+    background: rgba(179, 38, 30, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(179, 38, 30, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .btn-danger:hover {
+    background: rgba(179, 38, 30, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(179, 38, 30, 0.4);
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* ============================================
+     BUBBLE EFFECTS — STAT CARDS
+     ============================================ */
+
+  .stat-card .bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, 
+      rgba(255, 255, 255, 0.8), 
+      rgba(255, 255, 255, 0.3) 50%, 
+      rgba(255, 255, 255, 0.1) 70%, 
+      transparent 100%);
+    box-shadow: 
+      inset 0 0 6px rgba(255, 255, 255, 0.5),
+      0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: bubbleRise 3s ease-in infinite;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .stat-card .bubble:nth-child(1) { width: 8px; height: 8px; left: 20%; animation-delay: 0s; animation-duration: 2.5s; }
+  .stat-card .bubble:nth-child(2) { width: 12px; height: 12px; left: 45%; animation-delay: 0.8s; animation-duration: 3s; }
+  .stat-card .bubble:nth-child(3) { width: 16px; height: 16px; left: 70%; animation-delay: 1.5s; animation-duration: 3.5s; }
+  .stat-card .bubble:nth-child(4) { width: 6px; height: 6px; left: 30%; animation-delay: 2s; animation-duration: 2.8s; }
+  .stat-card .bubble:nth-child(5) { width: 10px; height: 10px; left: 60%; animation-delay: 0.5s; animation-duration: 3.2s; }
+
+  @keyframes bubbleRise {
+    0% { bottom: -20px; opacity: 0; transform: translateX(0) scale(0.5); }
+    10% { opacity: 0.8; transform: translateX(2px) scale(1); }
+    50% { opacity: 0.6; transform: translateX(-3px) scale(1.05); }
+    90% { opacity: 0.3; transform: translateX(2px) scale(1.1); }
+    100% { bottom: 120%; opacity: 0; transform: translateX(0) scale(1.15); }
+  }
+
+  .stat-card.highlight .bubble {
+    background: radial-gradient(circle at 30% 30%, 
+      rgba(212, 160, 23, 0.6), 
+      rgba(212, 160, 23, 0.3) 50%, 
+      rgba(212, 160, 23, 0.1) 70%, 
+      transparent 100%);
+    box-shadow: 
+      inset 0 0 6px rgba(212, 160, 23, 0.5),
+      0 2px 8px rgba(212, 160, 23, 0.2);
+  }
+
+  @media (max-width: 768px) {
     .stats-dashboard { grid-template-columns: repeat(2, 1fr); }
     .grid-2, .grid-3 { grid-template-columns: 1fr; }
-    .tab-btn { padding: 8px 12px; font-size: 13px; }
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .search-input { max-width: 100%; }
+  }
+
+  @media (max-width: 480px) {
+    .stats-dashboard { grid-template-columns: 1fr; }
+    .stat-value { font-size: 28px; }
+    .tab-btn { padding: 8px 14px; font-size: 13px; }
   }
 </style>
 </head>
@@ -135,43 +410,54 @@
   <div id="dashboardView" style="display:none;">
     <div class="stats-dashboard">
       <div class="stat-card">
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="stat-value" id="statTotal">0</div>
-  <div class="stat-label">
-    <span class="lang-sw">Jumla ya Majibu</span>
-    <span class="lang-en">Total Responses</span>
-  </div>
-</div>
-    
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label">
+          <span class="lang-sw">Jumla ya Majibu</span>
+          <span class="lang-en">Total Responses</span>
+        </div>
+      </div>
       <div class="stat-card">
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="stat-value" id="statRegions">0</div>
-  <div class="stat-label">
-    <span class="lang-sw">Mikoa</span>
-    <span class="lang-en">Regions</span>
-  </div>
-</div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="stat-value" id="statRegions">0</div>
+        <div class="stat-label">
+          <span class="lang-sw">Mikoa</span>
+          <span class="lang-en">Regions</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="stat-value" id="statDistricts">0</div>
+        <div class="stat-label">
+          <span class="lang-sw">Wilaya</span>
+          <span class="lang-en">Districts</span>
+        </div>
+      </div>
       <div class="stat-card highlight">
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="stat-value" id="statRegions">0</div>
-  <div class="stat-label">
-    <span class="lang-sw">Hawajasajiliwa (MIT)</span>
-    <span class="lang-en">Unregistered (MIT)</span>
-  </div>
-</div>
-</div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="stat-value" id="statUnregistered">0</div>
+        <div class="stat-label">
+          <span class="lang-sw">Hawajasajiliwa (MIT)</span>
+          <span class="lang-en">Unregistered (MIT)</span>
+        </div>
+      </div>
+    </div>
 
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('responses', this)">
@@ -261,6 +547,11 @@
 
         <div class="stats-dashboard" style="margin-bottom:30px;">
           <div class="stat-card">
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
             <div class="stat-value" id="kpiTotal">0</div>
             <div class="stat-label">
               <span class="lang-sw">Jumla ya Majibu</span>
@@ -268,6 +559,11 @@
             </div>
           </div>
           <div class="stat-card">
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
             <div class="stat-value" id="kpiCompletion">0%</div>
             <div class="stat-label">
               <span class="lang-sw">Kiwango cha Kutosheleza</span>
@@ -275,6 +571,11 @@
             </div>
           </div>
           <div class="stat-card highlight">
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
             <div class="stat-value" id="kpiUnregistered">0</div>
             <div class="stat-label">
               <span class="lang-sw">Hawajasajiliwa</span>
