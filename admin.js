@@ -1,8 +1,6 @@
 // =====================================================
 // NANENANE 2026 - ADMIN DASHBOARD (admin.js)
 // =====================================================
-
-// --- Supabase client (self-contained) ---
 (function () {
   try {
     if (typeof window.supabase !== "undefined" && typeof window.supabaseClient === "undefined") {
@@ -14,9 +12,7 @@
     } else if (typeof window.supabase === "undefined") {
       console.error("[ERROR] Supabase library not loaded");
     }
-  } catch (err) {
-    console.error("[ERROR] Failed to create Supabase client:", err);
-  }
+  } catch (err) { console.error("[ERROR] Failed to create Supabase client:", err); }
 })();
 
 (function () {
@@ -26,94 +22,50 @@
   var chartsInitialized = false;
   var regionsChart, sectorsChart, genderChart, businessChart;
 
+  var SVG_EDIT = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>';
+  var SVG_TRASH = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+
   window.onerror = function (msg, url, line, col, error) {
     console.error("[GLOBAL ERROR]", msg, "at", url + ":" + line + ":" + col);
     return false;
   };
 
-  // ============================================
-  // MASSIVE COLOR PALETTE — 100+ UNIQUE COLORS
-  // ============================================
   const COLOR_PALETTE = [
-    // Greens (20)
-    '#0B6E4F', '#128A64', '#063C2C', '#1A7A5C', '#0D5A3F',
-    '#148B6A', '#0A4F38', '#1B9A75', '#074028', '#1DAB80',
-    '#0E6B50', '#1FBC8B', '#0B7855', '#22CD96', '#0C8560',
-    '#25DEA1', '#0D926B', '#28EFAC', '#0EA076', '#2BFFB7',
-    
-    // Blues (20)
-    '#164C82', '#1E6BB8', '#0E2A4A', '#2585D6', '#124070',
-    '#2CA0F4', '#1A5A9E', '#33BBFF', '#163F6F', '#3AD6FF',
-    '#1D6FAD', '#41F1FF', '#184E7B', '#48FFD1', '#1F7EC9',
-    '#4FFFA3', '#165EA7', '#56FFD5', '#1C8ED5', '#5DFFA7',
-    
-    // Golds/Yellows (15)
-    '#D4A017', '#E9C766', '#B8860B', '#F5D87A', '#9E720A',
-    '#FFE98E', '#C49612', '#FFFB9C', '#B0850F', '#FFF7AA',
-    '#DCAC1A', '#FFED8E', '#C89D15', '#FFE372', '#B48E12',
-    
-    // Reds/Oranges (15)
-    '#B3261E', '#E85D4A', '#8B1A14', '#FF7F6B', '#9F2319',
-    '#FFA58E', '#C73E34', '#FFC9B2', '#AF2A21', '#FFEDD6',
-    '#D75248', '#FFB399', '#BF3930', '#FFD7BF', '#A7251D',
-    
-    // Purples (15)
-    '#6B46C1', '#9F7AEA', '#553C9A', '#B794F4', '#4C3586',
-    '#D6BCFA', '#7C52D4', '#E9D8FD', '#6842A8', '#F3E8FF',
-    '#8461E0', '#C4B5FD', '#7050B4', '#DDD6FE', '#5C3F98',
-    
-    // Pinks (10)
-    '#EC4899', '#F9A8D4', '#DB2777', '#FBCFE8', '#BE185D',
-    '#FDF2F8', '#F472B6', '#FCE7F3', '#EC4899', '#FFF1F2',
-    
-    // Teals/Cyans (10)
-    '#14B8A6', '#5EEAD4', '#0F766E', '#99F6E4', '#115E59',
-    '#CCFBF1', '#2DD4BF', '#A7F3D0', '#0D9488', '#D1FAE5',
-    
-    // Earth tones (10)
-    '#92400E', '#D97706', '#78350F', '#F59E0B', '#92400E',
-    '#FCD34D', '#B45309', '#FDE68A', '#A16207', '#FEF3C7',
-    
-    // Grays (5)
-    '#374151', '#6B7280', '#4B5563', '#9CA3AF', '#6B7280'
+    '#0B6E4F','#128A64','#063C2C','#1A7A5C','#0D5A3F','#148B6A','#0A4F38','#1B9A75','#074028','#1DAB80',
+    '#0E6B50','#1FBC8B','#0B7855','#22CD96','#0C8560','#25DEA1','#0D926B','#28EFAC','#0EA076','#2BFFB7',
+    '#164C82','#1E6BB8','#0E2A4A','#2585D6','#124070','#2CA0F4','#1A5A9E','#33BBFF','#163F6F','#3AD6FF',
+    '#1D6FAD','#41F1FF','#184E7B','#48FFD1','#1F7EC9','#4FFFA3','#165EA7','#56FFD5','#1C8ED5','#5DFFA7',
+    '#D4A017','#E9C766','#B8860B','#F5D87A','#9E720A','#FFE98E','#C49612','#FFFB9C','#B0850F','#FFF7AA',
+    '#DCAC1A','#FFED8E','#C89D15','#FFE372','#B48E12','#B3261E','#E85D4A','#8B1A14','#FF7F6B','#9F2319',
+    '#FFA58E','#C73E34','#FFC9B2','#AF2A21','#FFEDD6','#D75248','#FFB399','#BF3930','#FFD7BF','#A7251D',
+    '#6B46C1','#9F7AEA','#553C9A','#B794F4','#4C3586','#D6BCFA','#7C52D4','#E9D8FD','#6842A8','#F3E8FF',
+    '#8461E0','#C4B5FD','#7050B4','#DDD6FE','#5C3F98','#EC4899','#F9A8D4','#DB2777','#FBCFE8','#BE185D',
+    '#FDF2F8','#F472B6','#FCE7F3','#FFF1F2','#14B8A6','#5EEAD4','#0F766E','#99F6E4','#115E59','#CCFBF1',
+    '#2DD4BF','#A7F3D0','#0D9488','#D1FAE5','#92400E','#D97706','#78350F','#F59E0B','#FCD34D','#B45309',
+    '#FDE68A','#A16207','#FEF3C7','#374151','#6B7280','#4B5563','#9CA3AF'
   ];
-
-  // Function to get unique colors for chart data
   function getChartColors(count) {
-    const colors = [];
-    for (let i = 0; i < count; i++) {
-      colors.push(COLOR_PALETTE[i % COLOR_PALETTE.length]);
-    }
+    var colors = [];
+    for (var i = 0; i < count; i++) colors.push(COLOR_PALETTE[i % COLOR_PALETTE.length]);
     return colors;
   }
-  
-  // --- LANGUAGE ---
+
   window.setLang = function (l) {
     try {
       document.body.classList.remove("lang-sw", "lang-en");
       document.body.classList.add("lang-" + l);
       document.getElementById("btn-lang-sw").classList.toggle("active", l === "sw");
       document.getElementById("btn-lang-en").classList.toggle("active", l === "en");
-    } catch (err) {
-      console.error("[ERROR] setLang:", err);
-    }
+    } catch (err) { console.error("[ERROR] setLang:", err); }
   };
 
-  // --- AUTH ---
   async function checkAuth() {
     try {
-      console.log("[AUTH] Checking session...");
-      if (typeof supabaseClient === "undefined") {
-        throw new Error("supabaseClient is undefined - library not loaded");
-      }
+      if (typeof supabaseClient === "undefined") throw new Error("supabaseClient is undefined");
       const { data: { session }, error } = await supabaseClient.auth.getSession();
       if (error) throw error;
-      console.log("[AUTH] Session:", session ? "exists" : "none");
       if (session) { showDashboard(); } else { showLogin(); }
-    } catch (err) {
-      console.error("[ERROR] Auth check failed:", err);
-      showLogin();
-    }
+    } catch (err) { console.error("[ERROR] Auth check failed:", err); showLogin(); }
   }
 
   window.handleLogin = async function (e) {
@@ -122,23 +74,17 @@
     var password = document.getElementById("adminPass").value;
     var loginBtn = document.getElementById("loginBtn");
     var loginError = document.getElementById("loginError");
-
     loginBtn.disabled = true;
     loginBtn.innerHTML = '<span class="lang-sw">Inaingia...</span><span class="lang-en">Signing in...</span>';
     loginError.style.display = "none";
-
     try {
       const { error } = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
       if (error) {
-        console.error("[ERROR] Login:", error);
         loginError.style.display = "block";
         loginBtn.disabled = false;
         loginBtn.innerHTML = '<span class="lang-sw">Ingia</span><span class="lang-en">Sign In</span>';
-      } else {
-        showDashboard();
-      }
+      } else { showDashboard(); }
     } catch (err) {
-      console.error("[ERROR] Login exception:", err);
       alert("Login failed: " + err.message);
       loginBtn.disabled = false;
       loginBtn.innerHTML = '<span class="lang-sw">Ingia</span><span class="lang-en">Sign In</span>';
@@ -147,12 +93,11 @@
   };
 
   window.handleLogout = async function () {
-    try { await supabaseClient.auth.signOut(); } catch (err) { console.error("[ERROR] Logout:", err); }
+    try { await supabaseClient.auth.signOut(); } catch (err) {}
     showLogin();
   };
 
   function showLogin() {
-    console.log("[UI] Showing login view");
     document.getElementById("loginView").style.display = "block";
     document.getElementById("dashboardView").style.display = "none";
     document.getElementById("logoutBtn").style.display = "none";
@@ -162,7 +107,6 @@
   }
 
   function showDashboard() {
-    console.log("[UI] Showing dashboard view");
     document.getElementById("loginView").style.display = "none";
     document.getElementById("dashboardView").style.display = "block";
     document.getElementById("logoutBtn").style.display = "inline-block";
@@ -170,7 +114,6 @@
     loadQuestions();
   }
 
-  // --- TABS ---
   window.switchTab = function (tab, btn) {
     try {
       document.getElementById("responsesTab").style.display = tab === "responses" ? "block" : "none";
@@ -182,23 +125,15 @@
       if (tab === "unregistered") renderUnregisteredTable();
       if (tab === "questions") loadQuestions();
       if (tab === "kpi") renderKPICharts();
-    } catch (err) {
-      console.error("[ERROR] switchTab:", err);
-    }
+    } catch (err) { console.error("[ERROR] switchTab:", err); }
   };
 
-  // --- MIT REGISTRATION HELPER ---
   function isUnregistered(sub) {
     var v = String(sub.bidhaa_zimesajiliwa || "").trim().toLowerCase();
     return v.indexOf("hapana") !== -1 || v.indexOf("sijui") !== -1;
   }
+  function countUnregistered(list) { return (list || []).filter(isUnregistered).length; }
 
-  // Shared counter function used by both top dashboard and KPI tab
-  function countUnregistered(list) {
-    return (list || []).filter(isUnregistered).length;
-  }
-
-  // --- DATA LOADING ---
   window.loadSubmissions = async function () {
     var holder = document.getElementById("tableHolder");
     holder.innerHTML = '<div class="state-msg"><span class="lang-sw">Inapakia majibu…</span><span class="lang-en">Loading responses…</span></div>';
@@ -213,47 +148,31 @@
         var keys = Object.keys(sub).filter(function (k) { return k !== "submitted_at" && k !== "created_at"; });
         return keys.length > 0;
       });
-      console.log("[OK] Loaded", allSubmissions.length, "submissions");
       updateStats();
       renderTable();
       renderPercentageBreakdowns(allSubmissions);
       renderKPICharts();
     } catch (err) {
-      console.error("[ERROR] Load submissions:", err);
       holder.innerHTML = '<div class="state-msg" style="color:var(--danger)">Hitilafu: ' + err.message + '</div>';
     }
   };
 
   function updateStats() {
     try {
-      var totalEl = document.getElementById("statTotal");
-      var regionsEl = document.getElementById("statRegions");
-      var districtsEl = document.getElementById("statDistricts");
-      var unregEl = document.getElementById("statUnregistered");
-
-      if (totalEl) totalEl.textContent = allSubmissions.length;
-
-      var regions = new Set();
-      var districts = new Set();
+      var t = document.getElementById("statTotal"), r = document.getElementById("statRegions"),
+          d = document.getElementById("statDistricts"), u = document.getElementById("statUnregistered");
+      if (t) t.textContent = allSubmissions.length;
+      var regions = new Set(), districts = new Set();
       allSubmissions.forEach(function (sub) {
         if (sub.mkoa) regions.add(String(sub.mkoa).trim().toLowerCase());
         if (sub.wilaya) districts.add(String(sub.wilaya).trim().toLowerCase());
       });
-
-      if (regionsEl) regionsEl.textContent = regions.size;
-      if (districtsEl) districtsEl.textContent = districts.size;
-      
-      // Use shared counter
-      var unregisteredCount = countUnregistered(allSubmissions);
-      if (unregEl) unregEl.textContent = unregisteredCount;
-      
-      console.log("[STATS] Total:", allSubmissions.length, "Regions:", regions.size, "Districts:", districts.size, "Unregistered:", unregisteredCount);
-    } catch (err) {
-      console.error("[ERROR] updateStats:", err);
-    }
+      if (r) r.textContent = regions.size;
+      if (d) d.textContent = districts.size;
+      if (u) u.textContent = countUnregistered(allSubmissions);
+    } catch (err) { console.error("[ERROR] updateStats:", err); }
   }
 
-  // --- TABLES ---
   window.renderTable = function () {
     try {
       var query = (document.getElementById("searchInput").value || "").toLowerCase();
@@ -263,9 +182,7 @@
       });
       document.getElementById("countPill").innerHTML = rows.length + ' <span class="lang-sw">majibu</span><span class="lang-en">responses</span>';
       renderGenericTable(rows, "tableHolder", false);
-    } catch (err) {
-      console.error("[ERROR] renderTable:", err);
-    }
+    } catch (err) { console.error("[ERROR] renderTable:", err); }
   };
 
   window.renderUnregisteredTable = function () {
@@ -277,9 +194,7 @@
       });
       document.getElementById("unregCountPill").textContent = rows.length;
       renderGenericTable(rows, "unregisteredTableHolder", true);
-    } catch (err) {
-      console.error("[ERROR] renderUnregisteredTable:", err);
-    }
+    } catch (err) { console.error("[ERROR] renderUnregisteredTable:", err); }
   };
 
   function renderGenericTable(rows, holderId, isUnregisteredView) {
@@ -289,20 +204,15 @@
       return;
     }
     var allKeys = new Set();
-    rows.forEach(function (sub) {
-      Object.keys(sub).forEach(function (k) {
-        if (k !== "form-name" && k !== "bot-field") allKeys.add(k);
-      });
-    });
+    rows.forEach(function (sub) { Object.keys(sub).forEach(function (k) { if (k !== "form-name" && k !== "bot-field") allKeys.add(k); }); });
     var priorityCols = isUnregisteredView
-      ? ["respondent_name", "respondent_phone", "mkoa", "wilaya", "sekta", "bidhaa_zinazozalishwa_tz", "bidhaa_zimesajiliwa", "submitted_at"]
-      : ["jina_la_kampuni", "tin_number", "anwani_kampuni", "submitted_at", "respondent_name", "respondent_phone", "respondent_email", "mkoa", "wilaya"];
+      ? ["respondent_name","respondent_phone","mkoa","wilaya","sekta","bidhaa_zinazozalishwa_tz","bidhaa_zimesajiliwa","submitted_at"]
+      : ["jina_la_kampuni","tin_number","anwani_kampuni","submitted_at","respondent_name","respondent_phone","respondent_email","mkoa","wilaya"];
     var cols = Array.from(allKeys).sort(function (a, b) {
-      var idxA = priorityCols.indexOf(a);
-      var idxB = priorityCols.indexOf(b);
-      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-      if (idxA !== -1) return -1;
-      if (idxB !== -1) return 1;
+      var ia = priorityCols.indexOf(a), ib = priorityCols.indexOf(b);
+      if (ia !== -1 && ib !== -1) return ia - ib;
+      if (ia !== -1) return -1;
+      if (ib !== -1) return 1;
       return a.localeCompare(b);
     });
     var html = '<table><thead><tr>' + cols.map(function (c) { return '<th>' + c.replace(/_/g, " ") + '</th>'; }).join("") + '</tr></thead><tbody>';
@@ -315,29 +225,21 @@
     holder.innerHTML = '<div class="table-wrap">' + html + '</tbody></table></div>';
   }
 
-  // --- CSV ---
   window.exportCsv = function () { exportGenericCsv(allSubmissions, "majibu-yote", false); };
-  window.exportUnregisteredCsv = function () {
-    exportGenericCsv(allSubmissions.filter(isUnregistered), "wanaohitaji-usajili", true);
-  };
+  window.exportUnregisteredCsv = function () { exportGenericCsv(allSubmissions.filter(isUnregistered), "wanaohitaji-usajili", true); };
 
   function exportGenericCsv(rows, filename, isUnregisteredView) {
     if (!rows.length) { alert("Hakuna majibu"); return; }
     var allKeys = new Set();
-    rows.forEach(function (sub) {
-      Object.keys(sub).forEach(function (k) {
-        if (k !== "form-name" && k !== "bot-field") allKeys.add(k);
-      });
-    });
+    rows.forEach(function (sub) { Object.keys(sub).forEach(function (k) { if (k !== "form-name" && k !== "bot-field") allKeys.add(k); }); });
     var priorityCols = isUnregisteredView
-      ? ["respondent_name", "respondent_phone", "mkoa", "wilaya", "sekta", "bidhaa_zinazozalishwa_tz", "bidhaa_zimesajiliwa", "submitted_at"]
-      : ["jina_la_kampuni", "tin_number", "anwani_kampuni", "submitted_at", "respondent_name", "respondent_phone", "respondent_email", "mkoa", "wilaya"];
+      ? ["respondent_name","respondent_phone","mkoa","wilaya","sekta","bidhaa_zinazozalishwa_tz","bidhaa_zimesajiliwa","submitted_at"]
+      : ["jina_la_kampuni","tin_number","anwani_kampuni","submitted_at","respondent_name","respondent_phone","respondent_email","mkoa","wilaya"];
     var cols = Array.from(allKeys).sort(function (a, b) {
-      var idxA = priorityCols.indexOf(a);
-      var idxB = priorityCols.indexOf(b);
-      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-      if (idxA !== -1) return -1;
-      if (idxB !== -1) return 1;
+      var ia = priorityCols.indexOf(a), ib = priorityCols.indexOf(b);
+      if (ia !== -1 && ib !== -1) return ia - ib;
+      if (ia !== -1) return -1;
+      if (ib !== -1) return 1;
       return a.localeCompare(b);
     });
     var lines = [cols.join(",")].concat(rows.map(function (sub) {
@@ -359,24 +261,38 @@
       allQuestions = data || [];
       renderQuestions();
     } catch (err) {
-      console.error("[ERROR] loadQuestions:", err);
       holder.innerHTML = '<div class="state-msg" style="color:var(--danger)">Hitilafu: ' + err.message + '</div>';
     }
   };
 
   window.renderQuestions = function () {
+    var holder = document.getElementById("questionsHolder");
+    var pill = document.getElementById("qCountPill");
+    if (pill) pill.textContent = allQuestions.length;
     if (!allQuestions.length) {
-      document.getElementById("questionsHolder").innerHTML = '<div class="state-msg"><span class="lang-sw">Hakuna maswali bado.</span><span class="lang-en">No questions yet.</span></div>';
+      holder.innerHTML = '<div class="state-msg"><span class="lang-sw">Hakuna maswali bado.</span><span class="lang-en">No questions yet.</span></div>';
       return;
     }
-    var html = '<table><thead><tr><th>Step</th><th>Field</th><th>Label (SW)</th><th>Type</th><th>Actions</th></tr></thead><tbody>';
+    var typeMap = { text: 'Text', textarea: 'Textarea', radio: 'Radio', checkbox: 'Checkbox' };
+    var html = '';
     allQuestions.forEach(function (q) {
-      html += '<tr><td>' + q.step_number + '</td><td><code>' + q.field_name + '</code></td><td>' + q.label_sw + '</td><td>' + q.input_type + '</td><td>' +
-        '<button class="btn btn-ghost btn-sm" onclick=\'editQuestion(' + JSON.stringify(q).replace(/'/g, "&#39;") + ')\'><span class="lang-sw">Hariri</span><span class="lang-en">Edit</span></button> ' +
-        '<button class="btn btn-sm btn-danger" onclick="deleteQuestion(\'' + q.id + '\')"><span class="lang-sw">Futa</span><span class="lang-en">Delete</span></button>' +
-        '</td></tr>';
+      html += '<div class="q-card">' +
+        '<div class="q-card-body">' +
+          '<div class="q-badges">' +
+            '<span class="q-badge step">Step ' + q.step_number + '</span>' +
+            '<span class="q-badge type">' + (typeMap[q.input_type] || q.input_type) + '</span>' +
+            (q.is_required ? '<span class="q-badge req">Required</span>' : '<span class="q-badge opt">Optional</span>') +
+          '</div>' +
+          '<div class="q-title">' + q.label_sw + ' <span class="en">/ ' + q.label_en + '</span></div>' +
+          '<div class="q-meta"><code>' + q.field_name + '</code> · Sort ' + q.sort_order + (q.options && q.options.length ? ' · ' + q.options.length + ' options' : '') + '</div>' +
+        '</div>' +
+        '<div class="q-card-actions">' +
+          '<button class="q-icon-btn" title="Edit" onclick=\'editQuestion(' + JSON.stringify(q).replace(/'/g, "&#39;") + ')\'>' + SVG_EDIT + '</button>' +
+          '<button class="q-icon-btn del" title="Delete" onclick="deleteQuestion(\'' + q.id + '\')">' + SVG_TRASH + '</button>' +
+        '</div>' +
+      '</div>';
     });
-    document.getElementById("questionsHolder").innerHTML = '<div class="table-wrap">' + html + '</tbody></table></div>';
+    holder.innerHTML = html;
   };
 
   window.toggleOptions = function () {
@@ -392,7 +308,7 @@
       label_sw: document.getElementById("q_label_sw").value.trim(),
       label_en: document.getElementById("q_label_en").value.trim(),
       input_type: document.getElementById("q_type").value,
-      is_required: document.getElementById("q_required").value === "true",
+      is_required: document.getElementById("q_required").checked,
       sort_order: parseInt(document.getElementById("q_sort").value)
     };
     var opts = document.getElementById("q_options").value;
@@ -405,9 +321,7 @@
       resetQForm();
       loadQuestions();
       alert("Swali limehifadhiwa!");
-    } catch (err) {
-      alert("Hitilafu: " + err.message);
-    }
+    } catch (err) { alert("Hitilafu: " + err.message); }
     return false;
   };
 
@@ -419,7 +333,7 @@
     document.getElementById("q_label_sw").value = q.label_sw;
     document.getElementById("q_label_en").value = q.label_en;
     document.getElementById("q_type").value = q.input_type;
-    document.getElementById("q_required").value = q.is_required ? "true" : "false";
+    document.getElementById("q_required").checked = !!q.is_required;
     document.getElementById("q_options").value = q.options ? q.options.join(", ") : "";
     toggleOptions();
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -434,72 +348,37 @@
   window.resetQForm = function () {
     document.getElementById("questionForm").reset();
     document.getElementById("q_id").value = "";
+    document.getElementById("q_required").checked = true;
     toggleOptions();
   };
 
   // --- KPI / CHARTS ---
-  function kpiTabVisible() {
-    var el = document.getElementById("kpiTab");
-    return !!el && el.style.display !== "none";
-  }
-
-  function resizeAllCharts() {
-    [regionsChart, sectorsChart, genderChart, businessChart].forEach(function (c) { if (c) c.resize(); });
-  }
+  function kpiTabVisible() { var el = document.getElementById("kpiTab"); return !!el && el.style.display !== "none"; }
+  function resizeAllCharts() { [regionsChart, sectorsChart, genderChart, businessChart].forEach(function (c) { if (c) c.resize(); }); }
 
   function renderKPICharts() {
     try {
-      var kpiTotalEl = document.getElementById("kpiTotal");
-      var kpiUnregEl = document.getElementById("kpiUnregistered");
-      var kpiCompEl = document.getElementById("kpiCompletion");
-
-      if (kpiTotalEl) kpiTotalEl.textContent = allSubmissions.length;
-      
-      // Use shared counter
-      var unregisteredCount = countUnregistered(allSubmissions);
-      if (kpiUnregEl) kpiUnregEl.textContent = unregisteredCount;
-      
-      var completeCount = allSubmissions.filter(function (sub) {
-        return sub.respondent_name && sub.mkoa;
-      }).length;
-      var completionRate = allSubmissions.length > 0 ? Math.round((completeCount / allSubmissions.length) * 100) : 0;
-      if (kpiCompEl) kpiCompEl.textContent = completionRate + "%";
-
-      console.log("[KPI] Total:", allSubmissions.length, "Unregistered:", unregisteredCount, "Completion:", completionRate + "%");
-
+      var kt = document.getElementById("kpiTotal"), ku = document.getElementById("kpiUnregistered"), kc = document.getElementById("kpiCompletion");
+      if (kt) kt.textContent = allSubmissions.length;
+      var unreg = countUnregistered(allSubmissions);
+      if (ku) ku.textContent = unreg;
+      var complete = allSubmissions.filter(function (s) { return s.respondent_name && s.mkoa; }).length;
+      var rate = allSubmissions.length > 0 ? Math.round((complete / allSubmissions.length) * 100) : 0;
+      if (kc) kc.textContent = rate + "%";
       if (kpiTabVisible() && typeof Chart !== "undefined") {
-        if (!chartsInitialized) { initCharts(); chartsInitialized = true; }
-        else { updateCharts(); }
+        if (!chartsInitialized) { initCharts(); chartsInitialized = true; } else { updateCharts(); }
         setTimeout(resizeAllCharts, 60);
       }
-    } catch (err) {
-      console.error("[ERROR] renderKPICharts:", err);
-    }
+    } catch (err) { console.error("[ERROR] renderKPICharts:", err); }
   }
 
   function initCharts() {
     Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
     Chart.defaults.color = '#4B5B54';
-    regionsChart = new Chart(document.getElementById('regionsChart').getContext('2d'), {
-      type: 'pie',
-      data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
-      options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } }
-    });
-    sectorsChart = new Chart(document.getElementById('sectorsChart').getContext('2d'), {
-      type: 'pie',
-      data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
-      options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } }
-    });
-    genderChart = new Chart(document.getElementById('genderChart').getContext('2d'), {
-      type: 'bar',
-      data: { labels: [], datasets: [{ label: '', data: [], backgroundColor: [] }] },
-      options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } }
-    });
-    businessChart = new Chart(document.getElementById('businessChart').getContext('2d'), {
-      type: 'bar',
-      data: { labels: [], datasets: [{ label: '', data: [], backgroundColor: [] }] },
-      options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } }
-    });
+    regionsChart = new Chart(document.getElementById('regionsChart').getContext('2d'), { type: 'pie', data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } } });
+    sectorsChart = new Chart(document.getElementById('sectorsChart').getContext('2d'), { type: 'pie', data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } } });
+    genderChart = new Chart(document.getElementById('genderChart').getContext('2d'), { type: 'bar', data: { labels: [], datasets: [{ label: '', data: [], backgroundColor: [] }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } } });
+    businessChart = new Chart(document.getElementById('businessChart').getContext('2d'), { type: 'bar', data: { labels: [], datasets: [{ label: '', data: [], backgroundColor: [] }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } } });
     updateCharts();
   }
 
@@ -511,53 +390,36 @@
       if (sub.jinsia) gender[sub.jinsia] = (gender[sub.jinsia] || 0) + 1;
       if (sub.hali_biashara) business[sub.hali_biashara] = (business[sub.hali_biashara] || 0) + 1;
     });
-    
-    // Use the massive palette for unique colors
-    var regionColors = getChartColors(Object.keys(regions).length);
-    var sectorColors = getChartColors(Object.keys(sectors).length);
-    var genderColors = getChartColors(Object.keys(gender).length);
-    var businessColors = getChartColors(Object.keys(business).length);
-    
     regionsChart.data.labels = Object.keys(regions);
     regionsChart.data.datasets[0].data = Object.values(regions);
-    regionsChart.data.datasets[0].backgroundColor = regionColors;
+    regionsChart.data.datasets[0].backgroundColor = getChartColors(Object.keys(regions).length);
     regionsChart.update();
-    
     sectorsChart.data.labels = Object.keys(sectors);
     sectorsChart.data.datasets[0].data = Object.values(sectors);
-    sectorsChart.data.datasets[0].backgroundColor = sectorColors;
+    sectorsChart.data.datasets[0].backgroundColor = getChartColors(Object.keys(sectors).length);
     sectorsChart.update();
-    
-    genderChart.data.labels = Object.keys(gender).map(function (g) {
-      return g === 'Me' ? 'Me (Male)' : g === 'Ke' ? 'Ke (Female)' : g;
-    });
+    genderChart.data.labels = Object.keys(gender).map(function (g) { return g === 'Me' ? 'Me (Male)' : g === 'Ke' ? 'Ke (Female)' : g; });
     genderChart.data.datasets[0].data = Object.values(gender);
-    genderChart.data.datasets[0].backgroundColor = genderColors;
+    genderChart.data.datasets[0].backgroundColor = getChartColors(Object.keys(gender).length);
     genderChart.update();
-    
     businessChart.data.labels = Object.keys(business);
     businessChart.data.datasets[0].data = Object.values(business);
-    businessChart.data.datasets[0].backgroundColor = businessColors;
+    businessChart.data.datasets[0].backgroundColor = getChartColors(Object.keys(business).length);
     businessChart.update();
   }
 
-  // --- PERCENTAGE BREAKDOWN ---
   function renderPercentageBreakdowns(submissions) {
     var total = submissions.length;
     if (total === 0) return;
     function buildBreakdown(data, field, limit) {
       var counts = {};
-      data.forEach(function (s) {
-        var value = s[field] || 'Haijatajwa';
-        counts[value] = (counts[value] || 0) + 1;
-      });
+      data.forEach(function (s) { var v = s[field] || 'Haijatajwa'; counts[v] = (counts[v] || 0) + 1; });
       var entries = Object.entries(counts).sort(function (a, b) { return b[1] - a[1]; });
       if (limit) entries = entries.slice(0, limit);
-      return entries.map(function (entry) {
-        var label = entry[0], count = entry[1];
+      return entries.map(function (en) {
+        var label = en[0], count = en[1];
         var pct = ((count / total) * 100).toFixed(1);
-        var pctNum = parseFloat(pct);
-        var barColor = pctNum > 50 ? 'var(--green-700)' : pctNum > 20 ? 'var(--gold-500)' : 'var(--danger)';
+        var barColor = parseFloat(pct) > 50 ? 'var(--green-700)' : parseFloat(pct) > 20 ? 'var(--gold-500)' : 'var(--danger)';
         return '<div style="margin-bottom:10px;">' +
           '<div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">' +
           '<span style="font-weight:600;">' + label + '</span>' +
@@ -572,7 +434,6 @@
     document.getElementById('sectorsBreakdown').innerHTML = buildBreakdown(submissions, 'sekta', 5);
   }
 
-  // --- EXPORT PNG ---
   window.exportDashboardImage = async function () {
     var exportBtn = document.getElementById('exportBtn');
     var originalText = exportBtn.innerHTML;
@@ -583,22 +444,17 @@
       document.getElementById('exportDate').textContent = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
       exportHeader.style.display = 'block';
       await new Promise(function (resolve) { setTimeout(resolve, 300); });
-      var canvas = await html2canvas(document.getElementById('dashboardExportArea'), {
-        scale: 2, backgroundColor: '#ffffff', logging: false, useCORS: true
-      });
+      var canvas = await html2canvas(document.getElementById('dashboardExportArea'), { scale: 2, backgroundColor: '#ffffff', logging: false, useCORS: true });
       exportHeader.style.display = 'none';
       canvas.toBlob(function (blob) {
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
         a.href = url;
         a.download = 'Nanenane_2026_Dashboard_' + new Date().toISOString().split('T')[0] + '.png';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
         URL.revokeObjectURL(url);
       }, 'image/png', 0.95);
     } catch (error) {
-      console.error('[ERROR] Export failed:', error);
       alert('Export failed. Please try again.');
     } finally {
       exportBtn.innerHTML = originalText;
@@ -606,7 +462,6 @@
     }
   };
 
-  // Initialize
   console.log("[INIT] Admin app starting...");
   setLang("sw");
   checkAuth();
