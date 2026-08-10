@@ -193,6 +193,11 @@
     return v.indexOf("hapana") !== -1 || v.indexOf("sijui") !== -1;
   }
 
+  // Shared counter function used by both top dashboard and KPI tab
+  function countUnregistered(list) {
+    return (list || []).filter(isUnregistered).length;
+  }
+
   // --- DATA LOADING ---
   window.loadSubmissions = async function () {
     var holder = document.getElementById("tableHolder");
@@ -221,18 +226,28 @@
 
   function updateStats() {
     try {
-      document.getElementById("statTotal").textContent = allSubmissions.length;
+      var totalEl = document.getElementById("statTotal");
+      var regionsEl = document.getElementById("statRegions");
+      var districtsEl = document.getElementById("statDistricts");
+      var unregEl = document.getElementById("statUnregistered");
+
+      if (totalEl) totalEl.textContent = allSubmissions.length;
+
       var regions = new Set();
       var districts = new Set();
-      var unregisteredCount = 0;
       allSubmissions.forEach(function (sub) {
         if (sub.mkoa) regions.add(String(sub.mkoa).trim().toLowerCase());
         if (sub.wilaya) districts.add(String(sub.wilaya).trim().toLowerCase());
-        if (isUnregistered(sub)) unregisteredCount++;
       });
-      document.getElementById("statRegions").textContent = regions.size;
-      document.getElementById("statDistricts").textContent = districts.size;
-      document.getElementById("statUnregistered").textContent = unregisteredCount;
+
+      if (regionsEl) regionsEl.textContent = regions.size;
+      if (districtsEl) districtsEl.textContent = districts.size;
+      
+      // Use shared counter
+      var unregisteredCount = countUnregistered(allSubmissions);
+      if (unregEl) unregEl.textContent = unregisteredCount;
+      
+      console.log("[STATS] Total:", allSubmissions.length, "Regions:", regions.size, "Districts:", districts.size, "Unregistered:", unregisteredCount);
     } catch (err) {
       console.error("[ERROR] updateStats:", err);
     }
@@ -434,14 +449,23 @@
 
   function renderKPICharts() {
     try {
-      document.getElementById("kpiTotal").textContent = allSubmissions.length;
-      var unregisteredCount = allSubmissions.filter(isUnregistered).length;
-      document.getElementById("kpiUnregistered").textContent = unregisteredCount;
+      var kpiTotalEl = document.getElementById("kpiTotal");
+      var kpiUnregEl = document.getElementById("kpiUnregistered");
+      var kpiCompEl = document.getElementById("kpiCompletion");
+
+      if (kpiTotalEl) kpiTotalEl.textContent = allSubmissions.length;
+      
+      // Use shared counter
+      var unregisteredCount = countUnregistered(allSubmissions);
+      if (kpiUnregEl) kpiUnregEl.textContent = unregisteredCount;
+      
       var completeCount = allSubmissions.filter(function (sub) {
         return sub.respondent_name && sub.mkoa;
       }).length;
       var completionRate = allSubmissions.length > 0 ? Math.round((completeCount / allSubmissions.length) * 100) : 0;
-      document.getElementById("kpiCompletion").textContent = completionRate + "%";
+      if (kpiCompEl) kpiCompEl.textContent = completionRate + "%";
+
+      console.log("[KPI] Total:", allSubmissions.length, "Unregistered:", unregisteredCount, "Completion:", completionRate + "%");
 
       if (kpiTabVisible() && typeof Chart !== "undefined") {
         if (!chartsInitialized) { initCharts(); chartsInitialized = true; }
