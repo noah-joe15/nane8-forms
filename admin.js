@@ -32,61 +32,60 @@
   };
 
   // ============================================
-// MASSIVE COLOR PALETTE — 100+ UNIQUE COLORS
-// ============================================
-const COLOR_PALETTE = [
-  // Greens (20)
-  '#0B6E4F', '#128A64', '#063C2C', '#1A7A5C', '#0D5A3F',
-  '#148B6A', '#0A4F38', '#1B9A75', '#074028', '#1DAB80',
-  '#0E6B50', '#1FBC8B', '#0B7855', '#22CD96', '#0C8560',
-  '#25DEA1', '#0D926B', '#28EFAC', '#0EA076', '#2BFFB7',
-  
-  // Blues (20)
-  '#164C82', '#1E6BB8', '#0E2A4A', '#2585D6', '#124070',
-  '#2CA0F4', '#1A5A9E', '#33BBFF', '#163F6F', '#3AD6FF',
-  '#1D6FAD', '#41F1FF', '#184E7B', '#48FFD1', '#1F7EC9',
-  '#4FFFA3', '#165EA7', '#56FFD5', '#1C8ED5', '#5DFFA7',
-  
-  // Golds/Yellows (15)
-  '#D4A017', '#E9C766', '#B8860B', '#F5D87A', '#9E720A',
-  '#FFE98E', '#C49612', '#FFFB9C', '#B0850F', '#FFF7AA',
-  '#DCAC1A', '#FFED8E', '#C89D15', '#FFE372', '#B48E12',
-  
-  // Reds/Oranges (15)
-  '#B3261E', '#E85D4A', '#8B1A14', '#FF7F6B', '#9F2319',
-  '#FFA58E', '#C73E34', '#FFC9B2', '#AF2A21', '#FFEDD6',
-  '#D75248', '#FFB399', '#BF3930', '#FFD7BF', '#A7251D',
-  
-  // Purples (15)
-  '#6B46C1', '#9F7AEA', '#553C9A', '#B794F4', '#4C3586',
-  '#D6BCFA', '#7C52D4', '#E9D8FD', '#6842A8', '#F3E8FF',
-  '#8461E0', '#C4B5FD', '#7050B4', '#DDD6FE', '#5C3F98',
-  
-  // Pinks (10)
-  '#EC4899', '#F9A8D4', '#DB2777', '#FBCFE8', '#BE185D',
-  '#FDF2F8', '#F472B6', '#FCE7F3', '#EC4899', '#FFF1F2',
-  
-  // Teals/Cyans (10)
-  '#14B8A6', '#5EEAD4', '#0F766E', '#99F6E4', '#115E59',
-  '#CCFBF1', '#2DD4BF', '#A7F3D0', '#0D9488', '#D1FAE5',
-  
-  // Earth tones (10)
-  '#92400E', '#D97706', '#78350F', '#F59E0B', '#92400E',
-  '#FCD34D', '#B45309', '#FDE68A', '#A16207', '#FEF3C7',
-  
-  // Grays (5)
-  '#374151', '#6B7280', '#4B5563', '#9CA3AF', '#6B7280'
-];
+  // MASSIVE COLOR PALETTE — 100+ UNIQUE COLORS
+  // ============================================
+  const COLOR_PALETTE = [
+    // Greens (20)
+    '#0B6E4F', '#128A64', '#063C2C', '#1A7A5C', '#0D5A3F',
+    '#148B6A', '#0A4F38', '#1B9A75', '#074028', '#1DAB80',
+    '#0E6B50', '#1FBC8B', '#0B7855', '#22CD96', '#0C8560',
+    '#25DEA1', '#0D926B', '#28EFAC', '#0EA076', '#2BFFB7',
+    
+    // Blues (20)
+    '#164C82', '#1E6BB8', '#0E2A4A', '#2585D6', '#124070',
+    '#2CA0F4', '#1A5A9E', '#33BBFF', '#163F6F', '#3AD6FF',
+    '#1D6FAD', '#41F1FF', '#184E7B', '#48FFD1', '#1F7EC9',
+    '#4FFFA3', '#165EA7', '#56FFD5', '#1C8ED5', '#5DFFA7',
+    
+    // Golds/Yellows (15)
+    '#D4A017', '#E9C766', '#B8860B', '#F5D87A', '#9E720A',
+    '#FFE98E', '#C49612', '#FFFB9C', '#B0850F', '#FFF7AA',
+    '#DCAC1A', '#FFED8E', '#C89D15', '#FFE372', '#B48E12',
+    
+    // Reds/Oranges (15)
+    '#B3261E', '#E85D4A', '#8B1A14', '#FF7F6B', '#9F2319',
+    '#FFA58E', '#C73E34', '#FFC9B2', '#AF2A21', '#FFEDD6',
+    '#D75248', '#FFB399', '#BF3930', '#FFD7BF', '#A7251D',
+    
+    // Purples (15)
+    '#6B46C1', '#9F7AEA', '#553C9A', '#B794F4', '#4C3586',
+    '#D6BCFA', '#7C52D4', '#E9D8FD', '#6842A8', '#F3E8FF',
+    '#8461E0', '#C4B5FD', '#7050B4', '#DDD6FE', '#5C3F98',
+    
+    // Pinks (10)
+    '#EC4899', '#F9A8D4', '#DB2777', '#FBCFE8', '#BE185D',
+    '#FDF2F8', '#F472B6', '#FCE7F3', '#EC4899', '#FFF1F2',
+    
+    // Teals/Cyans (10)
+    '#14B8A6', '#5EEAD4', '#0F766E', '#99F6E4', '#115E59',
+    '#CCFBF1', '#2DD4BF', '#A7F3D0', '#0D9488', '#D1FAE5',
+    
+    // Earth tones (10)
+    '#92400E', '#D97706', '#78350F', '#F59E0B', '#92400E',
+    '#FCD34D', '#B45309', '#FDE68A', '#A16207', '#FEF3C7',
+    
+    // Grays (5)
+    '#374151', '#6B7280', '#4B5563', '#9CA3AF', '#6B7280'
+  ];
 
-// Function to get unique colors for chart data
-function getChartColors(count) {
-  const colors = [];
-  for (let i = 0; i < count; i++) {
-    // Cycle through palette if we need more than available
-    colors.push(COLOR_PALETTE[i % COLOR_PALETTE.length]);
+  // Function to get unique colors for chart data
+  function getChartColors(count) {
+    const colors = [];
+    for (let i = 0; i < count; i++) {
+      colors.push(COLOR_PALETTE[i % COLOR_PALETTE.length]);
+    }
+    return colors;
   }
-  return colors;
-}
   
   // --- LANGUAGE ---
   window.setLang = function (l) {
@@ -488,29 +487,33 @@ function getChartColors(count) {
       if (sub.jinsia) gender[sub.jinsia] = (gender[sub.jinsia] || 0) + 1;
       if (sub.hali_biashara) business[sub.hali_biashara] = (business[sub.hali_biashara] || 0) + 1;
     });
-    var colors = {
-      regions: ['#0B6E4F', '#1E6BB8', '#D4A017', '#063C2C', '#164C82', '#B8860B', '#128A64', '#4B5B54'],
-      sectors: ['#0B6E4F', '#1E6BB8', '#D4A017', '#063C2C', '#164C82', '#B8860B', '#128A64'],
-      gender: ['#0B6E4F', '#D4A017', '#1E6BB8'],
-      business: ['#0B6E4F', '#D4A017', '#1E6BB8', '#B3261E']
-    };
+    
+    // Use the massive palette for unique colors
+    var regionColors = getChartColors(Object.keys(regions).length);
+    var sectorColors = getChartColors(Object.keys(sectors).length);
+    var genderColors = getChartColors(Object.keys(gender).length);
+    var businessColors = getChartColors(Object.keys(business).length);
+    
     regionsChart.data.labels = Object.keys(regions);
     regionsChart.data.datasets[0].data = Object.values(regions);
-    regionsChart.data.datasets[0].backgroundColor = colors.regions.slice(0, Object.keys(regions).length);
+    regionsChart.data.datasets[0].backgroundColor = regionColors;
     regionsChart.update();
+    
     sectorsChart.data.labels = Object.keys(sectors);
     sectorsChart.data.datasets[0].data = Object.values(sectors);
-    sectorsChart.data.datasets[0].backgroundColor = colors.sectors.slice(0, Object.keys(sectors).length);
+    sectorsChart.data.datasets[0].backgroundColor = sectorColors;
     sectorsChart.update();
+    
     genderChart.data.labels = Object.keys(gender).map(function (g) {
       return g === 'Me' ? 'Me (Male)' : g === 'Ke' ? 'Ke (Female)' : g;
     });
     genderChart.data.datasets[0].data = Object.values(gender);
-    genderChart.data.datasets[0].backgroundColor = colors.gender.slice(0, Object.keys(gender).length);
+    genderChart.data.datasets[0].backgroundColor = genderColors;
     genderChart.update();
+    
     businessChart.data.labels = Object.keys(business);
     businessChart.data.datasets[0].data = Object.values(business);
-    businessChart.data.datasets[0].backgroundColor = colors.business.slice(0, Object.keys(business).length);
+    businessChart.data.datasets[0].backgroundColor = businessColors;
     businessChart.update();
   }
 
