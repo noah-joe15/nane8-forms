@@ -90,8 +90,8 @@ body::after {
 }
 
 body::before {
-  width: 500px;
-  height: 500px;
+  width: min(500px, 60vw);
+  height: min(500px, 60vw);
   background: radial-gradient(circle, rgba(11, 110, 79, 0.5), transparent 70%);
   top: -100px;
   right: -150px;
@@ -99,8 +99,8 @@ body::before {
 }
 
 body::after {
-  width: 400px;
-  height: 400px;
+  width: min(400px, 50vw);
+  height: min(400px, 50vw);
   background: radial-gradient(circle, rgba(212, 160, 23, 0.5), transparent 70%);
   bottom: -100px;
   left: -100px;
@@ -148,7 +148,7 @@ a,button,input,select,textarea{font-family:inherit;}
   position:sticky; top:0; z-index:40;
   display:flex; align-items:center; justify-content:space-between;
   gap:12px;
-  padding:14px 18px;
+  padding: min(14px, 2vw) min(18px, 3vw);
   background:rgba(6, 60, 44, 0.75);
   backdrop-filter:blur(20px);
   -webkit-backdrop-filter:blur(20px);
@@ -185,7 +185,7 @@ a,button,input,select,textarea{font-family:inherit;}
 
 /* --- 2. TRADE LOGO STYLING --- */
 .brand-logo {
-  height: 45px;
+  height: min(45px, 8vw);
   width: auto;
   object-fit: contain;
   background:rgba(255, 255, 255, 0.9);
@@ -264,9 +264,9 @@ a,button,input,select,textarea{font-family:inherit;}
 
 /* Page shell - GLASSMORPHISM + LIQUID ------------------------ */
 .shell{
-  max-width:720px; 
+  max-width: min(720px, 95vw); 
   margin:0 auto; 
-  padding:24px 20px 60px;
+  padding: min(24px, 4vw) min(20px, 3vw) min(60px, 8vw);
   background:rgba(255, 255, 255, 0.2);
   backdrop-filter:blur(16px);
   -webkit-backdrop-filter:blur(16px);
@@ -285,8 +285,8 @@ a,button,input,select,textarea{font-family:inherit;}
   position: absolute;
   top: -50%;
   right: -30%;
-  width: 300px;
-  height: 300px;
+  width: min(300px, 40vw);
+  height: min(300px, 40vw);
   background: radial-gradient(circle, rgba(212, 160, 23, 0.15), transparent 70%);
   border-radius: 50%;
   filter: blur(40px);
@@ -297,8 +297,8 @@ a,button,input,select,textarea{font-family:inherit;}
 /* Progress - GLASSMORPHISM + LIQUID FILL --------------------- */
 .progress-wrap{margin:18px 0 22px;}
 .progress-meta{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;}
-.progress-meta .step-label{font-size:12.5px; font-weight:600; color:var(--green-700); text-transform:uppercase; letter-spacing:.6px;}
-.progress-meta .step-count{font-size:12.5px; color:var(--ink-soft);}
+.progress-meta .step-label{font-size: min(12.5px, 3.5vw); font-weight:600; color:var(--green-700); text-transform:uppercase; letter-spacing:.6px;}
+.progress-meta .step-count{font-size: min(12.5px, 3.5vw); color:var(--ink-soft);}
 .progress-track{
   height:10px; 
   border-radius:999px; 
@@ -378,7 +378,7 @@ a,button,input,select,textarea{font-family:inherit;}
   border:1px solid rgba(255, 255, 255, 0.3);
   border-radius:var(--radius);
   box-shadow:0 8px 32px rgba(0, 0, 0, 0.1);
-  padding:26px 22px 24px;
+  padding: min(26px, 4vw) min(22px, 3vw) min(24px, 4vw);
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -427,7 +427,7 @@ a,button,input,select,textarea{font-family:inherit;}
 .card + .card{margin-top:16px;}
 .section-eyebrow{
   display:inline-flex; align-items:center; gap:6px;
-  font-size:11.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+  font-size: min(11.5px, 3vw); font-weight:700; letter-spacing:.6px; text-transform:uppercase;
   color:var(--blue-700); 
   background:rgba(228, 243, 236, 0.4);
   backdrop-filter:blur(8px);
@@ -437,21 +437,21 @@ a,button,input,select,textarea{font-family:inherit;}
   margin-bottom:10px;
   border:1px solid rgba(228, 243, 236, 0.5);
 }
-.section-title{font-size:20px; font-weight:700; margin-bottom:4px;}
-.section-desc{color:var(--ink-soft); font-size:14px; margin-bottom:20px;}
+.section-title{font-size: min(20px, 5vw); font-weight:700; margin-bottom:4px;}
+.section-desc{color:var(--ink-soft); font-size: min(14px, 3.8vw); margin-bottom:20px;}
 
 /* Fields - GLASSMORPHISM -------------------------------------- */
 .field{margin-bottom:20px;}
 .field:last-child{margin-bottom:0;}
-.field-label{display:block; font-weight:600; font-size:14.5px; margin-bottom:8px; color:var(--ink);}
+.field-label{display:block; font-weight:600; font-size: min(14.5px, 4vw); margin-bottom:8px; color:var(--ink);}
 .field-label .req{color:var(--danger); margin-left:2px;}
-.field-hint{font-size:12.5px; color:var(--ink-soft); margin-top:6px;}
+.field-hint{font-size: min(12.5px, 3.5vw); color:var(--ink-soft); margin-top:6px;}
 .text-input, textarea.text-input, select.text-input{
   width:100%; 
-  padding:12px 13px; 
+  padding: min(12px, 2vw) min(13px, 2vw); 
   border:1.5px solid rgba(255, 255, 255, 0.3); 
   border-radius:var(--radius-sm);
-  font-size:15px; 
+  font-size: min(15px, 4vw); 
   background:rgba(255, 255, 255, 0.2);
   backdrop-filter:blur(8px);
   -webkit-backdrop-filter:blur(8px);
@@ -479,10 +479,10 @@ textarea.text-input{resize:vertical; min-height:96px;}
 .option input{position:absolute; opacity:0; width:1px; height:1px;}
 .option-box{
   display:flex; align-items:center; gap:10px;
-  padding:12px 14px; 
+  padding: min(12px, 2vw) min(14px, 2vw); 
   border:1.5px solid rgba(255, 255, 255, 0.3); 
   border-radius:var(--radius-sm);
-  font-size:14.5px; font-weight:500; color:var(--ink); 
+  font-size: min(14.5px, 4vw); font-weight:500; color:var(--ink); 
   background:rgba(255, 255, 255, 0.2);
   backdrop-filter:blur(8px);
   -webkit-backdrop-filter:blur(8px);
@@ -524,8 +524,8 @@ textarea.text-input{resize:vertical; min-height:96px;}
 /* Nav buttons - GLASSMORPHISM + LIQUID RIPPLE ---------------- */
 .step-nav{display:flex; gap:10px; margin-top:22px;}
 .btn{
-  appearance:none; border:0; cursor:pointer; font-weight:700; font-size:14.5px;
-  padding:13px 20px; border-radius:999px; 
+  appearance:none; border:0; cursor:pointer; font-weight:700; font-size: min(14.5px, 4vw);
+  padding: min(13px, 2vw) min(20px, 3vw); border-radius:999px; 
   transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display:inline-flex; align-items:center; justify-content:center; gap:8px;
   position:relative;
@@ -611,7 +611,7 @@ textarea.text-input{resize:vertical; min-height:96px;}
   backdrop-filter:blur(16px);
   -webkit-backdrop-filter:blur(16px);
   color:var(--white); 
-  padding:28px 22px 24px; 
+  padding: min(28px, 4vw) min(22px, 3vw) min(24px, 4vw); 
   box-shadow:0 8px 32px rgba(0, 0, 0, 0.2); 
   position:relative;
   border:1px solid rgba(255, 255, 255, 0.2);
@@ -623,7 +623,7 @@ textarea.text-input{resize:vertical; min-height:96px;}
   animation: liquidFloat1 10s ease-in-out infinite;
 }
 .hero-eyebrow{
-  display:inline-block; font-size:11.5px; font-weight:700; letter-spacing:.8px; text-transform:uppercase;
+  display:inline-block; font-size: min(11.5px, 3vw); font-weight:700; letter-spacing:.8px; text-transform:uppercase;
   color:var(--green-900); 
   background:var(--gold-500); 
   padding:4px 11px; 
@@ -631,8 +631,8 @@ textarea.text-input{resize:vertical; min-height:96px;}
   margin-bottom:12px;
   box-shadow:0 2px 8px rgba(212, 160, 23, 0.4);
 }
-.hero h1{color:var(--white); font-size:23px; line-height:1.3;}
-.hero p{color:rgba(255,255,255,.86); font-size:14.5px; margin-top:10px; line-height:1.55;}
+.hero h1{color:var(--white); font-size: min(23px, 5.5vw); line-height:1.3;}
+.hero p{color:rgba(255,255,255,.86); font-size: min(14.5px, 4vw); margin-top:10px; line-height:1.55;}
 
 /* Review step - GLASSMORPHISM --------------------------------- */
 .review-group{
@@ -641,18 +641,18 @@ textarea.text-input{resize:vertical; min-height:96px;}
   margin-top:14px;
 }
 .review-group:first-child{border-top:0; padding-top:0; margin-top:0;}
-.review-group h3{font-size:14px; color:var(--blue-700); margin-bottom:8px;}
+.review-group h3{font-size: min(14px, 3.8vw); color:var(--blue-700); margin-bottom:8px;}
 .review-row{
   display:flex; 
   gap:10px; 
-  font-size:14px; 
+  font-size: min(14px, 3.8vw); 
   padding:5px 0; 
   border-bottom:1px dashed rgba(255, 255, 255, 0.3);
 }
 .review-row:last-child{border-bottom:0;}
 .review-row .rq{color:var(--ink-soft); flex:1.2;}
 .review-row .ra{color:var(--ink); font-weight:600; flex:1; text-align:right;}
-.edit-link{font-size:12.5px; color:var(--blue-700); font-weight:700; cursor:pointer; background:none; border:0; padding:0;}
+.edit-link{font-size: min(12.5px, 3.5vw); color:var(--blue-700); font-weight:700; cursor:pointer; background:none; border:0; padding:0;}
 
 /* Success - GLASSMORPHISM + LIQUID --------------------------- */
 .success-wrap{text-align:center; padding:20px 6px 6px;}
@@ -690,12 +690,12 @@ textarea.text-input{resize:vertical; min-height:96px;}
 }
 
 .success-badge svg{width:36px; height:36px;}
-.success-wrap h2{font-size:21px; margin-bottom:8px;}
-.success-wrap p{color:var(--ink-soft); font-size:14.5px; max-width:44ch; margin:0 auto;}
+.success-wrap h2{font-size: min(21px, 5.5vw); margin-bottom:8px;}
+.success-wrap p{color:var(--ink-soft); font-size: min(14.5px, 4vw); max-width:44ch; margin:0 auto;}
 
 /* Errors ------------------------------------------------------ */
 .field.has-error .text-input, .field.has-error .option-box{border-color:var(--danger);}
-.error-msg{display:none; color:var(--danger); font-size:12.5px; margin-top:6px; font-weight:600;}
+.error-msg{display:none; color:var(--danger); font-size: min(12.5px, 3.5vw); margin-top:6px; font-weight:600;}
 .field.has-error .error-msg{display:block;}
 .banner{
   display:none; align-items:center; gap:8px; 
@@ -706,14 +706,14 @@ textarea.text-input{resize:vertical; min-height:96px;}
   border:1px solid rgba(241, 199, 196, 0.5); 
   padding:10px 14px; 
   border-radius:var(--radius-sm); 
-  font-size:13.5px; 
+  font-size: min(13.5px, 3.6vw); 
   margin-bottom:16px; 
   font-weight:600;
 }
 .banner.show{display:flex;}
 
 /* Footer note -------------------------------------------------- */
-.footnote{text-align:center; font-size:12px; color:var(--ink-soft); margin-top:24px;}
+.footnote{text-align:center; font-size: min(12px, 3.2vw); color:var(--ink-soft); margin-top:24px;}
 .footnote a{color:var(--blue-700);}
 
 /* Utility ------------------------------------------------------- */
@@ -738,9 +738,9 @@ textarea.text-input{resize:vertical; min-height:96px;}
 
 /* Admin shell */
 .admin-shell {
-  max-width: 1080px;
+  max-width: min(1080px, 96vw);
   margin: 0 auto;
-  padding: 24px 20px 60px;
+  padding: min(24px, 4vw) min(20px, 3vw) min(60px, 8vw);
   position: relative;
 }
 
@@ -752,9 +752,9 @@ textarea.text-input{resize:vertical; min-height:96px;}
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radius);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  max-width: 400px;
+  max-width: min(400px, 90vw);
   margin: 60px auto 0;
-  padding: 32px 28px;
+  padding: min(32px, 5vw) min(28px, 4vw);
   position: relative;
   overflow: hidden;
 }
@@ -763,7 +763,7 @@ textarea.text-input{resize:vertical; min-height:96px;}
   content: '';
   position: absolute;
   top: -50%; right: -50%;
-  width: 200px; height: 200px;
+  width: min(200px, 30vw); height: min(200px, 30vw);
   background: radial-gradient(circle, rgba(212, 160, 23, 0.2), transparent 70%);
   border-radius: 50%;
   filter: blur(30px);
@@ -774,9 +774,9 @@ textarea.text-input{resize:vertical; min-height:96px;}
 /* Stats dashboard cards */
 .stats-dashboard {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(min(140px, 40vw), 1fr));
+  gap: min(16px, 2.5vw);
+  margin-bottom: min(24px, 3vw);
 }
 
 .stat-card {
@@ -785,7 +785,7 @@ textarea.text-input{resize:vertical; min-height:96px;}
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radius);
-  padding: 20px 16px;
+  padding: min(20px, 3vw) min(16px, 2.5vw);
   text-align: center;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -825,7 +825,7 @@ textarea.text-input{resize:vertical; min-height:96px;}
 }
 
 .stat-value {
-  font-size: 32px;
+  font-size: min(32px, 8vw);
   font-weight: 800;
   color: var(--green-700);
   font-family: var(--font-head);
@@ -844,7 +844,7 @@ textarea.text-input{resize:vertical; min-height:96px;}
 }
 
 .stat-label {
-  font-size: 11px;
+  font-size: min(11px, 2.8vw);
   font-weight: 700;
   color: var(--ink-soft);
   text-transform: uppercase;
@@ -854,8 +854,8 @@ textarea.text-input{resize:vertical; min-height:96px;}
 /* Tabs */
 .tabs {
   display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
+  gap: min(8px, 1.5vw);
+  margin-bottom: min(24px, 3vw);
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
   flex-wrap: wrap;
 }
@@ -865,12 +865,12 @@ textarea.text-input{resize:vertical; min-height:96px;}
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 10px 18px;
+  padding: min(10px, 2vw) min(18px, 3vw);
   font-weight: 600;
   color: var(--ink-soft);
   cursor: pointer;
   border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-  min-height: 48px;
+  min-height: min(48px, 10vw);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -904,10 +904,10 @@ textarea.text-input{resize:vertical; min-height:96px;}
 .toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: min(12px, 2vw);
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: min(20px, 3vw);
 }
 
 .stat-pill {
@@ -916,22 +916,22 @@ textarea.text-input{resize:vertical; min-height:96px;}
   -webkit-backdrop-filter: blur(8px);
   color: var(--green-900);
   font-weight: 700;
-  font-size: 13px;
-  padding: 8px 16px;
+  font-size: min(13px, 3.5vw);
+  padding: min(8px, 1.5vw) min(16px, 2.5vw);
   border-radius: 999px;
   border: 1px solid rgba(228, 243, 236, 0.5);
   animation: liquidCountIn 0.5s ease-out;
 }
 
 .search-input {
-  max-width: 240px;
-  font-size: 16px;
+  max-width: min(240px, 60vw);
+  font-size: min(16px, 4.2vw);
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radius-sm);
-  padding: 10px 14px;
+  padding: min(10px, 2vw) min(14px, 2.5vw);
   transition: all 0.3s ease;
 }
 
@@ -951,13 +951,13 @@ textarea.text-input{resize:vertical; min-height:96px;}
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radius-sm);
-  margin-top: 16px;
+  margin-top: min(16px, 2.5vw);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: min(13px, 3.5vw);
   background: rgba(255, 255, 255, 0.3);
 }
 
@@ -969,13 +969,13 @@ thead th {
   -webkit-backdrop-filter: blur(8px);
   color: var(--white);
   text-align: left;
-  padding: 12px 14px;
+  padding: min(12px, 2vw) min(14px, 2.5vw);
   font-weight: 600;
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 tbody td {
-  padding: 12px 14px;
+  padding: min(12px, 2vw) min(14px, 2.5vw);
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   vertical-align: top;
 }
@@ -999,9 +999,9 @@ tbody tr:hover {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(228, 243, 236, 0.4);
-  padding: 20px;
+  padding: min(20px, 3vw);
   border-radius: var(--radius);
-  margin-bottom: 24px;
+  margin-bottom: min(24px, 3vw);
 }
 
 /* Logout button */
@@ -1012,9 +1012,9 @@ tbody tr:hover {
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: var(--white);
   font-weight: 600;
-  font-size: 13px;
+  font-size: min(13px, 3.5vw);
   cursor: pointer;
-  padding: 6px 14px;
+  padding: min(6px, 1.2vw) min(14px, 2.5vw);
   border-radius: 999px;
   transition: all 0.2s ease;
 }
@@ -1027,7 +1027,7 @@ tbody tr:hover {
 /* State messages */
 .state-msg {
   text-align: center;
-  padding: 40px 20px;
+  padding: min(40px, 6vw) min(20px, 3vw);
   color: var(--ink-soft);
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
@@ -1037,10 +1037,10 @@ tbody tr:hover {
 
 /* Button variants for admin */
 .btn-sm {
-  padding: 8px 16px;
-  font-size: 13px;
+  padding: min(8px, 1.5vw) min(16px, 2.5vw);
+  font-size: min(13px, 3.5vw);
   border-radius: var(--radius-sm);
-  min-height: 40px;
+  min-height: min(40px, 8vw);
 }
 
 .btn-danger {
@@ -1062,14 +1062,14 @@ tbody tr:hover {
 /* Grid layouts */
 .grid-2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 90vw), 1fr));
+  gap: min(16px, 2.5vw);
 }
 
 .grid-3 {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(150px, 90vw), 1fr));
+  gap: min(16px, 2.5vw);
 }
 
 /* ============================================
@@ -1101,9 +1101,9 @@ canvas:hover {
   position: relative;
   overflow: hidden;
   border-radius: 6px;
-  padding: 8px 10px;
+  padding: min(8px, 1.5vw) min(10px, 1.8vw);
   background: rgba(255, 255, 255, 0.1);
-  margin-bottom: 12px !important;
+  margin-bottom: min(12px, 2vw) !important;
   transition: all 0.3s ease;
 }
 
@@ -1231,7 +1231,7 @@ canvas:hover {
   content: '';
   position: absolute;
   bottom: -50%; right: -50%;
-  width: 200px; height: 200px;
+  width: min(200px, 30vw); height: min(200px, 30vw);
   background: radial-gradient(circle, rgba(11, 110, 79, 0.1), transparent 70%);
   border-radius: 50%;
   filter: blur(30px);
@@ -1268,8 +1268,8 @@ canvas:hover {
   
   body::before,
   body::after {
-    width: 300px;
-    height: 300px;
+    width: min(300px, 50vw);
+    height: min(300px, 50vw);
   }
 }
 
@@ -1279,18 +1279,18 @@ canvas:hover {
   }
   
   .stat-value {
-    font-size: 28px;
+    font-size: min(28px, 7vw);
   }
   
   .tab-btn {
-    padding: 8px 14px;
-    font-size: 13px;
+    padding: min(8px, 2vw) min(14px, 3vw);
+    font-size: min(13px, 3.5vw);
   }
   
   body::before,
   body::after {
-    width: 250px;
-    height: 250px;
+    width: min(250px, 60vw);
+    height: min(250px, 60vw);
     filter: blur(60px);
   }
 }
@@ -1345,8 +1345,8 @@ canvas:hover {
 
 /* Bubble 1 - small */
 .stat-card .bubble:nth-child(1) {
-  width: 8px;
-  height: 8px;
+  width: min(8px, 2vw);
+  height: min(8px, 2vw);
   left: 20%;
   animation-delay: 0s;
   animation-duration: 2.5s;
@@ -1354,8 +1354,8 @@ canvas:hover {
 
 /* Bubble 2 - medium */
 .stat-card .bubble:nth-child(2) {
-  width: 12px;
-  height: 12px;
+  width: min(12px, 3vw);
+  height: min(12px, 3vw);
   left: 45%;
   animation-delay: 0.8s;
   animation-duration: 3s;
@@ -1363,8 +1363,8 @@ canvas:hover {
 
 /* Bubble 3 - large */
 .stat-card .bubble:nth-child(3) {
-  width: 16px;
-  height: 16px;
+  width: min(16px, 4vw);
+  height: min(16px, 4vw);
   left: 70%;
   animation-delay: 1.5s;
   animation-duration: 3.5s;
@@ -1372,8 +1372,8 @@ canvas:hover {
 
 /* Bubble 4 - small */
 .stat-card .bubble:nth-child(4) {
-  width: 6px;
-  height: 6px;
+  width: min(6px, 1.5vw);
+  height: min(6px, 1.5vw);
   left: 30%;
   animation-delay: 2s;
   animation-duration: 2.8s;
@@ -1381,8 +1381,8 @@ canvas:hover {
 
 /* Bubble 5 - medium */
 .stat-card .bubble:nth-child(5) {
-  width: 10px;
-  height: 10px;
+  width: min(10px, 2.5vw);
+  height: min(10px, 2.5vw);
   left: 60%;
   animation-delay: 0.5s;
   animation-duration: 3.2s;
