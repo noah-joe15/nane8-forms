@@ -1,5 +1,5 @@
 /* ============================================================
-   NANENANE / 51st DITF Participant Survey — Glassmorphism Theme
+   NANENANE / 51st DITF Participant Survey — Glassmorphism + Liquidmorphism
    Palette: deep trade-green, royal blue, harvest gold, ivory
    ============================================================ */
 
@@ -40,12 +40,26 @@
   --glass-shadow:0 8px 32px rgba(0, 0, 0, 0.1);
   --glass-blur:blur(12px);
   --glass-blur-heavy:blur(20px);
+  
+  /* Liquidmorphism tokens */
+  --liquid-flow: 8s;
+  --liquid-pulse: 3s;
+  --liquid-wave: 2.5s;
+  --liquid-morph: 12s;
+  --liquid-gradient: linear-gradient(
+    135deg,
+    rgba(11, 110, 79, 0.6) 0%,
+    rgba(18, 138, 100, 0.4) 25%,
+    rgba(212, 160, 23, 0.5) 50%,
+    rgba(30, 107, 184, 0.4) 75%,
+    rgba(11, 110, 79, 0.6) 100%
+  );
 }
 
 *,*::before,*::after{box-sizing:border-box;}
 html{-webkit-text-size-adjust:100%;}
 
-/* --- 1. ANIMATED IVORY BACKGROUND SLIDESHOW --- */
+/* --- 1. ANIMATED IVORY BACKGROUND SLIDESHOW + LIQUID BLOBS --- */
 body{
   margin:0;
   font-family:var(--font-body);
@@ -58,6 +72,52 @@ body{
   animation: bgSlideshow 20s infinite;
   min-height:100vh;
   line-height:1.5;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Liquid floating blobs in background */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+}
+
+body::before {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(11, 110, 79, 0.5), transparent 70%);
+  top: -100px;
+  right: -150px;
+  animation: liquidFloat1 20s ease-in-out infinite;
+}
+
+body::after {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(212, 160, 23, 0.5), transparent 70%);
+  bottom: -100px;
+  left: -100px;
+  animation: liquidFloat2 25s ease-in-out infinite;
+}
+
+@keyframes liquidFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(-60px, 80px) scale(1.1); }
+  50% { transform: translate(40px, 40px) scale(0.95); }
+  75% { transform: translate(80px, -40px) scale(1.05); }
+}
+
+@keyframes liquidFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(70px, -60px) scale(1.15); }
+  66% { transform: translate(-50px, -30px) scale(0.9); }
 }
 
 @keyframes bgSlideshow {
@@ -83,7 +143,7 @@ body.lang-sw .lang-en{display:none;}
 a,button,input,select,textarea{font-family:inherit;}
 :focus-visible{outline:3px solid var(--blue-500); outline-offset:2px;}
 
-/* Top bar - GLASSMORPHISM ------------------------------------ */
+/* Top bar - GLASSMORPHISM + LIQUID EDGE ---------------------- */
 .topbar{
   position:sticky; top:0; z-index:40;
   display:flex; align-items:center; justify-content:space-between;
@@ -95,10 +155,35 @@ a,button,input,select,textarea{font-family:inherit;}
   border-bottom:1px solid rgba(255, 255, 255, 0.15);
   color:var(--white);
   box-shadow:0 4px 24px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
 }
-.brand{display:flex; align-items:center; gap:10px; min-width:0;}
 
-/* --- 2. TANTRADE LOGO STYLING --- */
+/* Liquid shimmer across topbar */
+.topbar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 200%; height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+  animation: liquidShimmer 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes liquidShimmer {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
+}
+
+.brand{display:flex; align-items:center; gap:10px; min-width:0; position: relative; z-index: 1;}
+
+/* --- 2. TRADE LOGO STYLING --- */
 .brand-logo {
   height: 45px;
   width: auto;
@@ -111,11 +196,13 @@ a,button,input,select,textarea{font-family:inherit;}
   margin-right: 12px;
   border:1px solid rgba(255, 255, 255, 0.3);
   box-shadow:0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
 }
+.brand-logo:hover { transform: scale(1.05) rotate(-2deg); }
 .brand-mark { display: none; }
 
 /* --- 3. RESPONSIVE & CLEAN HEADING --- */
-.brand-text{min-width:0;}
+.brand-text{min-width:0; position: relative; z-index: 1;}
 .brand-text strong{
   display:block; 
   font-family:var(--font-head); 
@@ -148,11 +235,23 @@ a,button,input,select,textarea{font-family:inherit;}
   flex:none;
   border:1px solid rgba(255,255,255,.2);
   box-shadow:0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+.lang-switch::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(212, 160, 23, 0.2), transparent);
+  animation: liquidShimmer 4s ease-in-out infinite;
+  pointer-events: none;
 }
 .lang-switch button{
   border:0; background:transparent; color:var(--white); padding:6px 12px; font-size:12.5px;
   font-weight:600; border-radius:999px; cursor:pointer; letter-spacing:.2px;
   transition:all 0.2s ease;
+  position: relative;
+  z-index: 1;
 }
 .lang-switch button:hover{
   background:rgba(255, 255, 255, 0.15);
@@ -163,7 +262,7 @@ a,button,input,select,textarea{font-family:inherit;}
   box-shadow:0 2px 8px rgba(212, 160, 23, 0.4);
 }
 
-/* Page shell - GLASSMORPHISM ---------------------------------- */
+/* Page shell - GLASSMORPHISM + LIQUID ------------------------ */
 .shell{
   max-width:720px; 
   margin:0 auto; 
@@ -176,38 +275,102 @@ a,button,input,select,textarea{font-family:inherit;}
   box-shadow:0 8px 32px rgba(0, 0, 0, 0.12);
   margin-top: 20px;
   margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Progress - GLASSMORPHISM ------------------------------------ */
+/* Liquid accent blob inside shell */
+.shell::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -30%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(212, 160, 23, 0.15), transparent 70%);
+  border-radius: 50%;
+  filter: blur(40px);
+  animation: liquidFloat1 15s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Progress - GLASSMORPHISM + LIQUID FILL --------------------- */
 .progress-wrap{margin:18px 0 22px;}
 .progress-meta{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;}
 .progress-meta .step-label{font-size:12.5px; font-weight:600; color:var(--green-700); text-transform:uppercase; letter-spacing:.6px;}
 .progress-meta .step-count{font-size:12.5px; color:var(--ink-soft);}
 .progress-track{
-  height:8px; 
+  height:10px; 
   border-radius:999px; 
   background:rgba(255, 255, 255, 0.3);
   backdrop-filter:blur(4px);
   -webkit-backdrop-filter:blur(4px);
   overflow:hidden;
   border:1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
 }
 .progress-fill{
   height:100%; border-radius:999px;
-  background:linear-gradient(90deg,var(--green-500),var(--gold-500));
-  transition:width .35s ease;
+  background:linear-gradient(90deg,var(--green-500),var(--gold-500),var(--green-500));
+  background-size: 200% 100%;
+  animation: liquidFlow 3s ease-in-out infinite;
+  transition:width .6s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow:0 0 12px rgba(18, 138, 100, 0.5);
+  position: relative;
+  overflow: hidden;
 }
+
+/* Liquid wave inside progress bar */
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: liquidWave 2s linear infinite;
+}
+
+@keyframes liquidFlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes liquidWave {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 .progress-dots{display:flex; justify-content:space-between; margin-top:9px;}
 .progress-dots i{
   width:9px; height:9px; border-radius:50%; background:rgba(255, 255, 255, 0.4); display:block;
   box-shadow:0 0 0 3px rgba(255, 255, 255, 0.1);
-  transition:all 0.3s ease;
+  transition:all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.progress-dots i.done{background:var(--green-700);}
-.progress-dots i.current{background:var(--gold-500); transform:scale(1.35); box-shadow:0 0 12px rgba(212, 160, 23, 0.6);}
+.progress-dots i.done{background:var(--green-700); animation: liquidPop 0.5s ease-out;}
+.progress-dots i.current{
+  background:var(--gold-500); 
+  transform:scale(1.35); 
+  box-shadow:0 0 12px rgba(212, 160, 23, 0.6);
+  animation: liquidPulse 1.5s ease-in-out infinite;
+}
 
-/* Card - GLASSMORPHISM ---------------------------------------- */
+@keyframes liquidPop {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.5); }
+  100% { transform: scale(1); }
+}
+
+@keyframes liquidPulse {
+  0%, 100% { transform: scale(1.35); box-shadow: 0 0 12px rgba(212, 160, 23, 0.6); }
+  50% { transform: scale(1.5); box-shadow: 0 0 20px rgba(212, 160, 23, 0.9); }
+}
+
+/* Card - GLASSMORPHISM + LIQUID BORDER ----------------------- */
 .card{
   background:rgba(255, 255, 255, 0.25);
   backdrop-filter:blur(16px);
@@ -216,7 +379,51 @@ a,button,input,select,textarea{font-family:inherit;}
   border-radius:var(--radius);
   box-shadow:0 8px 32px rgba(0, 0, 0, 0.1);
   padding:26px 22px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
+
+/* Liquid border morph */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(
+    135deg,
+    rgba(11, 110, 79, 0.3),
+    rgba(212, 160, 23, 0.3),
+    rgba(30, 107, 184, 0.3),
+    rgba(11, 110, 79, 0.3)
+  );
+  background-size: 300% 300%;
+  animation: liquidBorder 8s ease-in-out infinite;
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes liquidBorder {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
 .card + .card{margin-top:16px;}
 .section-eyebrow{
   display:inline-flex; align-items:center; gap:6px;
@@ -249,13 +456,14 @@ a,button,input,select,textarea{font-family:inherit;}
   backdrop-filter:blur(8px);
   -webkit-backdrop-filter:blur(8px);
   color:var(--ink); 
-  transition:all 0.2s ease;
+  transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .text-input:focus{
   border-color:var(--blue-500); 
-  box-shadow:0 0 0 4px rgba(30,107,184,.2); 
+  box-shadow:0 0 0 4px rgba(30,107,184,.2), 0 0 20px rgba(30,107,184,.3); 
   outline:none;
-  background:rgba(255, 255, 255, 0.3);
+  background:rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
 }
 .text-input::placeholder{
   color:rgba(75, 91, 84, 0.6);
@@ -278,13 +486,15 @@ textarea.text-input{resize:vertical; min-height:96px;}
   background:rgba(255, 255, 255, 0.2);
   backdrop-filter:blur(8px);
   -webkit-backdrop-filter:blur(8px);
-  transition:all 0.2s ease;
+  transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 .option-box::before{
   content:""; width:18px; height:18px; flex:none; border-radius:50%;
   border:2px solid rgba(199, 210, 204, 0.6); 
   background:rgba(255, 255, 255, 0.3); 
-  transition:all 0.2s ease;
+  transition:all 0.3s ease;
 }
 .option.checkbox .option-box::before{border-radius:5px;}
 .option input:checked + .option-box{
@@ -292,29 +502,31 @@ textarea.text-input{resize:vertical; min-height:96px;}
   border-color:var(--green-700); 
   color:var(--green-900);
   box-shadow:0 4px 12px rgba(11, 110, 79, 0.2);
+  transform: translateX(4px);
 }
 .option input:checked + .option-box::before{
   border-color:var(--green-700); 
   background:var(--green-700);
   box-shadow:inset 0 0 0 3px rgba(228, 243, 236, 0.6);
+  animation: liquidPop 0.4s ease-out;
 }
 .option input:focus-visible + .option-box{outline:3px solid var(--blue-500); outline-offset:2px;}
 .option-box:hover{
   border-color:var(--gold-500);
-  background:rgba(255, 255, 255, 0.25);
-  transform:translateY(-1px);
-  box-shadow:0 4px 12px rgba(0, 0, 0, 0.08);
+  background:rgba(255, 255, 255, 0.28);
+  transform:translateY(-2px) translateX(2px);
+  box-shadow:0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
 .other-field{margin-top:8px;}
 .other-field[hidden]{display:none;}
 
-/* Nav buttons - GLASSMORPHISM --------------------------------- */
+/* Nav buttons - GLASSMORPHISM + LIQUID RIPPLE ---------------- */
 .step-nav{display:flex; gap:10px; margin-top:22px;}
 .btn{
   appearance:none; border:0; cursor:pointer; font-weight:700; font-size:14.5px;
   padding:13px 20px; border-radius:999px; 
-  transition:all 0.2s ease;
+  transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display:inline-flex; align-items:center; justify-content:center; gap:8px;
   position:relative;
   overflow:hidden;
@@ -322,17 +534,17 @@ textarea.text-input{resize:vertical; min-height:96px;}
 .btn::before{
   content:'';
   position:absolute;
-  top:0;
-  left:-100%;
-  width:100%;
-  height:100%;
-  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transition:left 0.5s ease;
+  top:50%; left:50%;
+  width:0; height:0;
+  border-radius:50%;
+  background:rgba(255,255,255,0.4);
+  transform:translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
 }
 .btn:hover::before{
-  left:100%;
+  width:300px; height:300px;
 }
-.btn:active{transform:translateY(1px);}
+.btn:active{transform:translateY(1px) scale(0.98);}
 .btn-primary{
   background:linear-gradient(135deg,rgba(11, 110, 79, 0.9),rgba(18, 138, 100, 0.9));
   backdrop-filter:blur(8px);
@@ -341,9 +553,13 @@ textarea.text-input{resize:vertical; min-height:96px;}
   box-shadow:0 8px 20px rgba(11,110,79,.35); 
   flex:1;
   border:1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+  background-size: 200% 200%;
+  animation: liquidGradient 4s ease infinite;
 }
 .btn-primary:hover{
-  box-shadow:0 10px 24px rgba(11,110,79,.45);
+  box-shadow:0 12px 28px rgba(11,110,79,.5);
   transform:translateY(-2px);
 }
 .btn-gold{
@@ -354,9 +570,11 @@ textarea.text-input{resize:vertical; min-height:96px;}
   box-shadow:0 8px 20px rgba(184,134,11,.35); 
   flex:1;
   border:1px solid rgba(255, 255, 255, 0.2);
+  background-size: 200% 200%;
+  animation: liquidGradient 4s ease infinite;
 }
 .btn-gold:hover{
-  box-shadow:0 10px 24px rgba(184,134,11,.45);
+  box-shadow:0 12px 28px rgba(184,134,11,.5);
   transform:translateY(-2px);
 }
 .btn-ghost{
@@ -374,12 +592,17 @@ textarea.text-input{resize:vertical; min-height:96px;}
 .btn[disabled]{opacity:.55; cursor:not-allowed;}
 .btn-block{width:100%;}
 
-/* Steps ------------------------------------------------------- */
-.step{display:none; animation:fadeUp .35s ease;}
-.step.active{display:block;}
-@keyframes fadeUp{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+@keyframes liquidGradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
 
-/* Welcome step - GLASSMORPHISM -------------------------------- */
+/* Steps ------------------------------------------------------- */
+.step{display:none; animation:fadeUp .4s cubic-bezier(0.4, 0, 0.2, 1);}
+.step.active{display:block;}
+@keyframes fadeUp{from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);}}
+
+/* Welcome step - GLASSMORPHISM + LIQUID ---------------------- */
 .hero{
   border-radius:var(--radius); 
   overflow:hidden; 
@@ -397,6 +620,7 @@ textarea.text-input{resize:vertical; min-height:96px;}
   content:""; position:absolute; inset:0;
   background:radial-gradient(220px 160px at 90% -20%, rgba(212,160,23,.35), transparent 60%);
   pointer-events:none;
+  animation: liquidFloat1 10s ease-in-out infinite;
 }
 .hero-eyebrow{
   display:inline-block; font-size:11.5px; font-weight:700; letter-spacing:.8px; text-transform:uppercase;
@@ -430,7 +654,7 @@ textarea.text-input{resize:vertical; min-height:96px;}
 .review-row .ra{color:var(--ink); font-weight:600; flex:1; text-align:right;}
 .edit-link{font-size:12.5px; color:var(--blue-700); font-weight:700; cursor:pointer; background:none; border:0; padding:0;}
 
-/* Success - GLASSMORPHISM ------------------------------------- */
+/* Success - GLASSMORPHISM + LIQUID --------------------------- */
 .success-wrap{text-align:center; padding:20px 6px 6px;}
 .success-badge{
   width:74px; height:74px; margin:0 auto 18px; border-radius:50%;
@@ -440,7 +664,31 @@ textarea.text-input{resize:vertical; min-height:96px;}
   display:flex; align-items:center; justify-content:center; 
   box-shadow:0 8px 24px rgba(11, 110, 79, 0.3);
   border:1px solid rgba(255, 255, 255, 0.2);
+  animation: liquidSuccessPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
 }
+
+.success-badge::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(18, 138, 100, 0.4), transparent 70%);
+  animation: liquidPulseRing 2s ease-out infinite;
+  z-index: -1;
+}
+
+@keyframes liquidSuccessPop {
+  0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+  60% { transform: scale(1.2) rotate(10deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes liquidPulseRing {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
 .success-badge svg{width:36px; height:36px;}
 .success-wrap h2{font-size:21px; margin-bottom:8px;}
 .success-wrap p{color:var(--ink-soft); font-size:14.5px; max-width:44ch; margin:0 auto;}
@@ -485,7 +733,7 @@ textarea.text-input{resize:vertical; min-height:96px;}
 }
 
 /* ============================================
-   ADMIN DASHBOARD GLASSMORPHISM OVERRIDES
+   ADMIN DASHBOARD — GLASSMORPHISM + LIQUIDMORPHISM
    ============================================ */
 
 /* Admin shell */
@@ -493,6 +741,7 @@ textarea.text-input{resize:vertical; min-height:96px;}
   max-width: 1080px;
   margin: 0 auto;
   padding: 24px 20px 60px;
+  position: relative;
 }
 
 /* Admin login card */
@@ -506,6 +755,20 @@ textarea.text-input{resize:vertical; min-height:96px;}
   max-width: 400px;
   margin: 60px auto 0;
   padding: 32px 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -50%;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(212, 160, 23, 0.2), transparent 70%);
+  border-radius: 50%;
+  filter: blur(30px);
+  animation: liquidFloat1 12s ease-in-out infinite;
+  pointer-events: none;
 }
 
 /* Stats dashboard cards */
@@ -525,13 +788,35 @@ textarea.text-input{resize:vertical; min-height:96px;}
   padding: 20px 16px;
   text-align: center;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Liquid shimmer on stat cards */
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 200%; height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transition: left 0.8s ease;
+  pointer-events: none;
+}
+
+.stat-card:hover::before {
+  left: 100%;
 }
 
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.28);
 }
 
 .stat-card.highlight {
@@ -546,6 +831,12 @@ textarea.text-input{resize:vertical; min-height:96px;}
   font-family: var(--font-head);
   line-height: 1;
   margin-bottom: 8px;
+  animation: liquidCountIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes liquidCountIn {
+  0% { opacity: 0; transform: translateY(10px) scale(0.8); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .stat-card.highlight .stat-value {
@@ -580,7 +871,19 @@ textarea.text-input{resize:vertical; min-height:96px;}
   cursor: pointer;
   border-radius: var(--radius-sm) var(--radius-sm) 0 0;
   min-height: 48px;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%;
+  width: 0; height: 3px;
+  background: linear-gradient(90deg, var(--green-700), var(--gold-500));
+  transform: translateX(-50%);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tab-btn:hover {
@@ -591,7 +894,10 @@ textarea.text-input{resize:vertical; min-height:96px;}
 .tab-btn.active {
   background: rgba(255, 255, 255, 0.3);
   color: var(--green-700);
-  border-bottom: 3px solid var(--green-700);
+}
+
+.tab-btn.active::after {
+  width: 100%;
 }
 
 /* Toolbar */
@@ -614,6 +920,7 @@ textarea.text-input{resize:vertical; min-height:96px;}
   padding: 8px 16px;
   border-radius: 999px;
   border: 1px solid rgba(228, 243, 236, 0.5);
+  animation: liquidCountIn 0.5s ease-out;
 }
 
 .search-input {
@@ -623,6 +930,16 @@ textarea.text-input{resize:vertical; min-height:96px;}
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--green-700);
+  box-shadow: 0 0 0 4px rgba(11, 110, 79, 0.15);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Tables */
@@ -663,12 +980,17 @@ tbody td {
   vertical-align: top;
 }
 
+tbody tr {
+  transition: all 0.2s ease;
+}
+
 tbody tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.1);
 }
 
 tbody tr:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateX(2px);
 }
 
 /* Question form */
@@ -728,6 +1050,7 @@ tbody tr:hover {
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 12px rgba(179, 38, 30, 0.3);
+  transition: all 0.3s ease;
 }
 
 .btn-danger:hover {
@@ -749,7 +1072,182 @@ tbody tr:hover {
   gap: 16px;
 }
 
-/* Responsive adjustments */
+/* ============================================
+   LIQUIDMORPHISM — CHARTS & KPI BARS
+   ============================================ */
+
+/* Chart containers — liquid breathing */
+canvas {
+  animation: liquidCanvasIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08));
+  transition: filter 0.3s ease;
+}
+
+canvas:hover {
+  filter: drop-shadow(0 6px 20px rgba(11, 110, 79, 0.25));
+}
+
+@keyframes liquidCanvasIn {
+  0% { opacity: 0; transform: scale(0.9) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* KPI percentage breakdown bars — LIQUID FILL */
+#genderBreakdown > div,
+#businessBreakdown > div,
+#regionsBreakdown > div,
+#sectorsBreakdown > div {
+  animation: liquidBarIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.1);
+  margin-bottom: 12px !important;
+  transition: all 0.3s ease;
+}
+
+#genderBreakdown > div:hover,
+#businessBreakdown > div:hover,
+#regionsBreakdown > div:hover,
+#sectorsBreakdown > div:hover {
+  transform: translateX(4px);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Staggered entrance */
+#genderBreakdown > div:nth-child(1),
+#businessBreakdown > div:nth-child(1),
+#regionsBreakdown > div:nth-child(1),
+#sectorsBreakdown > div:nth-child(1) { animation-delay: 0.1s; }
+#genderBreakdown > div:nth-child(2),
+#businessBreakdown > div:nth-child(2),
+#regionsBreakdown > div:nth-child(2),
+#sectorsBreakdown > div:nth-child(2) { animation-delay: 0.2s; }
+#genderBreakdown > div:nth-child(3),
+#businessBreakdown > div:nth-child(3),
+#regionsBreakdown > div:nth-child(3),
+#sectorsBreakdown > div:nth-child(3) { animation-delay: 0.3s; }
+#genderBreakdown > div:nth-child(4),
+#businessBreakdown > div:nth-child(4),
+#regionsBreakdown > div:nth-child(4),
+#sectorsBreakdown > div:nth-child(4) { animation-delay: 0.4s; }
+#genderBreakdown > div:nth-child(5),
+#businessBreakdown > div:nth-child(5),
+#regionsBreakdown > div:nth-child(5),
+#sectorsBreakdown > div:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes liquidBarIn {
+  0% { opacity: 0; transform: translateX(-20px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* The actual fill bar — LIQUID WAVE FILL */
+#genderBreakdown > div > div:nth-child(2),
+#businessBreakdown > div > div:nth-child(2),
+#regionsBreakdown > div > div:nth-child(2),
+#sectorsBreakdown > div > div:nth-child(2) {
+  position: relative;
+  overflow: hidden;
+  animation: liquidBarFill 1.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+  animation-delay: inherit;
+}
+
+/* Liquid wave overlay inside each bar */
+#genderBreakdown > div > div:nth-child(2) > div::after,
+#businessBreakdown > div > div:nth-child(2) > div::after,
+#regionsBreakdown > div > div:nth-child(2) > div::after,
+#sectorsBreakdown > div > div:nth-child(2) > div::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 200%; height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  animation: liquidWave 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Make the fill bar itself look liquid */
+#genderBreakdown > div > div:nth-child(2) > div,
+#businessBreakdown > div > div:nth-child(2) > div,
+#regionsBreakdown > div > div:nth-child(2) > div,
+#sectorsBreakdown > div > div:nth-child(2) > div {
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    var(--green-700),
+    var(--green-500),
+    var(--gold-500)
+  ) !important;
+  background-size: 200% 100% !important;
+  animation: liquidFlowFill 1.6s cubic-bezier(0.4, 0, 0.2, 1) backwards, liquidFlow 3s ease-in-out infinite 1.6s;
+}
+
+@keyframes liquidBarFill {
+  0% { width: 0% !important; }
+}
+
+@keyframes liquidFlowFill {
+  0% { background-position: -100% 0; }
+  100% { background-position: 0% 0; }
+}
+
+/* Strong label text */
+#genderBreakdown span,
+#businessBreakdown span,
+#regionsBreakdown span,
+#sectorsBreakdown span {
+  font-weight: 600;
+}
+
+/* Percentage value gets a subtle glow on high values */
+#genderBreakdown strong,
+#businessBreakdown strong,
+#regionsBreakdown strong,
+#sectorsBreakdown strong {
+  transition: text-shadow 0.3s ease;
+}
+
+#genderBreakdown > div:hover strong,
+#businessBreakdown > div:hover strong,
+#regionsBreakdown > div:hover strong,
+#sectorsBreakdown > div:hover strong {
+  text-shadow: 0 0 8px currentColor;
+}
+
+/* Chart card containers — liquid breathing */
+#kpiTab .card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#kpiTab .card::before {
+  content: '';
+  position: absolute;
+  bottom: -50%; right: -50%;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(11, 110, 79, 0.1), transparent 70%);
+  border-radius: 50%;
+  filter: blur(30px);
+  animation: liquidFloat2 15s ease-in-out infinite;
+  pointer-events: none;
+}
+
+#kpiTab .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
 @media (max-width: 768px) {
   .stats-dashboard {
     grid-template-columns: repeat(2, 1fr);
@@ -767,6 +1265,12 @@ tbody tr:hover {
   .search-input {
     max-width: 100%;
   }
+  
+  body::before,
+  body::after {
+    width: 300px;
+    height: 300px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -781,5 +1285,21 @@ tbody tr:hover {
   .tab-btn {
     padding: 8px 14px;
     font-size: 13px;
+  }
+  
+  body::before,
+  body::after {
+    width: 250px;
+    height: 250px;
+    filter: blur(60px);
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
