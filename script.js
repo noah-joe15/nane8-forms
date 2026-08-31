@@ -1,18 +1,34 @@
 // ============================================================
-// Nanenane / 51st DITF Survey — client logic (Hardcoded Version)
-// Pure vanilla JS. Works perfectly with the hardcoded index.html.
+// Unified Survey Logic (Nanenane & Wadau Malighafi)
+// Pure vanilla JS. Dynamically adapts to the active form.
 // ============================================================
 (function () {
   "use strict";
 
   var form = document.getElementById("surveyForm");
+  // Detect which form is running based on the data-form-id attribute
+  var formId = form ? (form.getAttribute("data-form-id") || "nanenane") : "nanenane";
+  
   var steps = Array.prototype.slice.call(document.querySelectorAll(".step"));
   var formSteps = steps.filter(function (s) { return s.dataset.step !== "success"; });
   var totalSteps = formSteps.length;
   var current = 0;
   var lang = "sw";
 
-  var STEP_LABELS = {
+  // ---------- Dynamic Step Labels based on Form ID ----------
+  var STEP_LABELS = formId === "wadau-malighafi" ? {
+    0: { sw: "Utangulizi & Ridhaa", en: "Intro & Consent" },
+    1: { sw: "Sehemu C · Taarifa za Msingi", en: "Section C · Basic Info" },
+    2: { sw: "Sehemu D · Uzalishaji", en: "Section D · Production" },
+    3: { sw: "Sehemu E · Soko (Ndani)", en: "Section E · Domestic Market" },
+    4: { sw: "Sehemu F · Usafirishaji Nje", en: "Section F · Export" },
+    5: { sw: "Sehemu G & H · Uchakataji & Fedha", en: "Section G & H · Processing & Finance" },
+    6: { sw: "Sehemu I & J · Miundombinu & Sera", en: "Section I & J · Infrastructure & Policy" },
+    7: { sw: "Sehemu K, L & M · Ushirikiano & Vikwazo", en: "Section K, L & M · Collaboration & Constraints" },
+    8: { sw: "Sehemu N · Maoni", en: "Section N · Opinions" },
+    9: { sw: "Kagua na Tuma", en: "Review & Submit" }
+  } : {
+    // Default: Nanenane / 51st DITF
     0: { sw: "Karibu", en: "Welcome" },
     1: { sw: "Sehemu A · Taarifa za Msingi", en: "Section A · Basic Info" },
     2: { sw: "Sehemu B · Hali ya Biashara", en: "Section B · Business Status" },
@@ -23,13 +39,37 @@
     7: { sw: "Kagua na Tuma", en: "Review & Submit" }
   };
 
+  // ---------- Dynamic Review Groups based on Form ID ----------
+  var REVIEW_GROUPS = formId === "wadau-malighafi" ? [
+    { titleSw: "Utangulizi & Ridhaa", titleEn: "Intro & Consent", step: 0, fields: ["consent_b1", "consent_b2", "mkoa", "wilaya", "researcher_name"] },
+    { titleSw: "Sehemu C", titleEn: "Section C", step: 1, fields: ["bidhaa[]", "jina_mhojiwa", "cheo", "taasisi", "jinsia", "aina_mdau[]", "kiwango_shughuli"] },
+    { titleSw: "Sehemu D", titleEn: "Section D", step: 2, fields: ["kiasi_2024", "kipimo_2024", "thamani_2024", "mwelekeo_uzalishaji", "sababu_mwelekeo", "kipindi_upatikanaji", "miezi_upatikanaji", "chanzo_malighafi", "inakidhi_mahitaji"] },
+    { titleSw: "Sehemu E", titleEn: "Section E", step: 3, fields: ["wanunuzi_wakuu[]", "hali_bidhaa_inapouzwa", "asilimia_thamani", "bei_huamuliwaje", "mikataba_mauzo"] },
+    { titleSw: "Sehemu F", titleEn: "Section F", step: 4, fields: ["husika_mojakwamoja_nje", "sababu_kuuza_ghafi[]", "faida_kuuza_ghafi", "faida_kuuza_ghafi_eleza", "changamoto_ubora_nje[]", "vifungashio_nje"] },
+    { titleSw: "Sehemu G & H", titleEn: "Section G & H", step: 5, fields: ["inachakata_bidhaa", "kiwango_uchakataji", "sababu_kutotumia_ukomo[]", "vyeti_bidhaa", "chanzo_mtaji", "vikwazo_fedha[]"] },
+    { titleSw: "Sehemu I & J", titleEn: "Section I & J", step: 6, fields: ["hali_miundombinu", "upotevu_bidhaa", "sera_zinaunga_mkono", "muda_urahisi_taratu", "mapendekezo_sera"] },
+    { titleSw: "Sehemu K, L & M", titleEn: "Section K, L & M", step: 7, fields: ["kiwango_ushirikiano", "mfumo_ushirikiano[]", "fursa_uwekezaji", "uwezekano_kuongeza_uchakataji", "kikwazo_kikubwa"] },
+    { titleSw: "Sehemu N", titleEn: "Section N", step: 8, fields: ["hatua_tatu_maramoja", "jukumu_serikali", "jukumu_sekta_binafsi", "maoni_mengine"] }
+  ] : [
+    // Default: Nanenane / 51st DITF
+    { titleSw: "Taarifa za Kampuni na Mwitikio", titleEn: "Company & Respondent Details", step: 0, fields: ["jina_la_kampuni", "tin_number", "anwani_kampuni", "respondent_name", "respondent_email", "respondent_phone", "location"] },
+    { titleSw: "Sehemu A", titleEn: "Section A", step: 1, fields: ["wewe_ni", "jinsia", "mkoa", "wilaya", "sekta", "muda_shughuli"] },
+    { titleSw: "Sehemu B", titleEn: "Section B", step: 2, fields: ["hali_biashara", "uzalishaji_umeongezeka", "mauzo", "sababu_zinazoathiri[]"] },
+    { titleSw: "Sehemu C", titleEn: "Section C", step: 3, fields: ["bidhaa_zinazozalishwa_tz", "bidhaa_zimesajiliwa", "kama_hapana_sababu[]", "msaada_mit[]"] },
+    { titleSw: "Sehemu D", titleEn: "Section D", step: 4, fields: ["maeneo_mauzo[]", "njia_kupata_wateja[]", "amewahi_kushiriki_maonesho", "maonesho_yamesaidia[]"] },
+    { titleSw: "Sehemu E", titleEn: "Section E", step: 5, fields: ["mpango_kushiriki_51st", "lengo_kushiriki", "msaada_kabla_kushiriki[]", "changamoto_kuzuia[]"] },
+    { titleSw: "Sehemu F & G", titleEn: "Section F & G", step: 6, fields: ["changamoto_kukuza_biashara[]", "aina_msaada_unaohitaji[]", "mapendekezo"] }
+  ];
+
   // ---------- language ----------------------------------------------------
   window.setLang = function (l) {
     lang = l;
     document.body.classList.remove("lang-sw", "lang-en");
     document.body.classList.add("lang-" + l);
-    document.getElementById("btn-lang-sw").classList.toggle("active", l === "sw");
-    document.getElementById("btn-lang-en").classList.toggle("active", l === "en");
+    var btnSw = document.getElementById("btn-lang-sw");
+    var btnEn = document.getElementById("btn-lang-en");
+    if (btnSw) btnSw.classList.toggle("active", l === "sw");
+    if (btnEn) btnEn.classList.toggle("active", l === "en");
     document.documentElement.setAttribute("lang", l);
     updateStepLabel();
   };
@@ -37,6 +77,7 @@
   // ---------- progress ------------------------------------------------------
   function buildDots() {
     var wrap = document.getElementById("progressDots");
+    if (!wrap) return;
     wrap.innerHTML = "";
     for (var i = 0; i < totalSteps; i++) {
       var dot = document.createElement("i");
@@ -46,9 +87,13 @@
 
   function updateProgress() {
     var pct = ((current + 1) / totalSteps) * 100;
-    document.getElementById("progressFill").style.width = pct + "%";
-    document.getElementById("stepNow").textContent = current + 1;
-    document.getElementById("stepTotal").textContent = totalSteps;
+    var fill = document.getElementById("progressFill");
+    var now = document.getElementById("stepNow");
+    var total = document.getElementById("stepTotal");
+    if (fill) fill.style.width = pct + "%";
+    if (now) now.textContent = current + 1;
+    if (total) total.textContent = totalSteps;
+    
     var dots = document.querySelectorAll("#progressDots i");
     dots.forEach(function (d, i) {
       d.classList.toggle("done", i < current);
@@ -59,7 +104,8 @@
 
   function updateStepLabel() {
     var lbl = STEP_LABELS[current];
-    if (lbl) document.getElementById("stepLabel").textContent = lbl[lang];
+    var labelEl = document.getElementById("stepLabel");
+    if (lbl && labelEl) labelEl.textContent = lbl[lang];
   }
 
   // ---------- step visibility -------------------------------------------------
@@ -67,21 +113,24 @@
     formSteps.forEach(function (s) {
       s.classList.toggle("active", parseInt(s.dataset.step, 10) === idx);
     });
-    document.getElementById("btnBack").style.visibility = idx === 0 ? "hidden" : "visible";
-    var isLast = idx === totalSteps - 1;
-    document.getElementById("btnNext").style.display = isLast ? "none" : "inline-flex";
-    document.getElementById("btnSubmit").style.display = isLast ? "inline-flex" : "none";
     
-    // Show "Start Over" button ONLY on the review step
+    var btnBack = document.getElementById("btnBack");
+    if (btnBack) btnBack.style.visibility = idx === 0 ? "hidden" : "visible";
+    
+    var isLast = idx === totalSteps - 1;
+    var btnNext = document.getElementById("btnNext");
+    var btnSubmit = document.getElementById("btnSubmit");
     var btnReset = document.getElementById("btnReset");
-    if (btnReset) {
-      btnReset.style.display = isLast ? "inline-flex" : "none";
-    }
+    
+    if (btnNext) btnNext.style.display = isLast ? "none" : "inline-flex";
+    if (btnSubmit) btnSubmit.style.display = isLast ? "inline-flex" : "none";
+    if (btnReset) btnReset.style.display = isLast ? "inline-flex" : "none";
 
     if (isLast) renderReview();
     updateProgress();
     hideBanner();
     window.scrollTo({ top: 0, behavior: "smooth" });
+    if (form) form.scrollIntoView({ behavior: "smooth", block: "start" a
   }
 
   window.goStep = function (dir) {
@@ -100,12 +149,19 @@
     showStep(current);
   };
 
-  function showBanner() { document.getElementById("errorBanner").classList.add("show"); }
-  function hideBanner() { document.getElementById("errorBanner").classList.remove("show"); }
+  function showBanner() { 
+    var banner = document.getElementById("errorBanner");
+    if (banner) banner.classList.add("show"); 
+  }
+  function hideBanner() { 
+    var banner = document.getElementById("errorBanner");
+    if (banner) banner.classList.remove("show"); 
+  }
 
   // ---------- validation -----------------------------------------------------
   function validateStep(idx) {
     var stepEl = formSteps[idx];
+    if (!stepEl) return true;
     var ok = true;
     var fields = stepEl.querySelectorAll(".field");
     fields.forEach(function (fieldEl) {
@@ -147,17 +203,7 @@
     });
   }
 
-  // ---------- review screen -----------------------------------------------------
-  var REVIEW_GROUPS = [
-    { titleSw: "Taarifa za Kampuni na Mwitikio", titleEn: "Company & Respondent Details", step: 0, fields: ["jina_la_kampuni", "tin_number", "anwani_kampuni", "respondent_name", "respondent_email", "respondent_phone", "location"] },
-    { titleSw: "Sehemu A", titleEn: "Section A", step: 1, fields: ["wewe_ni", "jinsia", "mkoa", "wilaya", "sekta", "muda_shughuli"] },
-    { titleSw: "Sehemu B", titleEn: "Section B", step: 2, fields: ["hali_biashara", "uzalishaji_umeongezeka", "mauzo", "sababu_zinazoathiri[]"] },
-    { titleSw: "Sehemu C", titleEn: "Section C", step: 3, fields: ["bidhaa_zinazozalishwa_tz", "bidhaa_zimesajiliwa", "kama_hapana_sababu[]", "msaada_mit[]"] },
-    { titleSw: "Sehemu D", titleEn: "Section D", step: 4, fields: ["maeneo_mauzo[]", "njia_kupata_wateja[]", "amewahi_kushiriki_maonesho", "maonesho_yamesaidia[]"] },
-    { titleSw: "Sehemu E", titleEn: "Section E", step: 5, fields: ["mpango_kushiriki_51st", "lengo_kushiriki", "msaada_kabla_kushiriki[]", "changamoto_kuzuia[]"] },
-    { titleSw: "Sehemu F & G", titleEn: "Section F & G", step: 6, fields: ["changamoto_kukuza_biashara[]", "aina_msaada_unaohitaji[]", "mapendekezo"] }
-  ];
-
+  // ---------- review screen ---------------------------------------------------
   function fieldLabelText(name) {
     var baseName = name.replace("[]", "");
     var labelEl = form.querySelector('[data-field="' + baseName + '"] .field-label') ||
@@ -196,6 +242,7 @@
 
   function renderReview() {
     var out = document.getElementById("reviewOutput");
+    if (!out) return;
     out.innerHTML = "";
     REVIEW_GROUPS.forEach(function (group) {
       var wrap = document.createElement("div");
@@ -231,65 +278,78 @@
     });
   }
 
-  // ---------- submission (Supabase pattern) --------------------------------
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault();
-    if (!validateStep(current)) { 
-      showBanner(); 
-      return; 
-    }
+  // ---------- submission (Dynamic Supabase table) -----------------------------
+  if (form) {
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      if (!validateStep(current)) { 
+        showBanner(); 
+        return; 
+      }
 
-    var submitBtn = document.getElementById("btnSubmit");
-    var originalBtnText = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.textContent = lang === "sw" ? "Inatuma..." : "Submitting...";
+      var submitBtn = document.getElementById("btnSubmit");
+      var originalBtnText = submitBtn ? submitBtn.textContent : "";
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = lang === "sw" ? "Inatuma..." : "Submitting...";
+      }
 
-    var fd = new FormData(form);
-    var payload = {};
-    
-    fd.forEach(function (value, key) {
-      if (key === "bot-field" || key === "form-name") return; 
+      var fd = new FormData(form);
+      var payload = {};
       
-      if (payload.hasOwnProperty(key)) {
-        if (Array.isArray(payload[key])) {
-          payload[key].push(value);
+      fd.forEach(function (value, key) {
+        if (key === "bot-field" || key === "form-name") return; 
+        
+        if (payload.hasOwnProperty(key)) {
+          if (Array.isArray(payload[key])) {
+            payload[key].push(value);
+          } else {
+            payload[key] = [payload[key], value];
+          }
         } else {
-          payload[key] = [payload[key], value];
+          payload[key] = value;
         }
-      } else {
-        payload[key] = value;
+      });
+
+      payload.submitted_at = new Date().toISOString();
+      payload.form_type = formId; // Helpful for filtering in the database
+
+      try {
+        if (typeof supabaseClient === 'undefined') {
+          throw new Error("Supabase client not initialized. Check HTML file.");
+        }
+
+        // DYNAMIC TABLE NAME based on form ID
+        var tableName = formId === "wadau-malighafi" ? "wadau_malighafi_responses" : "nanenane_responses";
+
+        const { error } = await supabaseClient
+          .from(tableName)
+          .insert([{ form_data: payload }]);
+
+        if (error) throw error;
+
+        // Success: Hide form, show success screen
+        var stepNav = document.getElementById("stepNav");
+        if (stepNav) stepNav.style.display = "none";
+        formSteps.forEach(function (s) { s.classList.remove("active"); });
+        var successStep = document.getElementById("successStep");
+        if (successStep) successStep.classList.add("active");
+        var progressWrap = document.querySelector(".progress-wrap");
+        if (progressWrap) progressWrap.style.display = "none";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+      } catch (err) {
+        console.error("Submission error:", err);
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalBtnText;
+        }
+        alert(lang === "sw" 
+          ? "Imeshindikana kutuma. Tafadhali hakikisha una mtandao kisha jaribu tena." 
+          : "Submission failed. Please check your connection and try again.");
       }
     });
-
-    payload.submitted_at = new Date().toISOString();
-
-    try {
-      if (typeof supabaseClient === 'undefined') {
-        throw new Error("Supabase client not initialized. Check index.html");
-      }
-
-      const { error } = await supabaseClient
-        .from('nanenane_responses')
-        .insert([{ form_data: payload }]);
-
-      if (error) throw error;
-
-      // Success: Hide form, show success screen
-      document.getElementById("stepNav").style.display = "none";
-      formSteps.forEach(function (s) { s.classList.remove("active"); });
-      document.getElementById("successStep").classList.add("active");
-      document.querySelector(".progress-wrap").style.display = "none";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-
-    } catch (err) {
-      console.error("Submission error:", err);
-      submitBtn.disabled = false;
-      submitBtn.textContent = originalBtnText;
-      alert(lang === "sw" 
-        ? "Imeshindikana kutuma. Tafadhali hakikisha una mtandao kisha jaribu tena." 
-        : "Submission failed. Please check your connection and try again.");
-    }
-  });
+  }
 
   // --- BULLETPROOF RESET FUNCTION ---
   window.resetForm = function () {
@@ -298,33 +358,29 @@
       : "Are you sure you want to start over? All your answers will be cleared.";
       
     if (confirm(confirmMsg)) {
-      // 1. Clear all standard form inputs
-      form.reset();
-      
-      // 2. Reset internal step counter
+      if (form) form.reset();
       current = 0;
       
-      // 3. FORCE hide success screen and show form elements
-      document.getElementById("successStep").classList.remove("active");
-      document.getElementById("stepNav").style.display = "flex";
-      document.querySelector(".progress-wrap").style.display = "block";
+      var successStep = document.getElementById("successStep");
+      if (successStep) successStep.classList.remove("active");
       
-      // 4. Hide error banners and remove error highlights
-      document.getElementById("errorBanner").classList.remove("show");
+      var stepNav = document.getElementById("stepNav");
+      if (stepNav) stepNav.style.display = "flex";
+      
+      var progressWrap = document.querySelector(".progress-wrap");
+      if (progressWrap) progressWrap.style.display = "block";
+      
+      hideBanner();
       document.querySelectorAll(".has-error").forEach(function(el) {
         el.classList.remove("has-error");
       });
       
-      // 5. Force hide and clear ALL "other" specify fields
       document.querySelectorAll(".other-field").forEach(function(el) {
         el.hidden = true;
         el.value = "";
       });
       
-      // 6. Re-evaluate toggles to ensure perfect clean state
       setupOtherToggles();
-      
-      // 7. Return to step 0
       showStep(0);
     }
   };
