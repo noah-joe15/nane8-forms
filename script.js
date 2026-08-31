@@ -6,7 +6,6 @@
   "use strict";
 
   var form = document.getElementById("surveyForm");
-  // Detect which form is running based on the data-form-id attribute
   var formId = form ? (form.getAttribute("data-form-id") || "nanenane") : "nanenane";
   
   var steps = Array.prototype.slice.call(document.querySelectorAll(".step"));
@@ -28,7 +27,6 @@
     8: { sw: "Sehemu N · Maoni", en: "Section N · Opinions" },
     9: { sw: "Kagua na Tuma", en: "Review & Submit" }
   } : {
-    // Default: Nanenane / 51st DITF
     0: { sw: "Karibu", en: "Welcome" },
     1: { sw: "Sehemu A · Taarifa za Msingi", en: "Section A · Basic Info" },
     2: { sw: "Sehemu B · Hali ya Biashara", en: "Section B · Business Status" },
@@ -51,7 +49,6 @@
     { titleSw: "Sehemu K, L & M", titleEn: "Section K, L & M", step: 7, fields: ["kiwango_ushirikiano", "mfumo_ushirikiano[]", "fursa_uwekezaji", "uwezekano_kuongeza_uchakataji", "kikwazo_kikubwa"] },
     { titleSw: "Sehemu N", titleEn: "Section N", step: 8, fields: ["hatua_tatu_maramoja", "jukumu_serikali", "jukumu_sekta_binafsi", "maoni_mengine"] }
   ] : [
-    // Default: Nanenane / 51st DITF
     { titleSw: "Taarifa za Kampuni na Mwitikio", titleEn: "Company & Respondent Details", step: 0, fields: ["jina_la_kampuni", "tin_number", "anwani_kampuni", "respondent_name", "respondent_email", "respondent_phone", "location"] },
     { titleSw: "Sehemu A", titleEn: "Section A", step: 1, fields: ["wewe_ni", "jinsia", "mkoa", "wilaya", "sekta", "muda_shughuli"] },
     { titleSw: "Sehemu B", titleEn: "Section B", step: 2, fields: ["hali_biashara", "uzalishaji_umeongezeka", "mauzo", "sababu_zinazoathiri[]"] },
@@ -61,7 +58,7 @@
     { titleSw: "Sehemu F & G", titleEn: "Section F & G", step: 6, fields: ["changamoto_kukuza_biashara[]", "aina_msaada_unaohitaji[]", "mapendekezo"] }
   ];
 
-  // ---------- language ----------------------------------------------------
+  // ---------- LANGUAGE FUNCTION - EXPOSED TO WINDOW ----------
   window.setLang = function (l) {
     lang = l;
     document.body.classList.remove("lang-sw", "lang-en");
@@ -74,7 +71,7 @@
     updateStepLabel();
   };
 
-  // ---------- progress ------------------------------------------------------
+  // ---------- PROGRESS BARS ----------
   function buildDots() {
     var wrap = document.getElementById("progressDots");
     if (!wrap) return;
@@ -108,7 +105,7 @@
     if (lbl && labelEl) labelEl.textContent = lbl[lang];
   }
 
-  // ---------- step visibility -------------------------------------------------
+  // ---------- STEP NAVIGATION ----------
   function showStep(idx) {
     formSteps.forEach(function (s) {
       s.classList.toggle("active", parseInt(s.dataset.step, 10) === idx);
@@ -153,12 +150,13 @@
     var banner = document.getElementById("errorBanner");
     if (banner) banner.classList.add("show"); 
   }
+  
   function hideBanner() { 
     var banner = document.getElementById("errorBanner");
     if (banner) banner.classList.remove("show"); 
   }
 
-  // ---------- validation -----------------------------------------------------
+  // ---------- VALIDATION ----------
   function validateStep(idx) {
     var stepEl = formSteps[idx];
     if (!stepEl) return true;
@@ -185,7 +183,7 @@
 
   function cssEscape(s) { return s.replace(/([^\w-])/g, "\\$1"); }
 
-  // ---------- "other, specify" toggles ----------------------------------------
+  // ---------- "OTHER" FIELD TOGGLES ----------
   function setupOtherToggles() {
     document.querySelectorAll(".other-field").forEach(function (otherInput) {
       var groupName = otherInput.dataset.otherFor;
@@ -203,7 +201,7 @@
     });
   }
 
-  // ---------- review screen ---------------------------------------------------
+  // ---------- REVIEW SCREEN ----------
   function fieldLabelText(name) {
     var baseName = name.replace("[]", "");
     var labelEl = form.querySelector('[data-field="' + baseName + '"] .field-label') ||
@@ -278,7 +276,7 @@
     });
   }
 
-  // ---------- submission (Dynamic Supabase table) -----------------------------
+  // ---------- FORM SUBMISSION ----------
   if (form) {
     form.addEventListener("submit", async function (e) {
       e.preventDefault();
@@ -312,14 +310,13 @@
       });
 
       payload.submitted_at = new Date().toISOString();
-      payload.form_type = formId; // Helpful for filtering in the database
+      payload.form_type = formId;
 
       try {
         if (typeof supabaseClient === 'undefined') {
           throw new Error("Supabase client not initialized. Check HTML file.");
         }
 
-        // DYNAMIC TABLE NAME based on form ID
         var tableName = formId === "wadau-malighafi" ? "wadau_malighafi_responses" : "nanenane_responses";
 
         const { error } = await supabaseClient
@@ -328,7 +325,6 @@
 
         if (error) throw error;
 
-        // Success: Hide form, show success screen
         var stepNav = document.getElementById("stepNav");
         if (stepNav) stepNav.style.display = "none";
         formSteps.forEach(function (s) { s.classList.remove("active"); });
@@ -351,7 +347,7 @@
     });
   }
 
-  // --- BULLETPROOF RESET FUNCTION ---
+  // ---------- RESET FUNCTION ----------
   window.resetForm = function () {
     var confirmMsg = lang === "sw" 
       ? "Una uhakika unataka kuanza upya? Majibu yako yote yatafutwa." 
@@ -385,9 +381,11 @@
     }
   };
 
-  // ---------- init ----------------------------------------------------------------
+  // ---------- INITIALIZATION ----------
   buildDots();
   setupOtherToggles();
   showStep(0);
-  setLang("sw");
+  if (typeof window.setLang === 'function') {
+    window.setLang("sw");
+  }
 })();
