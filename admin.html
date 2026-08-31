@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Dashibodi ya Msimamizi | Nanenane 2026</title>
+<title>Dashibodi ya Msimamizi | TanTrade 2026</title>
 <link rel="stylesheet" href="styles.css">
 <style>
   html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
   button, a, input, select, textarea { touch-action: manipulation; }
 
-  .admin-shell { max-width: 1080px; margin: 0 auto; padding: 24px 20px 60px; position: relative; }
+  .admin-shell { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; position: relative; }
 
   .login-card {
     background: rgba(255, 255, 255, 0.25);
@@ -29,7 +29,7 @@
     animation: liquidFloat1 12s ease-in-out infinite; pointer-events: none;
   }
 
-  .stats-dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stats-dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 24px; }
   .stat-card {
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -71,7 +71,7 @@
 
   .table-wrap { overflow: auto; max-height: 70vh; background: rgba(255,255,255,0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.3); border-radius: var(--radius-sm); margin-top: 16px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; background: rgba(255,255,255,0.3); }
-  thead th { position: sticky; top: 0; background: rgba(6,60,44,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: var(--white); text-align: left; padding: 12px 14px; font-weight: 600; border-bottom: 2px solid rgba(255,255,255,0.2); }
+  thead th { position: sticky; top: 0; background: rgba(6,60,44,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: var(--white); text-align: left; padding: 12px 14px; font-weight: 600; border-bottom: 2px solid rgba(255,255,255,0.2); white-space: nowrap; }
   tbody td { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.15); vertical-align: top; }
   tbody tr { transition: all 0.2s ease; }
   tbody tr:nth-child(even) { background: rgba(255,255,255,0.1); }
@@ -88,7 +88,6 @@
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
 
-  /* ============ BUBBLES ============ */
   .stat-card .bubble { position: absolute; border-radius: 50%; background: radial-gradient(circle at 30% 30%, rgba(18,138,100,0.75), rgba(18,138,100,0.4) 50%, rgba(18,138,100,0.15) 70%, transparent 100%); box-shadow: inset 0 0 6px rgba(18,138,100,0.5), 0 2px 8px rgba(18,138,100,0.25); animation: bubbleRise 3s ease-in infinite; opacity: 0; pointer-events: none; z-index: 1; }
   .stat-card .bubble:nth-child(1){width:8px;height:8px;left:20%;animation-delay:0s;animation-duration:2.5s;}
   .stat-card .bubble:nth-child(2){width:12px;height:12px;left:45%;animation-delay:0.8s;animation-duration:3s;}
@@ -98,7 +97,6 @@
   @keyframes bubbleRise { 0%{bottom:-20px;opacity:0;transform:translateX(0) scale(0.5);} 10%{opacity:0.8;transform:translateX(2px) scale(1);} 50%{opacity:0.6;transform:translateX(-3px) scale(1.05);} 90%{opacity:0.3;transform:translateX(2px) scale(1.1);} 100%{bottom:120%;opacity:0;transform:translateX(0) scale(1.15);} }
   .stat-card.highlight .bubble { background: radial-gradient(circle at 30% 30%, rgba(212,160,23,0.7), rgba(212,160,23,0.35) 50%, rgba(212,160,23,0.12) 70%, transparent 100%); box-shadow: inset 0 0 6px rgba(212,160,23,0.5), 0 2px 8px rgba(212,160,23,0.25); }
 
-  /* ============ GOOGLE-FORMS-STYLE QUESTION MANAGER ============ */
   .q-editor-card { background: var(--white); border-radius: 12px; border-top: 4px solid var(--green-700); box-shadow: var(--shadow-md); padding: 24px; margin-bottom: 28px; }
   .q-editor-head { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
   .q-plus { width: 38px; height: 38px; border-radius: 50%; background: var(--green-100); color: var(--green-700); display: flex; align-items: center; justify-content: center; flex: none; }
@@ -160,12 +158,16 @@
   <div class="brand">
     <span class="brand-text">
       <strong>
-        <span class="lang-sw">Dashibodi ya Msimamizi, Nanenane 2026</span>
-        <span class="lang-en">Admin Dashboard, Nanenane 2026</span>
+        <span class="lang-sw">Dashibodi ya Msimamizi, TanTrade 2026</span>
+        <span class="lang-en">Admin Dashboard, TanTrade 2026</span>
       </strong>
     </span>
   </div>
-  <div style="display:flex; align-items:center; gap:12px;">
+  <div style="display:flex; align-items:center; gap:12px; flex-wrap: wrap;">
+    <select id="formSelector" class="text-input" style="max-width: 220px; font-weight:600; font-size:14px;" onchange="switchForm(this.value)">
+      <option value="nanenane">Dodoso la Nanenane</option>
+      <option value="wadau-malighafi">Dodoso la Wadau Malighafi</option>
+    </select>
     <button type="button" class="logout-link" id="logoutBtn" style="display:none;" onclick="handleLogout()">
       <span class="lang-sw">Toka</span><span class="lang-en">Log out</span>
     </button>
@@ -194,12 +196,11 @@
       <div class="stat-card"><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="stat-value" id="statTotal">0</div><div class="stat-label"><span class="lang-sw">Jumla ya Majibu</span><span class="lang-en">Total Responses</span></div></div>
       <div class="stat-card"><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="stat-value" id="statRegions">0</div><div class="stat-label"><span class="lang-sw">Mikoa</span><span class="lang-en">Regions</span></div></div>
       <div class="stat-card"><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="stat-value" id="statDistricts">0</div><div class="stat-label"><span class="lang-sw">Wilaya</span><span class="lang-en">Districts</span></div></div>
-      <div class="stat-card highlight"><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="stat-value" id="statUnregistered">0</div><div class="stat-label"><span class="lang-sw">Hawajasajiliwa (MIT)</span><span class="lang-en">Unregistered (MIT)</span></div></div>
+      <div class="stat-card highlight"><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="stat-value" id="statDynamic">0</div><div class="stat-label" id="statDynamicLabel"><span class="lang-sw">Hawajasajiliwa (MIT)</span><span class="lang-en">Unregistered (MIT)</span></div></div>
     </div>
 
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('responses', this)"><span class="lang-sw">Majibu Yote</span><span class="lang-en">All Responses</span></button>
-      <button class="tab-btn" onclick="switchTab('unregistered', this)"><span class="lang-sw">Wanaohitaji Usajili</span><span class="lang-en">Need Registration</span></button>
       <button class="tab-btn" onclick="switchTab('kpi', this)"><span class="lang-sw">Takwimu na Grafu</span><span class="lang-en">KPI & Charts</span></button>
       <button class="tab-btn" onclick="switchTab('questions', this)"><span class="lang-sw">Simamia Maswali</span><span class="lang-en">Manage Questions</span></button>
     </div>
@@ -216,48 +217,38 @@
       <div id="tableHolder"><div class="state-msg"><span class="lang-sw">Inapakia majibu…</span><span class="lang-en">Loading responses…</span></div></div>
     </div>
 
-    <div id="unregisteredTab" style="display:none;">
-      <div class="toolbar">
-        <span class="stat-pill" id="unregCountPill" style="background:var(--gold-100); color:var(--gold-700);">0</span>
-        <input class="text-input search-input" id="unregSearchInput" type="search" placeholder="Tafuta..." oninput="renderUnregisteredTable()">
-        <button class="btn btn-gold btn-sm" onclick="exportUnregisteredCsv()"><span class="lang-sw">Pakua CSV</span><span class="lang-en">Export CSV</span></button>
-      </div>
-      <div id="unregisteredTableHolder"><div class="state-msg"><span class="lang-sw">Inapakia...</span><span class="lang-en">Loading...</span></div></div>
-    </div>
-
     <div id="kpiTab" style="display:none;">
       <div style="display:flex; justify-content:flex-end; margin-bottom:20px;">
         <button class="btn btn-primary" onclick="exportDashboardImage()" id="exportBtn"><span class="lang-sw">Pakua Dashibodi (PNG)</span><span class="lang-en">Download Dashboard (PNG)</span></button>
       </div>
       <div id="dashboardExportArea">
         <div id="exportHeader" style="text-align:center; padding:20px 0; display:none;">
-          <h2 style="margin:0; color:var(--green-900);"><span class="lang-sw">Takwimu za Nanenane 2026</span><span class="lang-en">Nanenane 2026 Statistics</span></h2>
+          <h2 style="margin:0; color:var(--green-900);"><span class="lang-sw">Takwimu za TanTrade 2026</span><span class="lang-en">TanTrade 2026 Statistics</span></h2>
           <p style="margin:8px 0 0; color:var(--ink-soft); font-size:14px;"><span class="lang-sw">Imetolewa:</span><span class="lang-en">Generated:</span> <span id="exportDate"></span></p>
         </div>
         <div class="stats-dashboard" style="margin-bottom:30px;">
           <div class="stat-card"><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="stat-value" id="kpiTotal">0</div><div class="stat-label"><span class="lang-sw">Jumla ya Majibu</span><span class="lang-en">Total Responses</span></div></div>
           <div class="stat-card"><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="stat-value" id="kpiCompletion">0%</div><div class="stat-label"><span class="lang-sw">Kiwango cha Kutosheleza</span><span class="lang-en">Completion Rate</span></div></div>
-          <div class="stat-card highlight"><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="stat-value" id="kpiUnregistered">0</div><div class="stat-label"><span class="lang-sw">Hawajasajiliwa</span><span class="lang-en">Unregistered</span></div></div>
+          <div class="stat-card highlight"><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="stat-value" id="kpiDynamic">0</div><div class="stat-label" id="kpiDynamicLabel"><span class="lang-sw">Hawajasajiliwa</span><span class="lang-en">Unregistered</span></div></div>
         </div>
         <div style="margin-bottom:30px;">
           <h3 style="margin-bottom:16px; color:var(--green-900);"><span class="lang-sw">Uchambuzi wa Asilimia</span><span class="lang-en">Percentage Breakdown</span></h3>
           <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:16px;">
             <div class="card"><h4 style="margin:0 0 12px; font-size:14px; color:var(--green-700);"><span class="lang-sw">Jinsia</span><span class="lang-en">Gender</span></h4><div id="genderBreakdown" style="font-size:13px;"></div></div>
-            <div class="card"><h4 style="margin:0 0 12px; font-size:14px; color:var(--green-700);"><span class="lang-sw">Hali ya Biashara</span><span class="lang-en">Business Status</span></h4><div id="businessBreakdown" style="font-size:13px;"></div></div>
+            <div class="card"><h4 style="margin:0 0 12px; font-size:14px; color:var(--green-700);"><span class="lang-sw">Hali ya Biashara / Uzalishaji</span><span class="lang-en">Business Status</span></h4><div id="businessBreakdown" style="font-size:13px;"></div></div>
             <div class="card"><h4 style="margin:0 0 12px; font-size:14px; color:var(--green-700);"><span class="lang-sw">Mikoa 5 Bora</span><span class="lang-en">Top 5 Regions</span></h4><div id="regionsBreakdown" style="font-size:13px;"></div></div>
-            <div class="card"><h4 style="margin:0 0 12px; font-size:14px; color:var(--green-700);"><span class="lang-sw">Sekta 5 Bora</span><span class="lang-en">Top 5 Sectors</span></h4><div id="sectorsBreakdown" style="font-size:13px;"></div></div>
+            <div class="card"><h4 style="margin:0 0 12px; font-size:14px; color:var(--green-700);"><span class="lang-sw">Sekta / Bidhaa 5 Bora</span><span class="lang-en">Top 5 Sectors/Products</span></h4><div id="sectorsBreakdown" style="font-size:13px;"></div></div>
           </div>
         </div>
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(350px, 1fr)); gap:20px; margin-bottom:20px;">
           <div class="card"><h3 style="margin-top:0; font-size:16px;"><span class="lang-sw">Mikoa</span><span class="lang-en">Regions Distribution</span></h3><canvas id="regionsChart"></canvas></div>
-          <div class="card"><h3 style="margin-top:0; font-size:16px;"><span class="lang-sw">Sekta</span><span class="lang-en">Sectors Distribution</span></h3><canvas id="sectorsChart"></canvas></div>
+          <div class="card"><h3 style="margin-top:0; font-size:16px;"><span class="lang-sw">Sekta / Bidhaa</span><span class="lang-en">Sectors Distribution</span></h3><canvas id="sectorsChart"></canvas></div>
           <div class="card"><h3 style="margin-top:0; font-size:16px;"><span class="lang-sw">Jinsia</span><span class="lang-en">Gender Distribution</span></h3><canvas id="genderChart"></canvas></div>
           <div class="card"><h3 style="margin-top:0; font-size:16px;"><span class="lang-sw">Hali ya Biashara</span><span class="lang-en">Business Status</span></h3><canvas id="businessChart"></canvas></div>
         </div>
       </div>
     </div>
 
-    <!-- TAB: MANAGE QUESTIONS (Google-Forms style) -->
     <div id="questionsTab" style="display:none;">
       <div class="q-editor-card">
         <div class="q-editor-head">
@@ -273,7 +264,7 @@
           <div class="q-field"><label class="q-label"><span class="lang-sw">Swali (Kiingereza)</span><span class="lang-en">Question (English)</span></label><input class="q-input" type="text" id="q_label_en" required placeholder="Type question here..."></div>
           <div class="q-row">
             <div class="q-field"><label class="q-label"><span class="lang-sw">Jina la Uwanja</span><span class="lang-en">Field Name</span></label><input class="q-input" type="text" id="q_field" required placeholder="e.g. jina_la_kampuni"></div>
-            <div class="q-field"><label class="q-label"><span class="lang-sw">Hatua (0-7)</span><span class="lang-en">Step (0-7)</span></label><input class="q-input" type="number" id="q_step" min="0" max="7" required></div>
+            <div class="q-field"><label class="q-label"><span class="lang-sw">Hatua (0-9)</span><span class="lang-en">Step (0-9)</span></label><input class="q-input" type="number" id="q_step" min="0" max="9" required></div>
             <div class="q-field"><label class="q-label"><span class="lang-sw">Mpangilio</span><span class="lang-en">Sort Order</span></label><input class="q-input" type="number" id="q_sort" value="0"></div>
           </div>
           <div class="q-row q-row-2">
