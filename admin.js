@@ -1,5 +1,5 @@
 // =====================================================
-// NANENANE 2026 - ADMIN DASHBOARD (admin.js)
+// TANTRADE 2026 - UNIFIED ADMIN DASHBOARD (admin.js)
 // =====================================================
 (function () {
   try {
@@ -17,6 +17,7 @@
 
 (function () {
   "use strict";
+  let activeForm = 'nanenane'; // 'nanenane' or 'wadau-malighafi'
   var allSubmissions = [];
   var allQuestions = [];
   var chartsInitialized = false;
@@ -114,31 +115,40 @@
     loadQuestions();
   }
 
+  window.switchForm = function(formType) {
+    activeForm = formType;
+    // Update dynamic labels based on form
+    var dynLabel = document.getElementById("statDynamicLabel");
+    var kpiDynLabel = document.getElementById("kpiDynamicLabel");
+    if (activeForm === 'nanenane') {
+      if(dynLabel) dynLabel.innerHTML = '<span class="lang-sw">Hawajasajiliwa (MIT)</span><span class="lang-en">Unregistered (MIT)</span>';
+      if(kpiDynLabel) kpiDynLabel.innerHTML = '<span class="lang-sw">Hawajasajiliwa</span><span class="lang-en">Unregistered</span>';
+    } else {
+      if(dynLabel) dynLabel.innerHTML = '<span class="lang-sw">Wanaouza Ghafi (0%)</span><span class="lang-en">Selling Raw (0%)</span>';
+      if(kpiDynLabel) kpiDynLabel.innerHTML = '<span class="lang-sw">Wanaouza Ghafi</span><span class="lang-en">Selling Raw</span>';
+    }
+    loadSubmissions();
+    loadQuestions();
+  };
+
   window.switchTab = function (tab, btn) {
     try {
       document.getElementById("responsesTab").style.display = tab === "responses" ? "block" : "none";
-      document.getElementById("unregisteredTab").style.display = tab === "unregistered" ? "block" : "none";
       document.getElementById("kpiTab").style.display = tab === "kpi" ? "block" : "none";
       document.getElementById("questionsTab").style.display = tab === "questions" ? "block" : "none";
       document.querySelectorAll(".tab-btn").forEach(function (b) { b.classList.remove("active"); });
       if (btn) btn.classList.add("active");
-      if (tab === "unregistered") renderUnregisteredTable();
       if (tab === "questions") loadQuestions();
       if (tab === "kpi") renderKPICharts();
     } catch (err) { console.error("[ERROR] switchTab:", err); }
   };
 
-  function isUnregistered(sub) {
-    var v = String(sub.bidhaa_zimesajiliwa || "").trim().toLowerCase();
-    return v.indexOf("hapana") !== -1 || v.indexOf("sijui") !== -1;
-  }
-  function countUnregistered(list) { return (list || []).filter(isUnregistered).length; }
-
   window.loadSubmissions = async function () {
     var holder = document.getElementById("tableHolder");
     holder.innerHTML = '<div class="state-msg"><span class="lang-sw">Inapakia majibu…</span><span class="lang-en">Loading responses…</span></div>';
     try {
-      const { data, error } = await supabaseClient.from('nanenane_responses').select('*').order('created_at', { ascending: false });
+      const tableName = activeForm === 'nanenane' ? 'nanenane_responses' : 'wadau_malighafi_responses';
+      const { data, error } = await supabaseClient.from(tableName).select('*').order('created_at', { ascending: false });
       if (error) throw error;
       allSubmissions = (data || []).map(function (sub) {
         var fields = sub.form_data || {};
@@ -160,16 +170,26 @@
   function updateStats() {
     try {
       var t = document.getElementById("statTotal"), r = document.getElementById("statRegions"),
-          d = document.getElementById("statDistricts"), u = document.getElementById("statUnregistered");
+          d = document.getElementById("statDistricts"), dyn = document.getElementById("statDynamic");
       if (t) t.textContent = allSubmissions.length;
       var regions = new Set(), districts = new Set();
+      var dynamicCount = 0;
+      
       allSubmissions.forEach(function (sub) {
         if (sub.mkoa) regions.add(String(sub.mkoa).trim().toLowerCase());
         if (sub.wilaya) districts.add(String(sub.wilaya).trim().toLowerCase());
+        
+        if (activeForm === 'nanenane') {
+          var v = String(sub.bidhaa_zimesajiliwa || "").trim().toLowerCase();
+          if (v.indexOf("hapana") !== -1 || v.indexOf("sijui") !== -1) dynamicCount++;
+        } else {
+          if (String(sub.asilimia_thamani || "").includes("0%")) dynamicCount++;
+        }
       });
+      
       if (r) r.textContent = regions.size;
       if (d) d.textContent = districts.size;
-      if (u) u.textContent = countUnregistered(allSubmissions);
+      if (dyn) dyn.textContent = dynamicCount;
     } catch (err) { console.error("[ERROR] updateStats:", err); }
   }
 
@@ -181,23 +201,11 @@
         return Object.values(sub).some(function (v) { return String(v).toLowerCase().includes(query); });
       });
       document.getElementById("countPill").innerHTML = rows.length + ' <span class="lang-sw">majibu</span><span class="lang-en">responses</span>';
-      renderGenericTable(rows, "tableHolder", false);
+      renderGenericTable(rows, "tableHolder");
     } catch (err) { console.error("[ERROR] renderTable:", err); }
   };
 
-  window.renderUnregisteredTable = function () {
-    try {
-      var query = (document.getElementById("unregSearchInput").value || "").toLowerCase();
-      var rows = allSubmissions.filter(isUnregistered).filter(function (sub) {
-        if (!query) return true;
-        return Object.values(sub).some(function (v) { return String(v).toLowerCase().includes(query); });
-      });
-      document.getElementById("unregCountPill").textContent = rows.length;
-      renderGenericTable(rows, "unregisteredTableHolder", true);
-    } catch (err) { console.error("[ERROR] renderUnregisteredTable:", err); }
-  };
-
-  function renderGenericTable(rows, holderId, isUnregisteredView) {
+  function renderGenericTable(rows, holderId) {
     var holder = document.getElementById(holderId);
     if (!rows.length) {
       holder.innerHTML = '<div class="state-msg"><span class="lang-sw">Hakuna majibu.</span><span class="lang-en">No responses.</span></div>';
@@ -205,9 +213,11 @@
     }
     var allKeys = new Set();
     rows.forEach(function (sub) { Object.keys(sub).forEach(function (k) { if (k !== "form-name" && k !== "bot-field") allKeys.add(k); }); });
-    var priorityCols = isUnregisteredView
-      ? ["respondent_name","respondent_phone","mkoa","wilaya","sekta","bidhaa_zinazozalishwa_tz","bidhaa_zimesajiliwa","submitted_at"]
-      : ["jina_la_kampuni","tin_number","anwani_kampuni","submitted_at","respondent_name","respondent_phone","respondent_email","mkoa","wilaya"];
+    
+    var priorityCols = activeForm === 'nanenane'
+      ? ["jina_la_kampuni","tin_number","anwani_kampuni","submitted_at","respondent_name","respondent_phone","respondent_email","mkoa","wilaya"]
+      : ["mkoa","wilaya","jina_mhojiwa","taasisi","bidhaa[]","asilimia_thamani","submitted_at"];
+      
     var cols = Array.from(allKeys).sort(function (a, b) {
       var ia = priorityCols.indexOf(a), ib = priorityCols.indexOf(b);
       if (ia !== -1 && ib !== -1) return ia - ib;
@@ -215,7 +225,8 @@
       if (ib !== -1) return 1;
       return a.localeCompare(b);
     });
-    var html = '<table><thead><tr>' + cols.map(function (c) { return '<th>' + c.replace(/_/g, " ") + '</th>'; }).join("") + '</tr></thead><tbody>';
+    
+    var html = '<table><thead><tr>' + cols.map(function (c) { return '<th>' + c.replace(/_/g, " ").replace(/\[\]/g, "") + '</th>'; }).join("") + '</tr></thead><tbody>';
     rows.forEach(function (sub) {
       html += '<tr>' + cols.map(function (c) {
         var val = sub[c];
@@ -225,16 +236,14 @@
     holder.innerHTML = '<div class="table-wrap">' + html + '</tbody></table></div>';
   }
 
-  window.exportCsv = function () { exportGenericCsv(allSubmissions, "majibu-yote", false); };
-  window.exportUnregisteredCsv = function () { exportGenericCsv(allSubmissions.filter(isUnregistered), "wanaohitaji-usajili", true); };
-
-  function exportGenericCsv(rows, filename, isUnregisteredView) {
+  window.exportCsv = function () {
+    var rows = allSubmissions;
     if (!rows.length) { alert("Hakuna majibu"); return; }
     var allKeys = new Set();
     rows.forEach(function (sub) { Object.keys(sub).forEach(function (k) { if (k !== "form-name" && k !== "bot-field") allKeys.add(k); }); });
-    var priorityCols = isUnregisteredView
-      ? ["respondent_name","respondent_phone","mkoa","wilaya","sekta","bidhaa_zinazozalishwa_tz","bidhaa_zimesajiliwa","submitted_at"]
-      : ["jina_la_kampuni","tin_number","anwani_kampuni","submitted_at","respondent_name","respondent_phone","respondent_email","mkoa","wilaya"];
+    var priorityCols = activeForm === 'nanenane'
+      ? ["jina_la_kampuni","tin_number","anwani_kampuni","submitted_at","respondent_name","respondent_phone","respondent_email","mkoa","wilaya"]
+      : ["mkoa","wilaya","jina_mhojiwa","taasisi","bidhaa[]","asilimia_thamani","submitted_at"];
     var cols = Array.from(allKeys).sort(function (a, b) {
       var ia = priorityCols.indexOf(a), ib = priorityCols.indexOf(b);
       if (ia !== -1 && ib !== -1) return ia - ib;
@@ -249,14 +258,21 @@
       }).join(",");
     }));
     var blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
-    var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename + ".csv"; a.click();
-  }
+    var a = document.createElement("a"); 
+    a.href = URL.createObjectURL(blob); 
+    a.download = "majibu-" + activeForm + "-" + new Date().toISOString().split('T')[0] + ".csv"; 
+    a.click();
+  };
 
   // --- QUESTIONS ---
   window.loadQuestions = async function () {
     var holder = document.getElementById("questionsHolder");
     try {
-      const { data, error } = await supabaseClient.from('survey_questions').select('*').order('step_number', { ascending: true }).order('sort_order', { ascending: true });
+      const { data, error } = await supabaseClient.from('survey_questions')
+        .select('*')
+        .eq('form_type', activeForm)
+        .order('step_number', { ascending: true })
+        .order('sort_order', { ascending: true });
       if (error) throw error;
       allQuestions = data || [];
       renderQuestions();
@@ -303,6 +319,7 @@
     e.preventDefault();
     var id = document.getElementById("q_id").value;
     var payload = {
+      form_type: activeForm,
       step_number: parseInt(document.getElementById("q_step").value),
       field_name: document.getElementById("q_field").value.trim(),
       label_sw: document.getElementById("q_label_sw").value.trim(),
@@ -358,13 +375,24 @@
 
   function renderKPICharts() {
     try {
-      var kt = document.getElementById("kpiTotal"), ku = document.getElementById("kpiUnregistered"), kc = document.getElementById("kpiCompletion");
+      var kt = document.getElementById("kpiTotal"), ku = document.getElementById("kpiDynamic"), kc = document.getElementById("kpiCompletion");
       if (kt) kt.textContent = allSubmissions.length;
-      var unreg = countUnregistered(allSubmissions);
-      if (ku) ku.textContent = unreg;
-      var complete = allSubmissions.filter(function (s) { return s.respondent_name && s.mkoa; }).length;
+      
+      var dynamicCount = 0;
+      allSubmissions.forEach(function (sub) {
+        if (activeForm === 'nanenane') {
+          var v = String(sub.bidhaa_zimesajiliwa || "").trim().toLowerCase();
+          if (v.indexOf("hapana") !== -1 || v.indexOf("sijui") !== -1) dynamicCount++;
+        } else {
+          if (String(sub.asilimia_thamani || "").includes("0%")) dynamicCount++;
+        }
+      });
+      if (ku) ku.textContent = dynamicCount;
+      
+      var complete = allSubmissions.filter(function (s) { return (s.respondent_name || s.jina_mhoji9a) && s.mkoa; }).length;
       var rate = allSubmissions.length > 0 ? Math.round((complete / allSubmissions.length) * 100) : 0;
       if (kc) kc.textContent = rate + "%";
+      
       if (kpiTabVisible() && typeof Chart !== "undefined") {
         if (!chartsInitialized) { initCharts(); chartsInitialized = true; } else { updateCharts(); }
         setTimeout(resizeAllCharts, 60);
@@ -386,22 +414,29 @@
     var regions = {}, sectors = {}, gender = {}, business = {};
     allSubmissions.forEach(function (sub) {
       if (sub.mkoa) regions[sub.mkoa] = (regions[sub.mkoa] || 0) + 1;
-      if (sub.sekta) sectors[sub.sekta] = (sectors[sub.sekta] || 0) + 1;
+      // For Wadau, use 'bidhaa[]' (array), for Nanenane use 'sekta'
+      var sectorVal = sub.sekta || (Array.isArray(sub['bidhaa[]']) ? sub['bidhaa[]'].join(', ') : sub['bidhaa[]']);
+      if (sectorVal) sectors[sectorVal] = (sectors[sectorVal] || 0) + 1;
+      
       if (sub.jinsia) gender[sub.jinsia] = (gender[sub.jinsia] || 0) + 1;
       if (sub.hali_biashara) business[sub.hali_biashara] = (business[sub.hali_biashara] || 0) + 1;
     });
+    
     regionsChart.data.labels = Object.keys(regions);
     regionsChart.data.datasets[0].data = Object.values(regions);
     regionsChart.data.datasets[0].backgroundColor = getChartColors(Object.keys(regions).length);
     regionsChart.update();
+    
     sectorsChart.data.labels = Object.keys(sectors);
     sectorsChart.data.datasets[0].data = Object.values(sectors);
     sectorsChart.data.datasets[0].backgroundColor = getChartColors(Object.keys(sectors).length);
     sectorsChart.update();
+    
     genderChart.data.labels = Object.keys(gender).map(function (g) { return g === 'Me' ? 'Me (Male)' : g === 'Ke' ? 'Ke (Female)' : g; });
     genderChart.data.datasets[0].data = Object.values(gender);
     genderChart.data.datasets[0].backgroundColor = getChartColors(Object.keys(gender).length);
     genderChart.update();
+    
     businessChart.data.labels = Object.keys(business);
     businessChart.data.datasets[0].data = Object.values(business);
     businessChart.data.datasets[0].backgroundColor = getChartColors(Object.keys(business).length);
@@ -413,7 +448,12 @@
     if (total === 0) return;
     function buildBreakdown(data, field, limit) {
       var counts = {};
-      data.forEach(function (s) { var v = s[field] || 'Haijatajwa'; counts[v] = (counts[v] || 0) + 1; });
+      data.forEach(function (s) { 
+        var v = s[field]; 
+        if (Array.isArray(v)) v = v.join(', ');
+        v = v || 'Haijatajwa'; 
+        counts[v] = (counts[v] || 0) + 1; 
+      });
       var entries = Object.entries(counts).sort(function (a, b) { return b[1] - a[1]; });
       if (limit) entries = entries.slice(0, limit);
       return entries.map(function (en) {
@@ -431,7 +471,7 @@
     document.getElementById('genderBreakdown').innerHTML = buildBreakdown(submissions, 'jinsia');
     document.getElementById('businessBreakdown').innerHTML = buildBreakdown(submissions, 'hali_biashara');
     document.getElementById('regionsBreakdown').innerHTML = buildBreakdown(submissions, 'mkoa', 5);
-    document.getElementById('sectorsBreakdown').innerHTML = buildBreakdown(submissions, 'sekta', 5);
+    document.getElementById('sectorsBreakdown').innerHTML = buildBreakdown(submissions, activeForm === 'nanenane' ? 'sekta' : 'bidhaa[]', 5);
   }
 
   window.exportDashboardImage = async function () {
@@ -450,7 +490,7 @@
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
         a.href = url;
-        a.download = 'Nanenane_2026_Dashboard_' + new Date().toISOString().split('T')[0] + '.png';
+        a.download = 'TanTrade_Dashboard_' + activeForm + '_' + new Date().toISOString().split('T')[0] + '.png';
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         URL.revokeObjectURL(url);
       }, 'image/png', 0.95);
