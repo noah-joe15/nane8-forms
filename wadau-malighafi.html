@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dodoso kwa Wadau: Tathmini ya Hali ya Soko 2026</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="lang-sw">
+
+<div class="topbar">
+  <div class="brand">
+    <img src="logo.png" alt="TANTRADE Logo" class="brand-logo">
+    <span class="brand-text">
+      <strong><span class="lang-sw">Dodoso kwa Wadau: Tathmini ya Soko 2026</span><span class="lang-en">Stakeholder Survey: Market Assessment 2026</span></strong>
+    </span>
+  </div>
+  <div class="lang-switch" role="group">
+    <button type="button" id="btn-lang-sw" class="active" onclick="setLang('sw')">SW</button>
+    <button type="button" id="btn-lang-en" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<div class="shell">
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span class="step-label" id="stepLabel">—</span>
+      <span class="step-count"><span class="lang-sw">Hatua</span><span class="lang-en">Step</span> <span id="stepNow">1</span> / <span id="stepTotal">10</span></span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:10%"></div></div>
+    <div class="progress-dots" id="progressDots"></div>
+  </div>
+
+  <div class="banner" id="errorBanner">
+    <span class="lang-sw">Tafadhali jaza sehemu zote zenye alama ya nyota (*) kabla ya kuendelea.</span>
+    <span class="lang-en">Please complete all fields marked with a star (*) before continuing.</span>
+  </div>
+
+  <!-- ADDED data-form-id="wadau-malighafi" HERE -->
+  <form id="surveyForm" data-form-id="wadau-malighafi" class="survey-form" novalidate>
+    <input type="hidden" name="bot-field" value="">
+
+    <!-- STEP 0: UTANGULIZI & RIDHAA (Sehemu A & B) -->
+    <div class="step active" data-step="0">
+      <div class="hero">
+        <span class="hero-eyebrow"><span class="lang-sw">Utangulizi wa Tathmini</span><span class="lang-en">Assessment Introduction</span></span>
+        <h1><span class="lang-sw">Tathmini ya Hali ya Soko kwa Bidhaa 10 Bora zinazouzwa nje kama malighafi</span><span class="lang-en">Market Assessment for Top 10 Commodities Exported as Raw Materials</span></h1>
+        <p>
+          <span class="lang-sw">TanTrade inafanya tathmini ya kina ili kubaini sababu zinazochangia bidhaa kuuzwa nje bila kuongezwa thamani na kupendekeza hatua stahiki. Taarifa zitatumika kwa usiri na muhtasari.</span>
+          <span class="lang-en">TanTrade is conducting an in-depth assessment to identify reasons why products are exported without value addition and to recommend appropriate measures. Information will be kept confidential and summarized.</span>
+        </p>
+      </div>
+      <div class="card">
+        <span class="section-eyebrow"><span class="lang-sw">Sehemu A & B: Utawala na Ridhaa</span><span class="lang-en">Section A & B: Admin & Consent</span></span>
+        
+        <div class="field" data-field="consent_b1">
+          <label class="field-label"><span class="lang-sw">B1. Je, unakubali kushiriki kwa hiari, na majibu yako kutumika kwa usiri?</span><span class="lang-en">B1. Do you consent to participate voluntarily and for your answers to be kept confidential?</span><span class="req">*</span></label>
+          <div class="options grid-2">
+            <label class="option"><input type="radio" name="consent_b1" value="Ndiyo" required><span class="option-box"><span class="lang-sw">Ndiyo</span><span class="lang-en">Yes</span></span></label>
+            <label class="option"><input type="radio" name="consent_b1" value="Hapana"><span class="option-box"><span class="lang-sw">Hapana</span><span class="lang-en">No</span></span></label>
+          </div>
+          <p class="error-msg lang-sw">Ridhaa inahitajika kuendelea.</p>
+          <p class="error-msg lang-en">Consent is required to proceed.</p>
+        </div>
+
+        <div class="field" data-field="consent_b2">
+          <label class="field-label"><span class="lang-sw">B2. Je, unaruhusu mahojiano kurekodiwa kwa sauti kwa usahihi?</span><span class="lang-en">B2. Do you allow the interview to be audio-recorded for accuracy?</span></label>
+          <div class="options grid-2">
+            <label class="option"><input type="radio" name="consent_b2" value="Ndiyo"><span class="option-box"><span class="lang-sw">Ndiyo</span><span class="lang-en">Yes</span></span></label>
+            <label class="option"><input type="radio" name="consent_b2" value="Hapana"><span class="option-box"><span class="lang-sw">Hapana</span><span class="lang-en">No</span></span></label>
+            <label class="option"><input type="radio" name="consent_b2" value="Haihusiki"><span class="option-box"><span class="lang-sw">Haihusiki</span><span class="lang-en">Not applicable</span></span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="mkoa">
+          <label class="field-label" for="mkoa"><span class="lang-sw">Mkoa</span><span class="lang-en">Region</span><span class="req">*</span></label>
+          <input class="text-input" type="text" id="mkoa" name="mkoa" required>
+        </div>
+        <div class="field" data-field="wilaya">
+          <label class="field-label" for="wilaya"><span class="lang-sw">Wilaya/Halmashauri</span><span class="lang-en">District/Council</span><span class="req">*</span></label>
+          <input class="text-input" type="text" id="wilaya" name="wilaya" required>
+        </div>
+        <div class="field" data-field="researcher_name">
+          <label class="field-label" for="researcher_name"><span class="lang-sw">Jina la Mtafiti</span><span class="lang-en">Researcher Name</span><span class="req">*</span></label>
+          <input class="text-input" type="text" id="researcher_name" name="researcher_name" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 1: SEHEMU C - TAARIFA ZA MSINGI ZA MDAU -->
+    <div class="step" data-step="1">
+      <div class="card">
+        <span class="section-eyebrow">Sehemu C</span>
+        <h2 class="section-title"><span class="lang-sw">Taarifa za Msingi za Mdau</span><span class="lang-en">Basic Stakeholder Information</span></h2>
+        
+        <div class="field" data-field="bidhaa">
+          <label class="field-label"><span class="lang-sw">C1. Bidhaa/zao linalohusika</span><span class="lang-en">C1. Commodity/Product involved</span><span class="req">*</span></label>
+          <div class="options">
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Dhahabu"><span class="option-box">Dhahabu / Gold</span></label>
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Almasi"><span class="option-box">Almasi / Diamond</span></label>
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Korosho"><span class="option-box">Korosho / Cashew</span></label>
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Tumbaku"><span class="option-box">Tumbaku / Tobacco</span></label>
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Kahawa"><span class="option-box">Kahawa / Coffee</span></label>
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Katani"><span class="option-box">Katani / Sisal</span></label>
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Mchele"><span class="option-box">Mchele / Rice</span></label>
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Kokoa"><span class="option-box">Kokoa / Cocoa</span></label>
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Mahindi"><span class="option-box">Mahindi / Maize</span></label>
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Pamba"><span class="option-box">Pamba / Cotton</span></label>
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Parachichi"><span class="option-box">Parachichi / Avocado</span></label>
+          </div>
+          <input class="text-input other-field" type="text" name="bidhaa_other" data-other-for="bidhaa[]" data-other-value="Nyingine" hidden placeholder="Nyingine, taja / Other, specify">
+        </div>
+
+        <div class="field" data-field="jina_mhojiwa">
+          <label class="field-label" for="jina_mhojiwa"><span class="lang-sw">C2. Jina la Mhojiwa</span><span class="lang-en">C2. Respondent Name</span><span class="req">*</span></label>
+          <input class="text-input" type="text" id="jina_mhojiwa" name="jina_mhojiwa" required>
+        </div>
+        <div class="field" data-field="cheo">
+          <label class="field-label" for="cheo"><span class="lang-sw">Cheo/Nafasi</span><span class="lang-en">Title/Position</span></label>
+          <input class="text-input" type="text" id="cheo" name="cheo">
+        </div>
+        <div class="field" data-field="taasisi">
+          <label class="field-label" for="taasisi"><span class="lang-sw">Jina la Taasisi/Kampuni</span><span class="lang-en">Institution/Company Name</span></label>
+          <input class="text-input" type="text" id="taasisi" name="taasisi">
+        </div>
+
+        <div class="field" data-field="jinsia">
+          <label class="field-label"><span class="lang-sw">C3. Jinsia</span><span class="lang-en">C3. Gender</span><span class="req">*</span></label>
+          <div class="options grid-2">
+            <label class="option"><input type="radio" name="jinsia" value="Mwanaume" required><span class="option-box"><span class="lang-sw">Mwanaume</span><span class="lang-en">Male</span></span></label>
+            <label class="option"><input type="radio" name="jinsia" value="Mwanamke"><span class="option-box"><span class="lang-sw">Mwanamke</span><span class="lang-en">Female</span></span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="aina_mdau">
+          <label class="field-label"><span class="lang-sw">C4. Aina ya Mdau</span><span class="lang-en">C4. Stakeholder Type</span><span class="req">*</span></label>
+          <div class="options">
+            <label class="option checkbox"><input type="checkbox" name="aina_mdau[]" value="Mzalishaji/Mkulima" required><span class="option-box">Mzalishaji/Mkulima / Producer/Farmer</span></label>
+            <label class="option checkbox"><input type="checkbox" name="aina_mdau[]" value="Mchimbaji"><span class="option-box">Mchimbaji / Miner</span></label>
+            <label class="option checkbox"><input type="checkbox" name="aina_mdau[]" value="Mnunuzi/Dalali"><span class="option-box">Mnunuzi/Dalali / Buyer/Broker</span></label>
+            <label class="option checkbox"><input type="checkbox" name="aina_mdau[]" value="Msafirishaji/Muuzaji nje"><span class="option-box">Msafirishaji/Muuzaji nje / Exporter</span></label>
+            <label class="option checkbox"><input type="checkbox" name="aina_mdau[]" value="Mchakataji/Mmiliki wa kiwanda"><span class="option-box">Mchakataji/Mmiliki wa kiwanda / Processor/Factory Owner</span></label>
+            <label class="option checkbox"><input type="checkbox" name="aina_mdau[]" value="Taasisi ya Serikali"><span class="option-box">Taasisi ya Serikali / Government Institution</span></label>
+            <label class="option checkbox"><input type="checkbox" name="aina_mdau[]" value="Nyingine"><span class="option-box">Nyingine / Other</span></label>
+          </div>
+          <input class="text-input other-field" type="text" name="aina_mdau_other" data-other-for="aina_mdau[]" data-other-value="Nyingine" hidden placeholder="Taja / Specify">
+        </div>
+
+        <div class="field" data-field="kiwango_shughuli">
+          <label class="field-label"><span class="lang-sw">C6. Kiwango cha shughuli (kadirio la wafanyakazi na mtaji)</span><span class="lang-en">C6. Scale of activity (estimated workers & capital)</span><span class="req">*</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="kiwango_shughuli" value="Kidogo sana (Micro: 1-4 wafanyakazi, hadi Mil. 5)" required><span class="option-box">Kidogo sana (Micro)</span></label>
+            <label class="option"><input type="radio" name="kiwango_shughuli" value="Kidogo (Small: 5-49 wafanyakazi, Mil. 5-200)"><span class="option-box">Kidogo (Small)</span></label>
+            <label class="option"><input type="radio" name="kiwango_shughuli" value="Kati (Medium: 50-99 wafanyakazi, Mil. 200-800)"><span class="option-box">Kati (Medium)</span></label>
+            <label class="option"><input type="radio" name="kiwango_shughuli" value="Kubwa (Large: 100+ wafanyakazi, Zaidi ya Mil. 800)"><span class="option-box">Kubwa (Large)</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: SEHEMU D - UZALISHAJI NA UPATIKANAJI -->
+    <div class="step" data-step="2">
+      <div class="card">
+        <span class="section-eyebrow">Sehemu D</span>
+        <h2 class="section-title"><span class="lang-sw">Uzalishaji na Upatikanaji wa Malighafi</span><span class="lang-en">Production & Raw Material Availability</span></h2>
+        
+        <div class="field" data-field="kiasi_mwaka1">
+          <label class="field-label"><span class="lang-sw">D1. Kiasi kilichozalishwa/kununuliwa mwaka 2024 (Kiasi, Kipimo, Thamani TSh)</span><span class="lang-en">D1. Quantity produced/bought in 2024 (Qty, Unit, Value TSh)</span></label>
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+            <input class="text-input" type="text" name="kiasi_2024" placeholder="Kiasi / Qty">
+            <input class="text-input" type="text" name="kipimo_2024" placeholder="Kipimo / Unit">
+            <input class="text-input" type="text" name="thamani_2024" placeholder="Thamani TSh / Value">
+          </div>
+        </div>
+
+        <div class="field" data-field="mwelekeo_uzalishaji">
+          <label class="field-label"><span class="lang-sw">D2. Uzalishaji una mwelekeo gani?</span><span class="lang-en">D2. What is the production trend?</span><span class="req">*</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="mwelekeo_uzalishaji" value="Unaongezeka" required><span class="option-box">Unaongezeka / Increasing</span></label>
+            <label class="option"><input type="radio" name="mwelekeo_uzalishaji" value="Uko vilevile"><span class="option-box">Uko vilevile / Stable</span></label>
+            <label class="option"><input type="radio" name="mwelekeo_uzalishaji" value="Unapungua"><span class="option-box">Unapungua / Decreasing</span></label>
+            <label class="option"><input type="radio" name="mwelekeo_uzalishaji" value="Hubadilika sana"><span class="option-box">Hubadilika sana kila msimu / Highly seasonal</span></label>
+          </div>
+          <input class="text-input" type="text" name="sababu_mwelekeo" placeholder="Sababu kuu / Main reason">
+        </div>
+
+        <div class="field" data-field="kipindi_upatikanaji">
+          <label class="field-label"><span class="lang-sw">D3. Bidhaa hupatikana kwa kipindi gani?</span><span class="lang-en">D3. When is the product available?</span></label>
+          <div class="options grid-2">
+            <label class="option"><input type="radio" name="kipindi_upatikanaji" value="Mwaka mzima"><span class="option-box">Mwaka mzima / Year-round</span></label>
+            <label class="option"><input type="radio" name="kipindi_upatikanaji" value="Msimu maalumu"><span class="option-box">Kwa msimu maalumu / Specific season</span></label>
+          </div>
+          <input class="text-input" type="text" name="miezi_upatikanaji" placeholder="Miezi ya upatikanaji mkubwa / Months of high availability">
+        </div>
+
+        <div class="field" data-field="chanzo_malighafi">
+          <label class="field-label"><span class="lang-sw">D4. Chanzo kikuu cha malighafi</span><span class="lang-en">D4. Main source of raw materials</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="chanzo_malighafi" value="Uzalishaji binafsi"><span class="option-box">Uzalishaji binafsi / Own production</span></label>
+            <label class="option"><input type="radio" name="chanzo_malighafi" value="Wakulima/Wazalishaji binafsi"><span class="option-box">Wakulima/Wazalishaji binafsi / Independent farmers</span></label>
+            <label class="option"><input type="radio" name="chanzo_malighafi" value="Vyama vya ushirika"><span class="option-box">Vyama vya ushirika / Cooperatives</span></label>
+            <label class="option"><input type="radio" name="chanzo_malighafi" value="Wafanyabiashara/Wakusanyaji"><span class="option-box">Wafanyabiashara/Wakusanyaji / Traders/Collectors</span></label>
+            <label class="option"><input type="radio" name="chanzo_malighafi" value="Migodi"><span class="option-box">Migodi / Mines</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="inakidhi_mahitaji">
+          <label class="field-label"><span class="lang-sw">D5. Je, malighafi inayopatikana inakidhi mahitaji ya soko/kiwanda?</span><span class="lang-en">D5. Does available raw material meet market/factory demand?</span></label>
+          <div class="options grid-2">
+            <label class="option"><input type="radio" name="inakidhi_mahitaji" value="Inakidhi kikamilifu"><span class="option-box">Inakidhi kikamilifu / Fully meets</span></label>
+            <label class="option"><input type="radio" name="inakidhi_mahitaji" value="Inakidhi kwa kiasi"><span class="option-box">Inakidhi kwa kiasi / Partially meets</span></label>
+            <label class="option"><input type="radio" name="inakidhi_mahitaji" value="Haikidhi"><span class="option-box">Haikidhi / Does not meet</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: SEHEMU E - SOKO NA UUZAJI (NDANI) -->
+    <div class="step" data-step="3">
+      <div class="card">
+        <span class="section-eyebrow">Sehemu E</span>
+        <h2 class="section-title"><span class="lang-sw">Soko na Uuzaji (Ndani ya Nchi)</span><span class="lang-en">Market & Domestic Sales</span></h2>
+        
+        <div class="field" data-field="wanunuzi_wakuu">
+          <label class="field-label"><span class="lang-sw">E1. Wanunuzi wakuu wa bidhaa ni nani?</span><span class="lang-en">E1. Who are the main buyers?</span></label>
+          <div class="options">
+            <label class="option checkbox"><input type="checkbox" name="wanunuzi_wakuu[]" value="Walaji wa mwisho"><span class="option-box">Walaji wa mwisho / End consumers</span></label>
+            <label class="option checkbox"><input type="checkbox" name="wanunuzi_wakuu[]" value="Wafanyabiashara wa ndani"><span class="option-box">Wafanyabiashara wa ndani / Domestic traders</span></label>
+            <label class="option checkbox"><input type="checkbox" name="wanunuzi_wakuu[]" value="Viwanda vya ndani"><span class="option-box">Viwanda vya ndani / Domestic factories</span></label>
+            <label class="option checkbox"><input type="checkbox" name="wanunuzi_wakuu[]" value="Wasafirishaji wa bidhaa nje"><span class="option-box">Wasafirishaji wa bidhaa nje / Exporters</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="hali_bidhaa_inapouzwa">
+          <label class="field-label"><span class="lang-sw">E2. Bidhaa huuzwa katika hali gani?</span><span class="lang-en">E2. In what state is the product sold?</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="hali_bidhaa_inapouzwa" value="Ghafi kabisa"><span class="option-box">Ghafi kabisa / Completely raw</span></label>
+            <label class="option"><input type="radio" name="hali_bidhaa_inapouzwa" value="Imesafishwa/Imekaushwa"><span class="option-box">Imesafishwa au imekaushwa / Cleaned or dried</span></label>
+            <label class="option"><input type="radio" name="hali_bidhaa_inapouzwa" value="Imechakatwa kwa kiwango cha awali"><span class="option-box">Imechakatwa kwa kiwango cha awali / Primary processing</span></label>
+            <label class="option"><input type="radio" name="hali_bidhaa_inapouzwa" value="Imechakatwa kikamilifu"><span class="option-box">Imechakatwa kikamilifu / Fully processed</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="asilimia_thamani">
+          <label class="field-label"><span class="lang-sw">E3. Asilimia ya bidhaa huuzwa IKIWA IMESHAONGEZWA THAMANI?</span><span class="lang-en">E3. Percentage of product sold WITH VALUE ADDED?</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="asilimia_thamani" value="0% (yote ni ghafi)"><span class="option-box">0% (yote ni ghafi / all raw)</span></label>
+            <label class="option"><input type="radio" name="asilimia_thamani" value="1%-24%"><span class="option-box">1% - 24%</span></label>
+            <label class="option"><input type="radio" name="asilimia_thamani" value="25%-49%"><span class="option-box">25% - 49%</span></label>
+            <label class="option"><input type="radio" name="asilimia_thamani" value="50% na zaidi"><span class="option-box">50% na zaidi / 50% and above</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="bei_huamuliwaje">
+          <label class="field-label"><span class="lang-sw">E4. Bei ya bidhaa huamuliwaje?</span><span class="lang-en">E4. How is the price determined?</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="bei_huamuliwaje" value="Mazungumzo"><span class="option-box">Mazungumzo kati ya mnunuzi na muuzaji / Negotiation</span></label>
+            <label class="option"><input type="radio" name="bei_huamuliwaje" value="Mnada"><span class="option-box">Kwa mnada / Auction</span></label>
+            <label class="option"><input type="radio" name="bei_huamuliwaje" value="Bei elekezi ya Serikali"><span class="option-box">Bei elekezi ya Serikali au bodi / Govt indicative price</span></label>
+            <label class="option"><input type="radio" name="bei_huamuliwaje" value="Bei ya soko la kimataifa"><span class="option-box">Bei ya soko la kimataifa / International market price</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="mikataba_mauzo">
+          <label class="field-label"><span class="lang-sw">E7. Je, kuna mikataba rasmi ya mauzo?</span><span class="lang-en">E7. Are there formal sales contracts?</span></label>
+          <div class="options grid-2">
+            <label class="option"><input type="radio" name="mikataba_mauzo" value="Ndiyo, kwa mauzo yote"><span class="option-box">Ndiyo, yote / Yes, all</span></label>
+            <label class="option"><input type="radio" name="mikataba_mauzo" value="Ndiyo, baadhi"><span class="option-box">Ndiyo, baadhi / Yes, some</span></label>
+            <label class="option"><input type="radio" name="mikataba_mauzo" value="Hapana"><span class="option-box">Hapana / No</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: SEHEMU F - USAFIRISHAJI NJE YA NCHI (KIINI) -->
+    <div class="step" data-step="4">
+      <div class="card">
+        <span class="section-eyebrow" style="color: #d32f2f;">Sehemu F (Kiini cha Tathmini)</span>
+        <h2 class="section-title"><span class="lang-sw">Usafirishaji wa Malighafi Nje ya Nchi</span><span class="lang-en">Export of Raw Materials</span></h2>
+        
+        <div class="field" data-field="husika_mojakwamoja_nje">
+          <label class="field-label"><span class="lang-sw">F1. Je, unahusika moja kwa moja na usafirishaji wa bidhaa nje ya nchi?</span><span class="lang-en">F1. Are you directly involved in exporting products?</span><span class="req">*</span></label>
+          <div class="options grid-2">
+            <label class="option"><input type="radio" name="husika_mojakwamoja_nje" value="Ndiyo" required><span class="option-box">Ndiyo / Yes</span></label>
+            <label class="option"><input type="radio" name="husika_mojakwamoja_nje" value="Hapana"><span class="option-box">Hapana / No</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="sababu_kuuza_ghafi">
+          <label class="field-label"><span class="lang-sw">F3. Sababu kuu za kuuza bidhaa kama malighafi badala ya kuichakata nchini?</span><span class="lang-en">F3. Main reasons for selling as raw material instead of processing locally?</span> <span class="field-hint">(Chagua hadi 5 / Select up to 5)</span></label>
+          <div class="options">
+            <label class="option checkbox"><input type="checkbox" name="sababu_kuuza_ghafi[]" value="Bei nzuri ya malighafi nje"><span class="option-box">Bei nzuri ya malighafi katika soko la nje</span></label>
+            <label class="option checkbox"><input type="checkbox" name="sababu_kuuza_ghafi[]" value="Malipo ya haraka nje"><span class="option-box">Malipo ya haraka kutoka kwa wanunuzi wa nje</span></label>
+            <label class="option checkbox"><input type="checkbox" name="sababu_kuuza_ghafi[]" value="Ukosefu wa viwanda vya kutosha"><span class="option-box">Ukosefu wa viwanda vya kutosha</span></label>
+            <label class="option checkbox"><input type="checkbox" name="sababu_kuuza_ghafi[]" value="Teknolojia duni au gharama kubwa"><span class="option-box">Teknolojia duni au ya gharama kubwa</span></label>
+            <label class="option checkbox"><input type="checkbox" name="sababu_kuuza_ghafi[]" value="Gharama kubwa za nishati"><span class="option-box">Gharama kubwa za nishati</span></label>
+            <label class="option checkbox"><input type="checkbox" name="sababu_kuuza_ghafi[]" value="Ukosefu wa mitaji na mikopo"><span class="option-box">Ukosefu wa mitaji na mikopo</span></label>
+            <label class="option checkbox"><input type="checkbox" name="sababu_kuuza_ghafi[]" value="Kodi, tozo na ada nyingi"><span class="option-box">Kodi, tozo na ada nyingi</span></label>
+            <label class="option checkbox"><input type="checkbox" name="sababu_kuuza_ghafi[]" value="Ubora usiokidhi mahitaji ya uchakataji"><span class="option-box">Ubora usiokidhi mahitaji ya uchakataji</span></label>
+            <label class="option checkbox"><input type="checkbox" name="sababu_kuuza_ghafi[]" value="Miundombinu duni"><span class="option-box">Miundombinu duni ya usafirishaji na uhifadhi</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="faida_kuuza_ghafi">
+          <label class="field-label"><span class="lang-sw">F4. Je, kuna faida kubwa zaidi katika kuuza ghafi kuliko kuuza bidhaa iliyochakatwa?</span><span class="lang-en">F4. Is there greater benefit in selling raw than processed?</span></label>
+          <div class="options grid-2">
+            <label class="option"><input type="radio" name="faida_kuuza_ghafi" value="Ndiyo"><span class="option-box">Ndiyo / Yes</span></label>
+            <label class="option"><input type="radio" name="faida_kuuza_ghafi" value="Hapana"><span class="option-box">Hapana / No</span></label>
+            <label class="option"><input type="radio" name="faida_kuuza_ghafi" value="Inategemea msimu"><span class="option-box">Inategemea msimu au soko / Depends on season</span></label>
+          </div>
+          <textarea class="text-input" name="faida_kuuza_ghafi_eleza" rows="2" placeholder="Eleza kwa ufupi / Explain briefly"></textarea>
+        </div>
+
+        <div class="field" data-field="changamoto_ubora_nje">
+          <label class="field-label"><span class="lang-sw">F7. Changamoto kuu za kukidhi mahitaji ya masoko ya nje ni zipi?</span><span class="lang-en">F7. Main challenges in meeting export market requirements?</span></label>
+          <div class="options">
+            <label class="option checkbox"><input type="checkbox" name="changamoto_ubora_nje[]" value="Ubora usio thabiti"><span class="option-box">Ubora usio thabiti / Inconsistent quality</span></label>
+            <label class="option checkbox"><input type="checkbox" name="changamoto_ubora_nje[]" value="Mabaki ya viuatilifu"><span class="option-box">Mabaki ya viuatilifu au kemikali / Chemical residues</span></label>
+            <label class="option checkbox"><input type="checkbox" name="changamoto_ubora_nje[]" value="Ukosefu wa ufuatiliaji (traceability)"><span class="option-box">Ukosefu wa ufuatiliaji wa bidhaa</span></label>
+            <label class="option checkbox"><input type="checkbox" name="changamoto_ubora_nje[]" value="Vyeti vya gharama kubwa"><span class="option-box">Vyeti vya gharama kubwa / Expensive certificates</span></label>
+            <label class="option checkbox"><input type="checkbox" name="changamoto_ubora_nje[]" value="Vifungashio visivyofaa"><span class="option-box">Vifungashio visivyofaa / Inadequate packaging</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="vifungashio_nje">
+          <label class="field-label"><span class="lang-sw">F8. Je, vifungashio vinavyohitajika kwa mauzo ya nje vinapatikana nchini?</span><span class="lang-en">F8. Are required export packaging materials available locally?</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="vifungashio_nje" value="Ndiyo, kwa urahisi"><span class="option-box">Ndiyo, kwa urahisi / Yes, easily</span></label>
+            <label class="option"><input type="radio" name="vifungashio_nje" value="Ndiyo, lakini gharama kubwa"><span class="option-box">Ndiyo, lakini kwa gharama kubwa / Yes, but expensive</span></label>
+            <label class="option"><input type="radio" name="vifungashio_nje" value="Havipatikani kwa urahisi"><span class="option-box">Havipatikani kwa urahisi / Not easily available</span></label>
+            <label class="option"><input type="radio" name="vifungashio_nje" value="Havipatikani kabisa"><span class="option-box">Havipatikani kabisa / Not available at all</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5: SEHEMU G & H - UONGEZAJI THAMANI NA FEDHA -->
+    <div class="step" data-step="5">
+      <div class="card">
+        <span class="section-eyebrow">Sehemu G & H</span>
+        <h2 class="section-title"><span class="lang-sw">Uongezaji Thamani na Uwezo wa Viwanda / Fedha</span><span class="lang-en">Value Addition, Industry Capacity & Finance</span></h2>
+        
+        <div class="field" data-field="inachakata_bidhaa">
+          <label class="field-label"><span class="lang-sw">G1. Je, taasisi yako inachakata bidhaa?</span><span class="lang-en">G1. Does your institution process products?</span></label>
+          <div class="options grid-2">
+            <label class="option"><input type="radio" name="inachakata_bidhaa" value="Ndiyo"><span class="option-box">Ndiyo / Yes</span></label>
+            <label class="option"><input type="radio" name="inachakata_bidhaa" value="Hapana"><span class="option-box">Hapana / No</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="kiwango_uchakataji">
+          <label class="field-label"><span class="lang-sw">G2. Kiwango cha uchakataji</span><span class="lang-en">G2. Level of processing</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="kiwango_uchakataji" value="Awali"><span class="option-box">Awali / Primary</span></label>
+            <label class="option"><input type="radio" name="kiwango_uchakataji" value="Kati"><span class="option-box">Kati / Intermediate</span></label>
+            <label class="option"><input type="radio" name="kiwango_uchakataji" value="Kamili hadi bidhaa ya mwisho"><span class="option-box">Kamili hadi bidhaa ya mwisho / Fully to final product</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="sababu_kutotumia_ukomo">
+          <label class="field-label"><span class="lang-sw">G4. Sababu kuu za kutotumia uwezo wote wa kiwanda</span><span class="lang-en">G4. Main reasons for underutilizing factory capacity</span></label>
+          <div class="options">
+            <label class="option checkbox"><input type="checkbox" name="sababu_kutotumia_ukomo[]" value="Upungufu wa malighafi"><span class="option-box">Upungufu wa malighafi / Raw material shortage</span></label>
+            <label class="option checkbox"><input type="checkbox" name="sababu_kutotumia_ukomo[]" value="Bei kubwa ya malighafi"><span class="option-box">Bei kubwa ya malighafi / High raw material cost</span></label>
+            <label class="option checkbox"><input type="checkbox" name="sababu_kutotumia_ukomo[]" value="Gharama kubwa za umeme"><span class="option-box">Gharama kubwa za umeme / High electricity costs</span></label>
+            <label class="option checkbox"><input type="checkbox" name="sababu_kutotumia_ukomo[]" value="Teknolojia ya zamani"><span class="option-box">Teknolojia ya zamani / Outdated technology</span></label>
+            <label class="option checkbox"><input type="checkbox" name="sababu_kutotumia_ukomo[]" value="Soko dogo la bidhaa zilizochakatwa"><span class="option-box">Soko dogo la bidhaa zilizochakatwa / Small market for processed goods</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="vyeti_bidhaa">
+          <label class="field-label"><span class="lang-sw">G6. Je, bidhaa iliyochakatwa ina vyeti vinavyohitajika (TBS, TMDA, ISO)?</span><span class="lang-en">G6. Does the processed product have required certificates (TBS, TMDA, ISO)?</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="vyeti_bidhaa" value="Ndiyo, vyote"><span class="option-box">Ndiyo, vyote / Yes, all</span></label>
+            <label class="option"><input type="radio" name="vyeti_bidhaa" value="Ndiyo, baadhi"><span class="option-box">Ndiyo, baadhi / Yes, some</span></label>
+            <label class="option"><input type="radio" name="vyeti_bidhaa" value="Hapana"><span class="option-box">Hapana / No</span></label>
+            <label class="option"><input type="radio" name="vyeti_bidhaa" value="Mchakato unaendelea"><span class="option-box">Mchakato unaendelea / In progress</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="chanzo_mtaji">
+          <label class="field-label"><span class="lang-sw">H1. Chanzo kikuu cha mtaji ni kipi?</span><span class="lang-en">H1. Main source of capital?</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="chanzo_mtaji" value="Akiba binafsi"><span class="option-box">Akiba binafsi / Personal savings</span></label>
+            <label class="option"><input type="radio" name="chanzo_mtaji" value="Benki"><span class="option-box">Benki / Bank</span></label>
+            <label class="option"><input type="radio" name="chanzo_mtaji" value="SACCOS/VICOBA"><span class="option-box">SACCOS/VICOBA</span></label>
+            <label class="option"><input type="radio" name="chanzo_mtaji" value="Wawekezaji/Wabia"><span class="option-box">Wawekezaji/Wabia / Investors/Partners</span></label>
+            <label class="option"><input type="radio" name="chanzo_mtaji" value="Mikopo ya Serikali"><span class="option-box">Mikopo ya Serikali / Government loans</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="vikwazo_fedha">
+          <label class="field-label"><span class="lang-sw">H3. Vikwazo vikuu vya kupata fedha ni vipi?</span><span class="lang-en">H3. Main obstacles to accessing finance?</span></label>
+          <div class="options">
+            <label class="option checkbox"><input type="checkbox" name="vikwazo_fedha[]" value="Riba kubwa"><span class="option-box">Riba kubwa / High interest rates</span></label>
+            <label class="option checkbox"><input type="checkbox" name="vikwazo_fedha[]" value="Ukosefu wa dhamana"><span class="option-box">Ukosefu wa dhamana / Lack of collateral</span></label>
+            <label class="option checkbox"><input type="checkbox" name="vikwazo_fedha[]" value="Muda mfupi wa marejesho"><span class="option-box">Muda mfupi wa marejesho / Short repayment period</span></label>
+            <label class="option checkbox"><input type="checkbox" name="vikwazo_fedha[]" value="Kutokuwa rasmi"><span class="option-box">Kutokuwa rasmi au kutosajiliwa / Informality</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 6: SEHEMU I & J - MIUNDOMBINU NA SERA -->
+    <div class="step" data-step="6">
+      <div class="card">
+        <span class="section-eyebrow">Sehemu I & J</span>
+        <h2 class="section-title"><span class="lang-sw">Miundombinu, Sera na Mazingira ya Biashara</span><span class="lang-en">Infrastructure, Policies & Business Environment</span></h2>
+        
+        <div class="field" data-field="hali_miundombinu">
+          <label class="field-label"><span class="lang-sw">I1. Kadiria hali ya huduma zifuatazo</span><span class="lang-en">I1. Rate the condition of the following services</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="hali_miundombinu" value="Nzuri sana"><span class="option-box">Nzuri sana / Very good</span></label>
+            <label class="option"><input type="radio" name="hali_miundombinu" value="Nzuri"><span class="option-box">Nzuri / Good</span></label>
+            <label class="option"><input type="radio" name="hali_miundombinu" value="Wastani"><span class="option-box">Wastani / Average</span></label>
+            <label class="option"><input type="radio" name="hali_miundombinu" value="Mbaya"><span class="option-box">Mbaya / Poor</span></label>
+            <label class="option"><input type="radio" name="hali_miundombinu" value="Mbaya sana"><span class="option-box">Mbaya sana / Very poor</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="upotevu_bidhaa">
+          <label class="field-label"><span class="lang-sw">I2. Je, kuna upotevu wa bidhaa wakati wa kuhifadhi au kusafirisha?</span><span class="lang-en">I2. Is there product loss during storage or transport?</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="upotevu_bidhaa" value="Hapana"><span class="option-box">Hapana / No</span></label>
+            <label class="option"><input type="radio" name="upotevu_bidhaa" value="Chini ya 5%"><span class="option-box">Chini ya 5% / Below 5%</span></label>
+            <label class="option"><input type="radio" name="upotevu_bidhaa" value="5%-10%"><span class="option-box">5% - 10%</span></label>
+            <label class="option"><input type="radio" name="upotevu_bidhaa" value="11%-20%"><span class="option-box">11% - 20%</span></label>
+            <label class="option"><input type="radio" name="upotevu_bidhaa" value="Zaidi ya 20%"><span class="option-box">Zaidi ya 20% / Above 20%</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="sera_zinaunga_mkono">
+          <label class="field-label"><span class="lang-sw">J1. Je, sera na kanuni za sasa zinaunga mkono uongezaji thamani nchini?</span><span class="lang-en">J1. Do current policies support local value addition?</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="sera_zinaunga_mkono" value="Kwa kiwango kikubwa sana"><span class="option-box">Kwa kiwango kikubwa sana / To a very large extent</span></label>
+            <label class="option"><input type="radio" name="sera_zinaunga_mkono" value="Kwa kiwango kikubwa"><span class="option-box">Kwa kiwango kikubwa / To a large extent</span></label>
+            <label class="option"><input type="radio" name="sera_zinaunga_mkono" value="Kwa kiwango cha kati"><span class="option-box">Kwa kiwango cha kati / To a moderate extent</span></label>
+            <label class="option"><input type="radio" name="sera_zinaunga_mkono" value="Kwa kiwango kidogo"><span class="option-box">Kwa kiwango kidogo / To a small extent</span></label>
+            <label class="option"><input type="radio" name="sera_zinaunga_mkono" value="Haziungi mkono"><span class="option-box">Haziungi mkono / Do not support</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="muda_urahisi_taratu">
+          <label class="field-label"><span class="lang-sw">J3. Kadiria urahisi wa taratibu (leseni, vibali, usafirishaji nje)</span><span class="lang-en">J3. Rate the ease of procedures (licenses, permits, export)</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="muda_urahisi_taratu" value="Mfupi/Rahisi sana"><span class="option-box">Mfupi/Rahisi sana / Very short/easy</span></label>
+            <label class="option"><input type="radio" name="muda_urahisi_taratu" value="Mfupi/Rahisi"><span class="option-box">Mfupi/Rahisi / Short/easy</span></label>
+            <label class="option"><input type="radio" name="muda_urahisi_taratu" value="Wastani"><span class="option-box">Wastani / Average</span></label>
+            <label class="option"><input type="radio" name="muda_urahisi_taratu" value="Mrefu/Mgumu"><span class="option-box">Mrefu/Mgumu / Long/difficult</span></label>
+            <label class="option"><input type="radio" name="muda_urahisi_taratu" value="Mrefu/Mgumu sana"><span class="option-box">Mrefu/Mgumu sana / Very long/difficult</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="mapendekezo_sera">
+          <label class="field-label" for="mapendekezo_sera"><span class="lang-sw">J4. Ni marekebisho gani ya sera au kanuni yanahitajika ili kuongeza uchakataji nchini?</span><span class="lang-en">J4. What policy/regulatory changes are needed to increase local processing?</span></label>
+          <textarea class="text-input" id="mapendekezo_sera" name="mapendekezo_sera" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 7: SEHEMU K, L, M - USHIRIKIANO, UWEKEZAJI NA VIKWAZO -->
+    <div class="step" data-step="7">
+      <div class="card">
+        <span class="section-eyebrow">Sehemu K, L & M</span>
+        <h2 class="section-title"><span class="lang-sw">Ushirikiano, Uwekezaji na Vikwazo</span><span class="lang-en">Collaboration, Investment & Constraints</span></h2>
+        
+        <div class="field" data-field="kiwango_ushirikiano">
+          <label class="field-label"><span class="lang-sw">K1. Kadiria kiwango cha ushirikiano kati ya wazalishaji, viwanda na wanunuzi</span><span class="lang-en">K1. Rate the level of collaboration among producers, factories, and buyers</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="kiwango_ushirikiano" value="Kikubwa"><span class="option-box">Kikubwa / High</span></label>
+            <label class="option"><input type="radio" name="kiwango_ushirikiano" value="Wastani"><span class="option-box">Wastani / Medium</span></label>
+            <label class="option"><input type="radio" name="kiwango_ushirikiano" value="Kidogo"><span class="option-box">Kidogo / Low</span></label>
+            <label class="option"><input type="radio" name="kiwango_ushirikiano" value="Haipo"><span class="option-box">Haipo / None</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="mfumo_ushirikiano">
+          <label class="field-label"><span class="lang-sw">K3. Ni mfumo gani wa ushirikiano unapendekezwa?</span><span class="lang-en">K3. What collaboration system is recommended?</span></label>
+          <div class="options">
+            <label class="option checkbox"><input type="checkbox" name="mfumo_ushirikiano[]" value="Kilimo cha mkataba"><span class="option-box">Kilimo cha mkataba / Contract farming</span></label>
+            <label class="option checkbox"><input type="checkbox" name="mfumo_ushirikiano[]" value="Ununuzi/uuzaji wa pamoja"><span class="option-box">Ununuzi/uuzaji wa pamoja / Joint buying/selling</span></label>
+            <label class="option checkbox"><input type="checkbox" name="mfumo_ushirikiano[]" value="Ubia kati ya wazalishaji na viwanda"><span class="option-box">Ubia kati ya wazalishaji na viwanda / Producer-factory partnership</span></label>
+            <label class="option checkbox"><input type="checkbox" name="mfumo_ushirikiano[]" value="Majukwaa ya kidijitali ya soko"><span class="option-box">Majukwaa ya kidijitali ya soko / Digital market platforms</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="fursa_uwekezaji">
+          <label class="field-label" for="fursa_uwekezaji"><span class="lang-sw">L1. Taja fursa kuu za uwekezaji katika mnyororo huu wa thamani</span><span class="lang-en">L1. State main investment opportunities in this value chain</span></label>
+          <textarea class="text-input" id="fursa_uwekezaji" name="fursa_uwekezaji" rows="3"></textarea>
+        </div>
+
+        <div class="field" data-field="uwezekano_kuongeza_uchakataji">
+          <label class="field-label"><span class="lang-sw">L4. Kadiria uwezekano wa kuongeza uchakataji wa bidhaa hii ndani ya miaka mitano</span><span class="lang-en">L4. Rate the likelihood of increasing processing of this product within 5 years</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="uwezekano_kuongeza_uchakataji" value="Mkubwa sana"><span class="option-box">Mkubwa sana / Very high</span></label>
+            <label class="option"><input type="radio" name="uwezekano_kuongeza_uchakataji" value="Mkubwa"><span class="option-box">Mkubwa / High</span></label>
+            <label class="option"><input type="radio" name="uwezekano_kuongeza_uchakataji" value="Wastani"><span class="option-box">Wastani / Medium</span></label>
+            <label class="option"><input type="radio" name="uwezekano_kuongeza_uchakataji" value="Mdogo"><span class="option-box">Mdogo / Low</span></label>
+          </div>
+        </div>
+
+        <div class="field" data-field="kikwazo_kikubwa">
+          <label class="field-label"><span class="lang-sw">M1. Kwa ujumla, kadiria kiwango cha kikwazo katika eneo hili: Fedha na mitaji</span><span class="lang-en">M1. Overall, rate the level of constraint in: Finance and Capital</span></label>
+          <div class="options">
+            <label class="option"><input type="radio" name="kikwazo_kikubwa" value="Kikubwa sana"><span class="option-box">Kikubwa sana / Very high constraint</span></label>
+            <label class="option"><input type="radio" name="kikwazo_kikubwa" value="Kikubwa"><span class="option-box">Kikubwa / High constraint</span></label>
+            <label class="option"><input type="radio" name="kikwazo_kikubwa" value="Wastani"><span class="option-box">Wastani / Medium constraint</span></label>
+            <label class="option"><input type="radio" name="kikwazo_kikubwa" value="Kidogo"><span class="option-box">Kidogo / Low constraint</span></label>
+            <label class="option"><input type="radio" name="kikwazo_kikubwa" value="Hakuna kikwazo"><span class="option-box">Hakuna kikwazo / No constraint</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 8: SEHEMU N - MAONI NA MAPENDEKEZO -->
+    <div class="step" data-step="8">
+      <div class="card">
+        <span class="section-eyebrow">Sehemu N</span>
+        <h2 class="section-title"><span class="lang-sw">Maoni na Mapendekezo</span><span class="lang-en">Opinions & Recommendations</span></h2>
+        
+        <div class="field" data-field="hatua_tatu_maramoja">
+          <label class="field-label" for="hatua_tatu_maramoja"><span class="lang-sw">N1. Ni hatua zipi tatu zichukuliwe mara moja ili kuongeza uongezaji thamani nchini?</span><span class="lang-en">N1. What three immediate steps should be taken to increase local value addition?</span><span class="req">*</span></label>
+          <textarea class="text-input" id="hatua_tatu_maramoja" name="hatua_tatu_maramoja" rows="4" required placeholder="1. &#10;2. &#10;3. "></textarea>
+          <p class="error-msg lang-sw">Tafadhali toa angalau hatua moja.</p>
+          <p class="error-msg lang-en">Please provide at least one step.</p>
+        </div>
+
+        <div class="field" data-field="jukumu_serikali">
+          <label class="field-label" for="jukumu_serikali"><span class="lang-sw">N2. Jukumu linalopendekezwa kwa Serikali</span><span class="lang-en">N2. Recommended role for the Government</span></label>
+          <textarea class="text-input" id="jukumu_serikali" name="jukumu_serikali" rows="2"></textarea>
+        </div>
+
+        <div class="field" data-field="jukumu_sekta_binafsi">
+          <label class="field-label" for="jukumu_sekta_binafsi"><span class="lang-sw">N2. Jukumu linalopendekezwa kwa Sekta Binafsi</span><span class="lang-en">N2. Recommended role for the Private Sector</span></label>
+          <textarea class="text-input" id="jukumu_sekta_binafsi" name="jukumu_sekta_binafsi" rows="2"></textarea>
+        </div>
+
+        <div class="field" data-field="maoni_mengine">
+          <label class="field-label" for="maoni_mengine"><span class="lang-sw">N3. Maoni mengine</span><span class="lang-en">N3. Other comments</span></label>
+          <textarea class="text-input" id="maoni_mengine" name="maoni_mengine" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 9: REVIEW -->
+    <div class="step" data-step="9">
+      <div class="card">
+        <span class="section-eyebrow"><span class="lang-sw">Hatua ya Mwisho</span><span class="lang-en">Final Step</span></span>
+        <h2 class="section-title"><span class="lang-sw">Kagua Majibu Yako</span><span class="lang-en">Review Your Answers</span></h2>
+        <p class="section-desc"><span class="lang-sw">Angalia majibu yako kabla ya kutuma. Bofya "Nyuma" kubadilisha hatua yoyote.</span><span class="lang-en">Check your answers before submitting. Tap "Back" to change any step.</span></p>
+        <div id="reviewOutput"></div>
+      </div>
+    </div>
+
+    <!-- SUCCESS STEP -->
+    <div class="step" data-step="success" id="successStep">
+      <div class="card success-wrap">
+        <div class="success-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h2><span class="lang-sw">Asante kwa Ushiriki Wako!</span><span class="lang-en">Thank You for Participating!</span></h2>
+        <p>
+          <span class="lang-sw">Taarifa zako zinalindwa na zitatumika kwa madhumuni ya tathmini ya TANTRADE pekee.</span>
+          <span class="lang-en">Your information is protected and will be used for TANTRADE's assessment purposes only.</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- STEP NAVIGATION -->
+    <div class="step-nav" id="stepNav">
+      <button type="button" class="btn btn-ghost" id="btnBack" onclick="goStep(-1)" style="visibility: hidden;"><span class="lang-sw">Nyuma</span><span class="lang-en">Back</span></button>
+      
+      <button type="button" class="btn btn-ghost" id="btnReset" onclick="resetForm()" style="display: none; color: var(--danger); border-color: var(--danger); margin-left: auto;">
+        <span class="lang-sw">Anza Upya</span><span class="lang-en">Start Over</span>
+      </button>
+
+      <button type="button" class="btn btn-primary" id="btnNext" onclick="goStep(1)" style="margin-left: 10px;"><span class="lang-sw">Endelea</span><span class="lang-en">Continue</span></button>
+      <button type="submit" class="btn btn-gold" id="btnSubmit" style="display: none; margin-left: 10px;"><span class="lang-sw">Tuma Dodoso</span><span class="lang-en">Submit Survey</span></button>
+    </div>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://ccddzluijwfdytfsuwza.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_wBacQmQqOGF0S6uDpVB7nQ_hBv4EC2P';
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
+<script src="script.js"></script>
+</body>
+</html>
