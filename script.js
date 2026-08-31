@@ -130,7 +130,7 @@
     updateProgress();
     hideBanner();
     window.scrollTo({ top: 0, behavior: "smooth" });
-    if (form) form.scrollIntoView({ behavior: "smooth", block: "start" a
+    if (form) form.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   window.goStep = function (dir) {
