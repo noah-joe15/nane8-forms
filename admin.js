@@ -147,7 +147,8 @@
     var holder = document.getElementById("tableHolder");
     holder.innerHTML = '<div class="state-msg"><span class="lang-sw">Inapakia majibu…</span><span class="lang-en">Loading responses…</span></div>';
     try {
-      const tableName = activeForm === 'nanenane' ? 'nanenane_responses' : 'wadau_malighafi_responses';
+const tableName = activeForm === 'nanenane' ? 'nanenane_responses' : 'wadau_malighafi_responses';
+console.log("[INFO] Active form:", activeForm, "| Table:", tableName);
       const { data, error } = await supabaseClient.from(tableName).select('*').order('created_at', { ascending: false });
       if (error) throw error;
       allSubmissions = (data || []).map(function (sub) {
