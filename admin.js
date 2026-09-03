@@ -214,10 +214,10 @@
     var allKeys = new Set();
     rows.forEach(function (sub) { Object.keys(sub).forEach(function (k) { if (k !== "form-name" && k !== "bot-field") allKeys.add(k); }); });
     
-    // tin_number is prioritized here for the Nanenane form
+    // 👇 UPDATED: Added "tin_number" to the wadau-malighafi array
     var priorityCols = activeForm === 'nanenane'
       ? ["jina_la_kampuni","tin_number","anwani_kampuni","submitted_at","respondent_name","respondent_phone","respondent_email","mkoa","wilaya"]
-      : ["mkoa","wilaya","jina_mhojiwa","taasisi","bidhaa[]","asilimia_thamani","submitted_at"];
+      : ["mkoa","wilaya","jina_mhojiwa","taasisi","tin_number","bidhaa[]","asilimia_thamani","submitted_at"];
       
     var cols = Array.from(allKeys).sort(function (a, b) {
       var ia = priorityCols.indexOf(a), ib = priorityCols.indexOf(b);
@@ -243,10 +243,10 @@
     var allKeys = new Set();
     rows.forEach(function (sub) { Object.keys(sub).forEach(function (k) { if (k !== "form-name" && k !== "bot-field") allKeys.add(k); }); });
     
-    // tin_number is prioritized here for CSV export
+    // 👇 UPDATED: Added "tin_number" to the wadau-malighafi array for CSV export
     var priorityCols = activeForm === 'nanenane'
       ? ["jina_la_kampuni","tin_number","anwani_kampuni","submitted_at","respondent_name","respondent_phone","respondent_email","mkoa","wilaya"]
-      : ["mkoa","wilaya","jina_mhojiwa","taasisi","bidhaa[]","asilimia_thamani","submitted_at"];
+      : ["mkoa","wilaya","jina_mhojiwa","taasisi","tin_number","bidhaa[]","asilimia_thamani","submitted_at"];
       
     var cols = Array.from(allKeys).sort(function (a, b) {
       var ia = priorityCols.indexOf(a), ib = priorityCols.indexOf(b);
@@ -255,6 +255,7 @@
       if (ib !== -1) return 1;
       return a.localeCompare(b);
     });
+    
     var lines = [cols.join(",")].concat(rows.map(function (sub) {
       return cols.map(function (c) {
         var val = sub[c];
