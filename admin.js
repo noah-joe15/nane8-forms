@@ -117,7 +117,6 @@
 
   window.switchForm = function(formType) {
     activeForm = formType;
-    // Update dynamic labels based on form
     var dynLabel = document.getElementById("statDynamicLabel");
     var kpiDynLabel = document.getElementById("kpiDynamicLabel");
     if (activeForm === 'nanenane') {
@@ -147,8 +146,8 @@
     var holder = document.getElementById("tableHolder");
     holder.innerHTML = '<div class="state-msg"><span class="lang-sw">Inapakia majibu…</span><span class="lang-en">Loading responses…</span></div>';
     try {
-const tableName = activeForm === 'nanenane' ? 'nanenane_responses' : 'wadau_malighafi_responses';
-console.log("[INFO] Active form:", activeForm, "| Table:", tableName);
+      const tableName = activeForm === 'nanenane' ? 'nanenane_responses' : 'wadau_malighafi_responses';
+      console.log("[INFO] Active form:", activeForm, "| Table:", tableName);
       const { data, error } = await supabaseClient.from(tableName).select('*').order('created_at', { ascending: false });
       if (error) throw error;
       allSubmissions = (data || []).map(function (sub) {
@@ -215,6 +214,7 @@ console.log("[INFO] Active form:", activeForm, "| Table:", tableName);
     var allKeys = new Set();
     rows.forEach(function (sub) { Object.keys(sub).forEach(function (k) { if (k !== "form-name" && k !== "bot-field") allKeys.add(k); }); });
     
+    // tin_number is prioritized here for the Nanenane form
     var priorityCols = activeForm === 'nanenane'
       ? ["jina_la_kampuni","tin_number","anwani_kampuni","submitted_at","respondent_name","respondent_phone","respondent_email","mkoa","wilaya"]
       : ["mkoa","wilaya","jina_mhojiwa","taasisi","bidhaa[]","asilimia_thamani","submitted_at"];
@@ -242,9 +242,12 @@ console.log("[INFO] Active form:", activeForm, "| Table:", tableName);
     if (!rows.length) { alert("Hakuna majibu"); return; }
     var allKeys = new Set();
     rows.forEach(function (sub) { Object.keys(sub).forEach(function (k) { if (k !== "form-name" && k !== "bot-field") allKeys.add(k); }); });
+    
+    // tin_number is prioritized here for CSV export
     var priorityCols = activeForm === 'nanenane'
       ? ["jina_la_kampuni","tin_number","anwani_kampuni","submitted_at","respondent_name","respondent_phone","respondent_email","mkoa","wilaya"]
       : ["mkoa","wilaya","jina_mhojiwa","taasisi","bidhaa[]","asilimia_thamani","submitted_at"];
+      
     var cols = Array.from(allKeys).sort(function (a, b) {
       var ia = priorityCols.indexOf(a), ib = priorityCols.indexOf(b);
       if (ia !== -1 && ib !== -1) return ia - ib;
@@ -390,7 +393,7 @@ console.log("[INFO] Active form:", activeForm, "| Table:", tableName);
       });
       if (ku) ku.textContent = dynamicCount;
       
-      var complete = allSubmissions.filter(function (s) { return (s.respondent_name || s.jina_mhoji9a) && s.mkoa; }).length;
+      var complete = allSubmissions.filter(function (s) { return (s.respondent_name || s.jina_mhojiwa) && s.mkoa; }).length;
       var rate = allSubmissions.length > 0 ? Math.round((complete / allSubmissions.length) * 100) : 0;
       if (kc) kc.textContent = rate + "%";
       
@@ -415,7 +418,6 @@ console.log("[INFO] Active form:", activeForm, "| Table:", tableName);
     var regions = {}, sectors = {}, gender = {}, business = {};
     allSubmissions.forEach(function (sub) {
       if (sub.mkoa) regions[sub.mkoa] = (regions[sub.mkoa] || 0) + 1;
-      // For Wadau, use 'bidhaa[]' (array), for Nanenane use 'sekta'
       var sectorVal = sub.sekta || (Array.isArray(sub['bidhaa[]']) ? sub['bidhaa[]'].join(', ') : sub['bidhaa[]']);
       if (sectorVal) sectors[sectorVal] = (sectors[sectorVal] || 0) + 1;
       
