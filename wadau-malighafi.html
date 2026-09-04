@@ -610,5 +610,26 @@
     });
   }
 </script>
+  <!-- Image Loading Optimizer -->
+<script src="image-optimizer.js"></script>
+
+<!-- Preload critical images -->
+<link rel="preload" as="image" href="resources.png">
+<link rel="preload" as="image" href="logo.png">
+
+<!-- Add loading="lazy" to non-critical images -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const imagesBelowFold = document.querySelectorAll('img:not([src="resources.png"]):not([src="logo.png"])');
+    imagesBelowFold.forEach(img => {
+      if (!img.hasAttribute('loading')) {
+        img.setAttribute('loading', 'lazy');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
 </body>
 </html>
