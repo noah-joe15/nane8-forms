@@ -138,6 +138,56 @@
   .q-icon-btn:hover { background: var(--green-100); color: var(--green-700); }
   .q-icon-btn.del:hover { background: #fdecea; color: var(--danger); }
 
+  /* =========================================
+     MODERN FORM SELECTOR STYLING
+     ========================================= */
+  .form-selector {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-sm, 8px);
+    padding: 10px 40px 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--green-900, #063c2c);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Custom SVG Dropdown Arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23063c2c' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    
+    max-width: 240px;
+    width: 100%;
+  }
+
+  .form-selector:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+    border-color: var(--green-700, #0b6e4f);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(11, 110, 79, 0.1);
+  }
+
+  .form-selector:focus {
+    outline: none;
+    border-color: var(--green-700, #0b6e4f);
+    box-shadow: 0 0 0 4px rgba(11, 110, 79, 0.15);
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+
+  .form-selector option {
+    background-color: #ffffff;
+    color: #063c2c;
+    padding: 8px;
+    font-weight: 500;
+  }
+
   @media (max-width: 768px) {
     .stats-dashboard { grid-template-columns: repeat(2, 1fr); }
     .grid-2, .grid-3, .q-row { grid-template-columns: 1fr; }
@@ -164,7 +214,7 @@
     </span>
   </div>
   <div style="display:flex; align-items:center; gap:12px; flex-wrap: wrap;">
-    <select id="formSelector" class="text-input" style="max-width: 220px; font-weight:600; font-size:14px;" onchange="switchForm(this.value)">
+    <select id="formSelector" class="form-selector" onchange="switchForm(this.value)">
       <option value="nanenane">Dodoso la Nanenane</option>
       <option value="wadau-malighafi">Dodoso la Wadau Malighafi</option>
     </select>
