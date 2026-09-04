@@ -884,3 +884,82 @@
     font-size: 17px;
   }
 }
+
+/* --- Full Page Background Image for Admin Dashboard --- */
+body.admin-background {
+  position: relative;
+  min-height: 100vh;
+  background-image: url('resources.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body.admin-background::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(255, 255, 255, 0.88) 50%,
+    rgba(255, 255, 255, 0.85) 100%
+  );
+  z-index: -1;
+}
+
+/* Ensure content sits above the background */
+.admin-shell,
+.topbar,
+#loginView,
+#dashboardView {
+  position: relative;
+  z-index: 1;
+}
+
+/* Make login card more transparent to show background */
+.login-card {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Make stat cards more transparent */
+.stat-card {
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Make tabs more transparent */
+.tab-btn {
+  background: rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Make table wrapper more transparent */
+.table-wrap {
+  background: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  body.admin-background {
+    background-attachment: scroll; /* Better performance on mobile */
+  }
+  
+  body.admin-background::before {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.90) 100%
+    );
+  }
+}
