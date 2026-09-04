@@ -582,6 +582,29 @@
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjZGR6bHVpandmZHl0ZnN1d3phIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU0Nzg1MzYsImV4cCI6MjEwMTA1NDUzNn0.4N0-49NXrwUdA9F1kpW_7OXemE1iiS5NrBcih8RbWps';
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 </script>
+
+<!-- Main Form Logic -->
 <script src="script.js"></script>
+
+<!-- OFFLINE STATUS BANNER (No Emojis) -->
+<div id="connectionStatus" style="position: fixed; top: 0; left: 0; width: 100%; background: #d97706; color: white; text-align: center; padding: 8px; font-size: 13px; font-weight: 700; z-index: 9999; display: none; letter-spacing: 0.5px;">
+  <span class="lang-sw">[HAKUNA MTANDAO] Data itahifadhiwa ndani na kutuma kiotomatiki mtandao ukirudi.</span>
+  <span class="lang-en">[OFFLINE MODE] Data will be saved locally and auto-synced when connection returns.</span>
+</div>
+
+<!-- SERVICE WORKER REGISTRATION -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(registration => {
+          console.log('Service Worker registered successfully:', registration.scope);
+        })
+        .catch(error => {
+          console.log('Service Worker registration failed:', error);
+        });
+    });
+  }
+</script>
 </body>
 </html>
