@@ -31,14 +31,14 @@
   }
 
   /* Layer 2: The White Tint Overlay (Makes text readable) */
-  body.admin-background::after {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(255, 255, 255, 0.75); /* 75% white tint */
-    z-index: -1; /* Sits on top of the image, but behind content */
-  }
+body.admin-background::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(255, 255, 255, 0.55); /* 55% opacity - more visible image */
+  z-index: -1;
+}
 
   /* Layer 3: Your Content */
   .admin-shell, .topbar, #loginView, #dashboardView {
