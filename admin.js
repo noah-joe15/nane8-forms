@@ -654,7 +654,7 @@ function drawSectionHeader(doc, y, number, title, subtitle) {
   return y + 24;
 }
 
-// --- Helper: Draw Recommendation Card ---
+// --- Helper: Draw Recommendation Card (FIXED & NO EMOJIS) ---
 function drawRecommendationCard(doc, x, y, w, idx, category, action, impact, timeline) {
   var impactColors = {
     'High': BRAND.red,
@@ -663,54 +663,71 @@ function drawRecommendationCard(doc, x, y, w, idx, category, action, impact, tim
   };
   var impactColor = impactColors[impact] || BRAND.gray;
   
-  var cardH = 32;
+  // Increased card height for better spacing
+  var cardH = 42;
+  
+  // Card background with subtle shadow effect
   doc.setFillColor(255, 255, 255);
-  doc.roundedRect(x, y, w, cardH, 2, 2, 'F');
+  doc.roundedRect(x, y, w, cardH, 3, 3, 'F');
   doc.setDrawColor(229, 231, 235);
-  doc.setLineWidth(0.3);
-  doc.roundedRect(x, y, w, cardH, 2, 2, 'S');
+  doc.setLineWidth(0.5);
+  doc.roundedRect(x, y, w, cardH, 3, 3, 'S');
   
-  // Left accent
+  // Left accent bar
   doc.setFillColor(BRAND.blue[0], BRAND.blue[1], BRAND.blue[2]);
-  doc.rect(x, y, 2, cardH, 'F');
+  doc.rect(x, y, 3, cardH, 'F');
   
-  // Number badge
+  // Number badge - properly positioned
   doc.setFillColor(BRAND.blue[0], BRAND.blue[1], BRAND.blue[2]);
-  doc.circle(x + 10, y + 10, 5, 'F');
+  doc.circle(x + 14, y + 12, 6, 'F');
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9);
-  doc.text(String(idx), x + 10, y + 12, { align: 'center' });
+  doc.setFontSize(10);
+  doc.text(String(idx), x + 14, y + 14, { align: 'center' });
   
-  // Category
+  // Category - moved right to avoid overlap
   doc.setTextColor(BRAND.blue[0], BRAND.blue[1], BRAND.blue[2]);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
-  doc.text(category.toUpperCase(), x + 18, y + 8);
+  doc.text(category.toUpperCase(), x + 26, y + 9);
   
-  // Action
-  doc.setTextColor(31, 41, 55);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  var actionLines = doc.splitTextToSize(action, w - 50);
-  doc.text(actionLines, x + 18, y + 14);
-  
-  // Impact badge
-  var badgeX = x + w - 40;
+  // Impact badge - properly positioned on the right
+  var badgeW = 24;
+  var badgeH = 9;
+  var badgeX = x + w - badgeW - 5;
   doc.setFillColor(impactColor[0], impactColor[1], impactColor[2]);
-  doc.roundedRect(badgeX, y + 5, 20, 8, 2, 2, 'F');
+  doc.roundedRect(badgeX, y + 5, badgeW, badgeH, 2, 2, 'F');
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(7);
-  doc.text(impact.toUpperCase(), badgeX + 10, y + 10, { align: 'center' });
+  doc.text(impact.toUpperCase(), badgeX + badgeW / 2, y + 11, { align: 'center' });
   
-  // Timeline
+  // Action text - with proper spacing and multi-line support
+  doc.setTextColor(31, 41, 55);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  var actionLines = doc.splitTextToSize(action, w - 70);
+  doc.text(actionLines, x + 26, y + 18);
+  
+  // Timeline - positioned at bottom with a clean VECTOR clock icon (NO EMOJIS)
   doc.setTextColor(BRAND.gray[0], BRAND.gray[1], BRAND.gray[2]);
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7);
-  doc.text('Timeline: ' + timeline, x + 18, y + cardH - 4);
+  doc.setFontSize(8);
   
-  return cardH + 4;
+  // Draw simple vector clock icon
+  var clockCx = x + 32;
+  var clockCy = y + cardH - 8;
+  var clockR = 3.5;
+  doc.setDrawColor(BRAND.gray[0], BRAND.gray[1], BRAND.gray[2]);
+  doc.setLineWidth(0.4);
+  doc.circle(clockCx, clockCy, clockR, 'S');       // Clock face
+  doc.line(clockCx, clockCy, clockCx, clockCy - 1.8); // Hour hand (pointing up)
+  doc.line(clockCx, clockCy, clockCx + 1.8, clockCy); // Minute hand (pointing right)
+  
+  // Timeline text
+  doc.text('Timeline: ' + timeline, x + 40, y + cardH - 6);
+  
+  return cardH + 5;
 }
 
 // --- Smart Recommendations Engine ---
