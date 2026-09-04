@@ -1,5 +1,5 @@
 // ============================================================
-// Unified Survey Logic (Nanenane & Wadau Malighafi)
+// Unified Survey Logic (Nanenane & Wadau Malighafi) + OFFLINE SUPPORT
 // Pure vanilla JS. Dynamically adapts to the active form.
 // ============================================================
 (function () {
@@ -58,7 +58,7 @@
     { titleSw: "Sehemu F & G", titleEn: "Section F & G", step: 6, fields: ["changamoto_kukuza_biashara[]", "aina_msaada_unaohitaji[]", "mapendekezo"] }
   ];
 
-  // ---------- LANGUAGE FUNCTION - EXPOSED TO WINDOW ----------
+  // ---------- LANGUAGE FUNCTION ----------
   window.setLang = function (l) {
     lang = l;
     document.body.classList.remove("lang-sw", "lang-en");
@@ -276,6 +276,90 @@
     });
   }
 
+  // ============================================================
+  // OFFLINE SUPPORT & AUTO-SYNC FUNCTIONS
+  // ============================================================
+  function getFormType() {
+    return formId;
+  }
+
+  function saveOfflineSubmission(payload) {
+    try {
+      var submissions = JSON.parse(localStorage.getItem("tantrade_offline_subs") || "[]");
+      submissions.push({
+        id: "offline_" + Date.now(),
+        formType: getFormType(),
+        payload: payload,
+        timestamp: new Date().toISOString(),
+        synced: false
+      });
+      localStorage.setItem("tantrade_offline_subs", JSON.stringify(submissions));
+      return true;
+    } catch (err) {
+      console.error("Failed to save offline:", err);
+      return false;
+    }
+  }
+
+  async function syncPendingData() {
+    if (typeof supabaseClient === "undefined") return;
+    
+    var submissions = JSON.parse(localStorage.getItem("tantrade_offline_subs") || "[]");
+    var unsynced = submissions.filter(function (sub) { return !sub.synced; });
+    
+    if (unsynced.length === 0) return;
+
+    console.log("[SYNC] Found " + unsynced.length + " pending submissions. Syncing...");
+    
+    for (var i = 0; i < unsynced.length; i++) {
+      var sub = unsynced[i];
+      try {
+        var tableName = sub.formType === "wadau-malighafi" ? "wadau_malighafi_responses" : "nanenane_responses";
+        var result = await supabaseClient.from(tableName).insert([{ form_data: sub.payload }]);
+        
+        if (!result.error) {
+          sub.synced = true;
+          console.log("[SYNC] Successfully synced:", sub.id);
+        } else {
+          console.error("[SYNC] Failed to sync:", sub.id, result.error);
+        }
+      } catch (err) {
+        console.error("[SYNC] Network error for:", sub.id, err);
+      }
+    }
+
+    var remaining = submissions.filter(function (sub) { return !sub.synced; });
+    localStorage.setItem("tantrade_offline_subs", JSON.stringify(remaining));
+    
+    if (remaining.length === 0) {
+      console.log("[SYNC] All pending data synced successfully!");
+    }
+  }
+
+  // Auto-sync whenever the browser detects an internet connection
+  window.addEventListener("online", function () {
+    console.log("[NETWORK] Connection restored. Triggering auto-sync...");
+    syncPendingData();
+    updateConnectionStatus();
+  });
+
+  window.addEventListener("offline", function () {
+    console.log("[NETWORK] Connection lost. Switching to offline mode.");
+    updateConnectionStatus();
+  });
+
+  function updateConnectionStatus() {
+    var statusEl = document.getElementById("connectionStatus");
+    if (!statusEl) return;
+    
+    if (!navigator.onLine) {
+      statusEl.style.display = "flex";
+    } else {
+      statusEl.style.display = "none";
+      syncPendingData();
+    }
+  }
+
   // ---------- FORM SUBMISSION ----------
   if (form) {
     form.addEventListener("submit", async function (e) {
@@ -312,16 +396,42 @@
       payload.submitted_at = new Date().toISOString();
       payload.form_type = formId;
 
-      try {
-        if (typeof supabaseClient === 'undefined') {
-          throw new Error("Supabase client not initialized. Check HTML file.");
+      // CHECK FOR OFFLINE MODE
+      if (!navigator.onLine) {
+        console.log("[OFFLINE] No internet connection. Saving locally...");
+        if (saveOfflineSubmission(payload)) {
+          var stepNav = document.getElementById("stepNav");
+          if (stepNav) stepNav.style.display = "none";
+          formSteps.forEach(function (s) { s.classList.remove("active"); });
+          var successStep = document.getElementById("successStep");
+          if (successStep) {
+            successStep.classList.add("active");
+            var notice = document.createElement("p");
+            notice.style.color = "#d97706";
+            notice.style.marginTop = "10px";
+            notice.style.fontSize = "14px";
+            notice.style.fontWeight = "600";
+            notice.innerHTML = lang === "sw" 
+              ? "[HAKUNA MTANDAO] Data imehifadhiwa kwenye kifaa hiki. Itatuma kiotomatiki mtandao ukirudi." 
+              : "[OFFLINE MODE] Data saved locally. It will auto-sync when internet returns.";
+            successStep.querySelector("p").appendChild(notice);
+          }
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          alert(lang === "sw" ? "Imeshindikana kuhifadhi. Tafadhali jaribu tena." : "Failed to save locally. Please try again.");
         }
+        
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalBtnText;
+        }
+        return;
+      }
 
+      // ONLINE MODE: Proceed with normal Supabase submission
+      try {
         var tableName = formId === "wadau-malighafi" ? "wadau_malighafi_responses" : "nanenane_responses";
-
-        const { error } = await supabaseClient
-          .from(tableName)
-          .insert([{ form_data: payload }]);
+        const { error } = await supabaseClient.from(tableName).insert([{ form_data: payload }]);
 
         if (error) throw error;
 
@@ -333,6 +443,8 @@
         var progressWrap = document.querySelector(".progress-wrap");
         if (progressWrap) progressWrap.style.display = "none";
         window.scrollTo({ top: 0, behavior: "smooth" });
+
+        syncPendingData();
 
       } catch (err) {
         console.error("Submission error:", err);
@@ -388,4 +500,7 @@
   if (typeof window.setLang === 'function') {
     window.setLang("sw");
   }
+  
+  // Check connection status on load
+  updateConnectionStatus();
 })();
