@@ -212,6 +212,10 @@
         <div style="display:flex; gap:10px;">
           <button class="btn btn-ghost btn-sm" onclick="loadSubmissions()"><span class="lang-sw">Onyesha Upya</span><span class="lang-en">Refresh</span></button>
           <button class="btn btn-gold btn-sm" onclick="exportCsv()"><span class="lang-sw">Pakua CSV</span><span class="lang-en">Export CSV</span></button>
+          <button class="btn btn-primary btn-sm" onclick="generateWadauMalighafiReport()" id="generateReportBtn" style="display:none;">
+            <span class="lang-sw">Tengeneza Ripoti (PDF)</span>
+            <span class="lang-en">Generate Report (PDF)</span>
+          </button>
         </div>
       </div>
       <div id="tableHolder"><div class="state-msg"><span class="lang-sw">Inapakia majibu…</span><span class="lang-en">Loading responses…</span></div></div>
@@ -296,9 +300,18 @@
   </div>
 </div>
 
+<!-- Chart.js and HTML2Canvas -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- jsPDF and jsPDF-AutoTable for PDF Generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Main Admin Logic -->
 <script src="admin.js"></script>
 </body>
 </html>
