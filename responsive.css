@@ -963,3 +963,11 @@ body.admin-background::before {
     );
   }
 }
+
+body.admin-background {
+  background-color: #ff0000 !important; /* Red background to test */
+  background-image: url('resources.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
