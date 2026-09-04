@@ -1,0 +1,227 @@
+/* ============================================================
+   TANTRADE RESPONSIVE STYLESHEET
+   Handles all device-specific layouts and media queries.
+   ============================================================ */
+
+/* --- 1. Large Desktops & Wide Screens (1200px and below) --- */
+@media (max-width: 1200px) {
+  .admin-shell {
+    max-width: 100%;
+    padding: 20px 16px 60px;
+  }
+  
+  .stats-dashboard {
+    gap: 12px;
+  }
+}
+
+/* --- 2. Laptops & Small Desktops (992px and below) --- */
+@media (max-width: 992px) {
+  .topbar {
+    padding: 12px 16px;
+  }
+
+  .stats-dashboard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .q-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* --- 3. Tablets, iPads & Large Phones (768px and below) --- */
+@media (max-width: 768px) {
+  /* Topbar Adjustments */
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .topbar > div:last-child {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .form-selector {
+    max-width: 100%;
+    flex: 1;
+  }
+
+  /* Stats Dashboard */
+  .stats-dashboard {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .stat-value {
+    font-size: 28px;
+  }
+
+  /* Tabs */
+  .tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tab-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+
+  /* Toolbar & Search */
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .search-input {
+    max-width: 100%;
+  }
+
+  .toolbar > div:last-child {
+    justify-content: space-between;
+  }
+
+  /* Question Editor */
+  .q-row, .q-row-2 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Survey Form Adjustments */
+  .step {
+    padding: 16px;
+  }
+
+  .review-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .review-row .rq {
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .review-row .ra {
+    font-size: 14px;
+    font-weight: 600;
+  }
+}
+
+/* --- 4. Small Phones (576px and below) --- */
+@media (max-width: 576px) {
+  /* Base Layout */
+  .admin-shell {
+    padding: 12px 10px 60px;
+  }
+
+  /* Stats Dashboard */
+  .stats-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    padding: 16px 12px;
+  }
+
+  .stat-value {
+    font-size: 26px;
+  }
+
+  /* Toolbar Buttons */
+  .toolbar > div:last-child {
+    flex-direction: column;
+  }
+
+  .toolbar .btn-sm {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Tables */
+  .table-wrap {
+    border-radius: 8px;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  thead th, tbody td {
+    padding: 10px 8px;
+  }
+
+  /* Question Cards */
+  .q-card {
+    flex-direction: column;
+  }
+
+  .q-card-actions {
+    flex-direction: row;
+    border-left: none;
+    border-top: 1px solid var(--line);
+    justify-content: flex-end;
+    padding: 10px 12px;
+  }
+
+  /* Survey Form Buttons */
+  .btn-group {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn-group .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Progress Bar Text */
+  .progress-text {
+    font-size: 12px;
+  }
+}
+
+/* --- 5. Very Small Phones & Foldables (380px and below) --- */
+@media (max-width: 380px) {
+  .stat-value {
+    font-size: 22px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+  }
+
+  .topbar .brand-text {
+    font-size: 14px;
+  }
+
+  .tab-btn {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}
+
+/* --- 6. Landscape Mode for Phones (Height < 500px) --- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .login-card {
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  .stats-dashboard {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .stat-card {
+    padding: 12px 8px;
+  }
+}
