@@ -25,9 +25,9 @@
   <div class="progress-wrap">
     <div class="progress-meta">
       <span class="step-label" id="stepLabel">—</span>
-      <span class="step-count"><span class="lang-sw">Hatua</span><span class="lang-en">Step</span> <span id="stepNow">1</span> / <span id="stepTotal">10</span></span>
+      <span class="step-count"><span class="lang-sw">Hatua</span><span class="lang-en">Step</span> <span id="stepNow">1</span> / <span id="stepTotal">9</span></span>
     </div>
-    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:10%"></div></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:11.1%"></div></div>
     <div class="progress-dots" id="progressDots"></div>
   </div>
 
@@ -40,7 +40,7 @@
   <form id="surveyForm" data-form-id="wadau-malighafi" class="survey-form" novalidate>
     <input type="hidden" name="bot-field" value="">
 
-    <!-- STEP 0: UTANGULIZI & RIDHAA (Sehemu A & B) -->
+    <!-- STEP 0: UTANGULIZI & RIDHAA (Sehemu A) -->
     <div class="step active" data-step="0">
       <div class="hero">
         <span class="hero-eyebrow"><span class="lang-sw">Utangulizi wa Tathmini</span><span class="lang-en">Assessment Introduction</span></span>
@@ -51,27 +51,8 @@
         </p>
       </div>
       <div class="card">
-        <span class="section-eyebrow"><span class="lang-sw">Sehemu A & B: Utawala na Ridhaa</span><span class="lang-en">Section A & B: Admin & Consent</span></span>
+        <span class="section-eyebrow"><span class="lang-sw">Sehemu A: Utawala</span><span class="lang-en">Section A: Admin</span></span>
         
-        <div class="field" data-field="consent_b1">
-          <label class="field-label"><span class="lang-sw">B1. Je, unakubali kushiriki kwa hiari, na majibu yako kutumika kwa usiri?</span><span class="lang-en">B1. Do you consent to participate voluntarily and for your answers to be kept confidential?</span><span class="req">*</span></label>
-          <div class="options grid-2">
-            <label class="option"><input type="radio" name="consent_b1" value="Ndiyo" required><span class="option-box"><span class="lang-sw">Ndiyo</span><span class="lang-en">Yes</span></span></label>
-            <label class="option"><input type="radio" name="consent_b1" value="Hapana"><span class="option-box"><span class="lang-sw">Hapana</span><span class="lang-en">No</span></span></label>
-          </div>
-          <p class="error-msg lang-sw">Ridhaa inahitajika kuendelea.</p>
-          <p class="error-msg lang-en">Consent is required to proceed.</p>
-        </div>
-
-        <div class="field" data-field="consent_b2">
-          <label class="field-label"><span class="lang-sw">B2. Je, unaruhusu mahojiano kurekodiwa kwa sauti kwa usahihi?</span><span class="lang-en">B2. Do you allow the interview to be audio-recorded for accuracy?</span></label>
-          <div class="options grid-2">
-            <label class="option"><input type="radio" name="consent_b2" value="Ndiyo"><span class="option-box"><span class="lang-sw">Ndiyo</span><span class="lang-en">Yes</span></span></label>
-            <label class="option"><input type="radio" name="consent_b2" value="Hapana"><span class="option-box"><span class="lang-sw">Hapana</span><span class="lang-en">No</span></span></label>
-            <label class="option"><input type="radio" name="consent_b2" value="Haihusiki"><span class="option-box"><span class="lang-sw">Haihusiki</span><span class="lang-en">Not applicable</span></span></label>
-          </div>
-        </div>
-
         <div class="field" data-field="mkoa">
           <label class="field-label" for="mkoa"><span class="lang-sw">Mkoa</span><span class="lang-en">Region</span><span class="req">*</span></label>
           <input class="text-input" type="text" id="mkoa" name="mkoa" required>
@@ -107,6 +88,10 @@
             <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Mahindi"><span class="option-box">Mahindi / Maize</span></label>
             <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Pamba"><span class="option-box">Pamba / Cotton</span></label>
             <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Parachichi"><span class="option-box">Parachichi / Avocado</span></label>
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Nanasi"><span class="option-box">Nanasi / Pineapple</span></label>
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Muhogo"><span class="option-box">Muhogo / Cassava</span></label>
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Ufuta"><span class="option-box">Ufuta / Sesame</span></label>
+            <label class="option checkbox"><input type="checkbox" name="bidhaa[]" value="Mboga mboga na matunda"><span class="option-box">Mboga mboga na matunda / Vegetables and Fruits</span></label>
           </div>
           <input class="text-input other-field" type="text" name="bidhaa_other" data-other-for="bidhaa[]" data-other-value="Nyingine" hidden placeholder="Nyingine, taja / Other, specify">
         </div>
