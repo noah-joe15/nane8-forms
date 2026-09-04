@@ -19,6 +19,15 @@
     margin: 0;
   }
 
+  /* --- Make Topbar Transparent/Glassmorphism --- */
+  .topbar {
+    background: rgba(6, 60, 44, 0.65) !important; /* Dark green with 65% opacity */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
   /* Layer 1: The Background Image */
   body.admin-background::before {
     content: '';
