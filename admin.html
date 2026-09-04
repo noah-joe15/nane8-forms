@@ -367,5 +367,25 @@ body.admin-background::after {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="admin.js"></script>
+  <!-- Image Loading Optimizer -->
+<script src="image-optimizer.js"></script>
+
+<!-- Preload critical images -->
+<link rel="preload" as="image" href="resources.png">
+<link rel="preload" as="image" href="logo.png">
+
+<!-- Add loading="lazy" to non-critical images -->
+<script>
+  // Add lazy loading to chart canvases and other images
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add loading attribute to images below fold
+    const imagesBelowFold = document.querySelectorAll('img:not([src="resources.png"]):not([src="logo.png"])');
+    imagesBelowFold.forEach(img => {
+      if (!img.hasAttribute('loading')) {
+        img.setAttribute('loading', 'lazy');
+      }
+    });
+  });
+</script>
 </body>
 </html>
