@@ -283,9 +283,20 @@
     return formId;
   }
 
-  function saveOfflineSubmission(payload) {
+    function saveOfflineSubmission(payload) {
     try {
       var submissions = JSON.parse(localStorage.getItem("tantrade_offline_subs") || "[]");
+      
+      // PREVENT DUPLICATES: Check if this exact payload already exists
+      var isDuplicate = submissions.some(function(sub) {
+        return JSON.stringify(sub.payload) === JSON.stringify(payload);
+      });
+
+      if (isDuplicate) {
+        console.warn("[OFFLINE] Duplicate submission blocked.");
+        return false; // Return false to trigger the "already submitted" alert
+      }
+
       submissions.push({
         id: "offline_" + Date.now(),
         formType: getFormType(),
@@ -294,6 +305,7 @@
         synced: false
       });
       localStorage.setItem("tantrade_offline_subs", JSON.stringify(submissions));
+      console.log("[OFFLINE] Saved submission to local queue.");
       return true;
     } catch (err) {
       console.error("Failed to save offline:", err);
@@ -396,7 +408,7 @@
       payload.submitted_at = new Date().toISOString();
       payload.form_type = formId;
 
-      // CHECK FOR OFFLINE MODE
+                // CHECK FOR OFFLINE MODE
       if (!navigator.onLine) {
         console.log("[OFFLINE] No internet connection. Saving locally...");
         if (saveOfflineSubmission(payload)) {
@@ -418,8 +430,18 @@
           }
           window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
-          alert(lang === "sw" ? "Imeshindikana kuhifadhi. Tafadhali jaribu tena." : "Failed to save locally. Please try again.");
+          // NEW DUPLICATE BLOCKED MESSAGE
+          alert(lang === "sw" 
+            ? "Tayari umepeleka dodoso hili! (Duplicate blocked)" 
+            : "You have already submitted this form! (Duplicate blocked)");
         }
+        
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalBtnText;
+        }
+        return;
+      }
         
         if (submitBtn) {
           submitBtn.disabled = false;
