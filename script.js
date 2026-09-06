@@ -283,7 +283,7 @@
     return formId;
   }
 
-    function saveOfflineSubmission(payload) {
+  function saveOfflineSubmission(payload) {
     try {
       var submissions = JSON.parse(localStorage.getItem("tantrade_offline_subs") || "[]");
       
@@ -294,7 +294,7 @@
 
       if (isDuplicate) {
         console.warn("[OFFLINE] Duplicate submission blocked.");
-        return false; // Return false to trigger the "already submitted" alert
+        return false; 
       }
 
       submissions.push({
@@ -348,7 +348,6 @@
     }
   }
 
-  // Auto-sync whenever the browser detects an internet connection
   window.addEventListener("online", function () {
     console.log("[NETWORK] Connection restored. Triggering auto-sync...");
     syncPendingData();
@@ -408,7 +407,7 @@
       payload.submitted_at = new Date().toISOString();
       payload.form_type = formId;
 
-                // CHECK FOR OFFLINE MODE
+      // CHECK FOR OFFLINE MODE
       if (!navigator.onLine) {
         console.log("[OFFLINE] No internet connection. Saving locally...");
         if (saveOfflineSubmission(payload)) {
@@ -430,7 +429,6 @@
           }
           window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
-          // NEW DUPLICATE BLOCKED MESSAGE
           alert(lang === "sw" 
             ? "Tayari umepeleka dodoso hili! (Duplicate blocked)" 
             : "You have already submitted this form! (Duplicate blocked)");
@@ -440,14 +438,7 @@
           submitBtn.disabled = false;
           submitBtn.textContent = originalBtnText;
         }
-        return;
-      }
-        
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalBtnText;
-        }
-        return;
+        return; // Exits the function here if offline
       }
 
       // ONLINE MODE: Proceed with normal Supabase submission
@@ -523,6 +514,5 @@
     window.setLang("sw");
   }
   
-  // Check connection status on load
   updateConnectionStatus();
 })();
