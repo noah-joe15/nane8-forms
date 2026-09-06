@@ -419,3 +419,9 @@ img, svg {
   background: rgba(11, 110, 79, 0.3);
   color: var(--green-900);
 }
+
+.hero-banner-img {
+  /* Add a solid background color that matches the image's dominant color */
+  background-color: #2d5a4c; 
+  min-height: 200px; /* Reserves space so layout doesn't jump */
+}
