@@ -424,10 +424,22 @@
     updateCharts();
   }
 
-  function updateCharts() {
+ function updateCharts() {
     var regions = {}, sectors = {}, gender = {}, business = {};
+    
+    // Helper function to normalize text to Title Case
+    function normalizeText(text) {
+      if (!text) return '';
+      return text.trim().charAt(0).toUpperCase() + text.trim().slice(1).toLowerCase();
+    }
+    
     allSubmissions.forEach(function (sub) {
-      if (sub.mkoa) regions[sub.mkoa] = (regions[sub.mkoa] || 0) + 1;
+      // NORMALIZE region to Title Case before counting
+      if (sub.mkoa) {
+        var normalizedRegion = normalizeText(sub.mkoa);
+        regions[normalizedRegion] = (regions[normalizedRegion] || 0) + 1;
+      }
+      
       var sectorVal = sub.sekta || (Array.isArray(sub['bidhaa[]']) ? sub['bidhaa[]'].join(', ') : sub['bidhaa[]']);
       if (sectorVal) sectors[sectorVal] = (sectors[sectorVal] || 0) + 1;
       
@@ -454,7 +466,7 @@
     businessChart.data.datasets[0].data = Object.values(business);
     businessChart.data.datasets[0].backgroundColor = getChartColors(Object.keys(business).length);
     businessChart.update();
-  }
+}
 
   function renderPercentageBreakdowns(submissions) {
     var total = submissions.length;
