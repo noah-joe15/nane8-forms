@@ -555,32 +555,81 @@
   }
 
   window.exportDashboardImage = async function () {
-    var exportBtn = document.getElementById('exportBtn');
-    var originalText = exportBtn.innerHTML;
-    exportBtn.innerHTML = '<span class="lang-sw">Inapakua...</span><span class="lang-en">Generating...</span>';
-    exportBtn.disabled = true;
-    try {
-      var exportHeader = document.getElementById('exportHeader');
-      document.getElementById('exportDate').textContent = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
-      exportHeader.style.display = 'block';
-      await new Promise(function (resolve) { setTimeout(resolve, 300); });
-      var canvas = await html2canvas(document.getElementById('dashboardExportArea'), { scale: 2, backgroundColor: '#ffffff', logging: false, useCORS: true });
-      exportHeader.style.display = 'none';
-      canvas.toBlob(function (blob) {
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = 'TanTrade_Dashboard_' + activeForm + '_' + new Date().toISOString().split('T')[0] + '.png';
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 'image/png', 0.95);
-    } catch (error) {
-      alert('Export failed. Please try again.');
-    } finally {
-      exportBtn.innerHTML = originalText;
-      exportBtn.disabled = false;
+  var exportBtn = document.getElementById('exportBtn');
+  if (!exportBtn) return;
+  
+  var originalText = exportBtn.innerHTML;
+  exportBtn.innerHTML = '<span class="lang-sw">Inapakua...</span><span class="lang-en">Generating...</span>';
+  exportBtn.disabled = true;
+
+  try {
+    // 1. Check if html2canvas is actually loaded
+    if (typeof html2canvas === 'undefined') {
+      throw new Error("html2canvas library is not loaded. Please refresh the page.");
     }
-  };
+
+    var exportArea = document.getElementById('dashboardExportArea');
+    var exportHeader = document.getElementById('exportHeader');
+    var exportDate = document.getElementById('exportDate');
+
+    if (!exportArea) throw new Error("Could not find the dashboard area to export.");
+    
+    // 2. Safely show the header and date
+    if (exportHeader && exportDate) {
+      exportDate.textContent = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+      exportHeader.style.display = 'block';
+    }
+
+    // 3. Wait a moment for the header to render in the DOM
+    await new Promise(function (resolve) { setTimeout(resolve, 500); });
+
+    console.log("Starting image capture...");
+    
+    // 4. Capture the dashboard
+    var canvas = await html2canvas(exportArea, { 
+      scale: 2, 
+      backgroundColor: '#ffffff', 
+      logging: false, 
+      useCORS: true,
+      allowTaint: true
+    });
+    
+    console.log("Image captured successfully!");
+
+    // 5. Hide the header again
+    if (exportHeader) {
+      exportHeader.style.display = 'none';
+    }
+
+    // 6. Trigger the download
+    canvas.toBlob(function (blob) {
+      if (!blob) {
+        throw new Error("Failed to convert image to file.");
+      }
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'TanTrade_Dashboard_' + activeForm + '_' + new Date().toISOString().split('T')[0] + '.png';
+      document.body.appendChild(a); 
+      a.click(); 
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      console.log("Download triggered successfully.");
+    }, 'image/png', 1.0);
+
+  } catch (error) {
+    console.error("Export failed:", error);
+    alert("Imeshindikana kupakua: " + error.message);
+    
+    // Ensure header is hidden on error
+    var exportHeader = document.getElementById('exportHeader');
+    if (exportHeader) exportHeader.style.display = 'none';
+  } finally {
+    // 7. Always re-enable the button, even if it fails
+    exportBtn.innerHTML = originalText;
+    exportBtn.disabled = false;
+  }
+};
 
 // =====================================================
 // 9. MODERN PDF REPORT GENERATION (WADAU MALIGHAFI)
