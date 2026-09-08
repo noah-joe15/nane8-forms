@@ -472,24 +472,33 @@
     var total = submissions.length;
     if (total === 0) return;
     
+     function renderPercentageBreakdowns(submissions) {
+    var total = submissions.length;
+    if (total === 0) return;
+    
     function buildBreakdown(data, field, limit) {
       var counts = {};
       data.forEach(function (s) { 
         var v = s[field]; 
         if (Array.isArray(v)) v = v.join(', ');
-        v = v || 'Haijatajwa'; 
         
-        // NORMALIZE TO TITLE CASE 
+        // SKIP empty, null, or undefined values 
+        if (!v || v.trim() === '') return;
+        
+        // Normalize to Title Case 
         v = v.trim().charAt(0).toUpperCase() + v.trim().slice(1).toLowerCase();
         
         counts[v] = (counts[v] || 0) + 1; 
       });
+      
       var entries = Object.entries(counts).sort(function (a, b) { return b[1] - a[1]; });
       if (limit) entries = entries.slice(0, limit);
+      
       return entries.map(function (en) {
         var label = en[0], count = en[1];
         var pct = ((count / total) * 100).toFixed(1);
         var barColor = parseFloat(pct) > 50 ? 'var(--green-700)' : parseFloat(pct) > 20 ? 'var(--gold-500)' : 'var(--danger)';
+        
         return '<div style="margin-bottom:10px;">' +
           '<div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">' +
           '<span style="font-weight:600;">' + label + '</span>' +
@@ -504,7 +513,6 @@
     document.getElementById('regionsBreakdown').innerHTML = buildBreakdown(submissions, 'mkoa', 5);
     document.getElementById('sectorsBreakdown').innerHTML = buildBreakdown(submissions, activeForm === 'nanenane' ? 'sekta' : 'bidhaa[]', 5);
   }
-
   window.exportDashboardImage = async function () {
     var exportBtn = document.getElementById('exportBtn');
     var originalText = exportBtn.innerHTML;
