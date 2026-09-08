@@ -508,7 +508,7 @@
       }).join('');
     }
     
-    document.getElementById('genderBreakdown').innerHTML = buildBreakdown(submissions, 'jinsia');
+     document.getElementById('genderBreakdown').innerHTML = buildBreakdown(submissions, 'jinsia');
     document.getElementById('businessBreakdown').innerHTML = buildBreakdown(submissions, 'hali_biashara');
     document.getElementById('regionsBreakdown').innerHTML = buildBreakdown(submissions, 'mkoa', 5);
     document.getElementById('sectorsBreakdown').innerHTML = buildBreakdown(submissions, activeForm === 'nanenane' ? 'sekta' : 'bidhaa[]', 5);
