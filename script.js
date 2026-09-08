@@ -506,6 +506,70 @@
     }
   };
 
+  // ============================================================
+  // CASCADING DISTRICT DROPDOWN LOGIC
+  // ============================================================
+  const districtsByRegion = {
+    "Arusha": ["Arusha City", "Arusha", "Karatu", "Longido", "Monduli", "Ngorongoro", "Simanjiro"],
+    "Dar es Salaam": ["Ilala", "Kinondoni", "Kigamboni", "Temeke", "Ubungo"],
+    "Dodoma": ["Bahi", "Chamwino", "Chemba", "Dodoma City", "Kondoa", "Kongwa", "Mpwapwa"],
+    "Geita": ["Bukombe", "Chato", "Geita Town", "Mbogwe", "Nyang'hwale"],
+    "Iringa": ["Iringa City", "Iringa", "Kilolo", "Mafinga", "Mufindi"],
+    "Kagera": ["Biharamulo", "Bukoba City", "Bukoba", "Karagwe", "Kyerwa", "Missenyi", "Muleba", "Ngara"],
+    "Katavi": ["Mpanda Town", "Mpanda", "Mlele"],
+    "Kigoma": ["Buhigwe", "Kasulu Town", "Kasulu", "Kibondo", "Kigoma Town", "Kigoma", "Uvinza"],
+    "Kilimanjaro": ["Hai", "Moshi City", "Moshi", "Mwanga", "Rombo", "Same", "Siha"],
+    "Lindi": ["Kilwa", "Liwale", "Lindi City", "Lindi", "Nachingwea", "Ruangwa"],
+    "Manyara": ["Babati Town", "Babati", "Hanang", "Kiteto", "Mbulu"],
+    "Mara": ["Bunda", "Butiama", "Musoma City", "Musoma", "Rorya", "Serengeti", "Tarime"],
+    "Mbeya": ["Chunya", "Ileje", "Kyela", "Mbarali", "Mbeya City", "Mbeya", "Mbozi", "Rungwe"],
+    "Morogoro": ["Gairo", "Kilombero", "Kilosa", "Morogoro City", "Morogoro", "Mvomero", "Ulanga"],
+    "Mtwara": ["Masasi Town", "Masasi", "Mtwara City", "Mtwara", "Nanyumbu", "Newala", "Tandahimba"],
+    "Mwanza": ["Ilemela", "Kwimba", "Magu", "Misungwi", "Nyamagana", "Sengerema", "Ukerewe"],
+    "Njombe": ["Ludewa", "Makambako Town", "Makete", "Njombe Town", "Njombe", "Wanging'ombe"],
+    "Pemba Kaskazini": ["Micheweni", "Wete"],
+    "Pemba Kusini": ["Chake Chake", "Mkoani"],
+    "Pwani": ["Bagamoyo", "Kibaha Town", "Kibaha", "Kisarawe", "Mafia", "Mkuranga", "Rufiji"],
+    "Rukwa": ["Kalambo", "Nkasi", "Sumbawanga Town", "Sumbawanga"],
+    "Ruvuma": ["Mbinga", "Songea Town", "Songea", "Tunduru"],
+    "Shinyanga": ["Kahama Town", "Kahama", "Kishapu", "Shinyanga Town", "Shinyanga"],
+    "Simiyu": ["Bariadi", "Busega", "Itilima", "Maswa", "Meatu"],
+    "Singida": ["Iramba", "Manyoni", "Singida City", "Singida"],
+    "Songwe": ["Ileje", "Mbozi", "Songwe"],
+    "Tabora": ["Igunga", "Nzega", "Sikonge", "Tabora City", "Tabora", "Urambo", "Uyui"],
+    "Tanga": ["Handeni", "Kilindi", "Korogwe Town", "Korogwe", "Lushoto", "Muheza", "Pangani", "Tanga City"],
+    "Unguja Kaskazini": ["Kaskazini 'A'", "Kaskazini 'B'"],
+    "Unguja Kusini": ["Kusini"],
+    "Unguja Mjini Magharibi": ["Mjini Magharibi"]
+  };
+
+  function populateDistricts() {
+    var regionSelect = document.getElementById("mkoa");
+    var districtSelect = document.getElementById("wilaya");
+    var selectedRegion = regionSelect.value;
+
+    // Clear existing options
+    districtSelect.innerHTML = '<option value="">Chagua Wilaya / Select District</option>';
+
+    if (selectedRegion && districtsByRegion[selectedRegion]) {
+      districtsByRegion[selectedRegion].forEach(function(district) {
+        var option = document.createElement("option");
+        option.value = district;
+        option.textContent = district;
+        districtSelect.appendChild(option);
+      });
+    }
+  }
+
+  // Attach event listener to the region dropdown
+  var mkoaSelect = document.getElementById("mkoa");
+  if (mkoaSelect) {
+    mkoaSelect.addEventListener("change", populateDistricts);
+  }
+
+  // ---------- INITIALIZATION ----------
+  // (Keep your existing buildDots(), setupOtherToggles(), etc. below this line)
+  
   // ---------- INITIALIZATION ----------
   buildDots();
   setupOtherToggles();
