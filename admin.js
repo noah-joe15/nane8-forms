@@ -471,12 +471,17 @@
   function renderPercentageBreakdowns(submissions) {
     var total = submissions.length;
     if (total === 0) return;
+    
     function buildBreakdown(data, field, limit) {
       var counts = {};
       data.forEach(function (s) { 
         var v = s[field]; 
         if (Array.isArray(v)) v = v.join(', ');
         v = v || 'Haijatajwa'; 
+        
+        // NORMALIZE TO TITLE CASE 
+        v = v.trim().charAt(0).toUpperCase() + v.trim().slice(1).toLowerCase();
+        
         counts[v] = (counts[v] || 0) + 1; 
       });
       var entries = Object.entries(counts).sort(function (a, b) { return b[1] - a[1]; });
@@ -493,6 +498,7 @@
           '<div style="background:' + barColor + '; height:100%; width:' + pct + '%; border-radius:3px;"></div></div></div>';
       }).join('');
     }
+    
     document.getElementById('genderBreakdown').innerHTML = buildBreakdown(submissions, 'jinsia');
     document.getElementById('businessBreakdown').innerHTML = buildBreakdown(submissions, 'hali_biashara');
     document.getElementById('regionsBreakdown').innerHTML = buildBreakdown(submissions, 'mkoa', 5);
