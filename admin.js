@@ -24,7 +24,8 @@
   var allSubmissions = [];
   var allQuestions = [];
   var chartsInitialized = false;
-  var regionsChart, sectorsChart, genderChart, businessChart;
+    var regionsChart, sectorsChart, genderChart, businessChart;
+  var processingChart, productionTrendChart, businessScaleChart; // NEW CHARTS
 
   var SVG_EDIT = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>';
   var SVG_TRASH = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
@@ -385,7 +386,11 @@
 
   // 8. KPI & CHARTS
   function kpiTabVisible() { var el = document.getElementById("kpiTab"); return !!el && el.style.display !== "none"; }
-  function resizeAllCharts() { [regionsChart, sectorsChart, genderChart, businessChart].forEach(function (c) { if (c) c.resize(); }); }
+   function resizeAllCharts() { 
+    [regionsChart, sectorsChart, genderChart, businessChart, processingChart, productionTrendChart, businessScaleChart].forEach(function (c) { 
+      if (c) c.resize(); 
+    }); 
+  }
 
   function renderKPICharts() {
     try {
@@ -414,18 +419,26 @@
     } catch (err) { console.error("[ERROR] renderKPICharts:", err); }
   }
 
-  function initCharts() {
+    function initCharts() {
     Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
     Chart.defaults.color = '#4B5B54';
+    
+    // Existing charts
     regionsChart = new Chart(document.getElementById('regionsChart').getContext('2d'), { type: 'pie', data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } } });
     sectorsChart = new Chart(document.getElementById('sectorsChart').getContext('2d'), { type: 'pie', data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } } });
     genderChart = new Chart(document.getElementById('genderChart').getContext('2d'), { type: 'bar', data: { labels: [], datasets: [{ label: '', data: [], backgroundColor: [] }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } } });
     businessChart = new Chart(document.getElementById('businessChart').getContext('2d'), { type: 'bar', data: { labels: [], datasets: [{ label: '', data: [], backgroundColor: [] }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } } });
+    
+    // NEW: Wadau Malighafi specific charts
+    processingChart = new Chart(document.getElementById('processingChart').getContext('2d'), { type: 'doughnut', data: { labels: [], datasets: [{ label: 'Processing Status', data: [], backgroundColor: [] }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } } });
+    productionTrendChart = new Chart(document.getElementById('productionTrendChart').getContext('2d'), { type: 'bar', data: { labels: [], datasets: [{ label: 'Production Trend', data: [], backgroundColor: [] }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } } });
+    businessScaleChart = new Chart(document.getElementById('businessScaleChart').getContext('2d'), { type: 'pie', data: { labels: [], datasets: [{ label: 'Business Scale', data: [], backgroundColor: [] }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } } });
+    
     updateCharts();
   }
-
-  function updateCharts() {
+    function updateCharts() {
     var regions = {}, sectors = {}, gender = {}, business = {};
+    var processing = {}, productionTrend = {}, businessScale = {}; // NEW
     
     // Helper function to normalize text to Title Case
     function normalizeText(text) {
@@ -445,8 +458,14 @@
       
       if (sub.jinsia) gender[sub.jinsia] = (gender[sub.jinsia] || 0) + 1;
       if (sub.hali_biashara) business[sub.hali_biashara] = (business[sub.hali_biashara] || 0) + 1;
+      
+      // NEW: Wadau Malighafi specific fields
+      if (sub.inachakata_bidhaa) processing[sub.inachakata_bidhaa] = (processing[sub.inachakata_bidhaa] || 0) + 1;
+      if (sub.mwelekeo_uzalishaji) productionTrend[sub.mwelekeo_uzalishaji] = (productionTrend[sub.mwelekeo_uzalishaji] || 0) + 1;
+      if (sub.kiwango_shughuli) businessScale[sub.kiwango_shughuli] = (businessScale[sub.kiwango_shughuli] || 0) + 1;
     });
     
+    // Update existing charts
     regionsChart.data.labels = Object.keys(regions);
     regionsChart.data.datasets[0].data = Object.values(regions);
     regionsChart.data.datasets[0].backgroundColor = getChartColors(Object.keys(regions).length);
@@ -466,6 +485,28 @@
     businessChart.data.datasets[0].data = Object.values(business);
     businessChart.data.datasets[0].backgroundColor = getChartColors(Object.keys(business).length);
     businessChart.update();
+    
+    // NEW: Update Wadau Malighafi charts
+    if (processingChart) {
+      processingChart.data.labels = Object.keys(processing);
+      processingChart.data.datasets[0].data = Object.values(processing);
+      processingChart.data.datasets[0].backgroundColor = getChartColors(Object.keys(processing).length);
+      processingChart.update();
+    }
+    
+    if (productionTrendChart) {
+      productionTrendChart.data.labels = Object.keys(productionTrend);
+      productionTrendChart.data.datasets[0].data = Object.values(productionTrend);
+      productionTrendChart.data.datasets[0].backgroundColor = getChartColors(Object.keys(productionTrend).length);
+      productionTrendChart.update();
+    }
+    
+    if (businessScaleChart) {
+      businessScaleChart.data.labels = Object.keys(businessScale);
+      businessScaleChart.data.datasets[0].data = Object.values(businessScale);
+      businessScaleChart.data.datasets[0].backgroundColor = getChartColors(Object.keys(businessScale).length);
+      businessScaleChart.update();
+    }
   }
 
   // FIXED: Only ONE renderPercentageBreakdowns function (duplicate removed)
