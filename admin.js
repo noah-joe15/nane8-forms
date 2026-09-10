@@ -173,6 +173,7 @@
       updateStats();
       renderTable();
       renderPercentageBreakdowns(allSubmissions);
+      renderProductKPIs();
       renderKPICharts();
     } catch (err) {
       holder.innerHTML = '<div class="state-msg" style="color:var(--danger)">Hitilafu: ' + err.message + '</div>';
@@ -278,6 +279,105 @@
     a.download = "majibu-" + activeForm + "-" + new Date().toISOString().split('T')[0] + ".csv"; 
     a.click();
   };
+
+    // ============================================================
+  // PRODUCT KPI AGGREGATION (Qty/Value/Unit per Product)
+  // ============================================================
+  function renderProductKPIs() {
+    if (activeForm !== 'wadau-malighafi') return;
+    
+    var container = document.getElementById('productKPIContainer');
+    if (!container) return;
+    
+    var products = {};
+    
+    // Aggregate data from all submissions
+    allSubmissions.forEach(function(sub) {
+      // Get selected products from bidhaa[]
+      var selectedProducts = sub['bidhaa[]'];
+      if (!selectedProducts) return;
+      
+      // Handle both array and string formats
+      var productsArray = Array.isArray(selectedProducts) ? selectedProducts : [selectedProducts];
+      
+      productsArray.forEach(function(product) {
+        if (!product) return;
+        
+        // Sanitize product name to match field names
+        var safeName = product.replace(/[^a-zA-Z0-9]/g, '_');
+        
+        // Initialize product if not exists
+        if (!products[product]) {
+          products[product] = {
+            totalQty: 0,
+            totalValue: 0,
+            unit: '',
+            count: 0
+          };
+        }
+        
+        // Extract dynamic fields
+        var qtyField = 'kiasi_' + safeName;
+        var unitField = 'kipimo_' + safeName;
+        var valueField = 'thamani_' + safeName;
+        
+        var qty = parseFloat(sub[qtyField]) || 0;
+        var value = parseFloat(sub[valueField]) || 0;
+        var unit = sub[unitField] || '';
+        
+        // Aggregate
+        products[product].totalQty += qty;
+        products[product].totalValue += value;
+        if (unit && !products[product].unit) {
+          products[product].unit = unit;
+        }
+        products[product].count += 1;
+      });
+    });
+    
+    // Sort by total value (descending)
+    var sortedProducts = Object.keys(products).sort(function(a, b) {
+      return products[b].totalValue - products[a].totalValue;
+    });
+    
+    // Render
+    if (sortedProducts.length === 0) {
+      container.innerHTML = '<div class="state-msg"><span class="lang-sw">Hakuna data ya uzalishaji bado.</span><span class="lang-en">No production data yet.</span></div>';
+      return;
+    }
+    
+    var html = '<div style="display: flex; flex-direction: column; gap: 12px;">';
+    
+    sortedProducts.forEach(function(product) {
+      var data = products[product];
+      var formattedValue = data.totalValue.toLocaleString('en-TZ');
+      var formattedQty = data.totalQty.toLocaleString('en-TZ');
+      
+      html += '<div style="background: rgba(255,255,255,0.6); backdrop-filter: blur(8px); border-radius: 8px; padding: 16px; border-left: 4px solid var(--green-700);">' +
+        '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">' +
+          '<h4 style="margin: 0; font-size: 15px; color: var(--green-900);">' + product + '</h4>' +
+          '<span style="font-size: 12px; color: var(--ink-soft);">' + data.count + ' <span class="lang-sw">majibu</span><span class="lang-en">responses</span></span>' +
+        '</div>' +
+        '<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; font-size: 13px;">' +
+          '<div>' +
+            '<div style="color: var(--ink-soft); font-size: 11px;"><span class="lang-sw">Jumla Kiasi</span><span class="lang-en">Total Qty</span></div>' +
+            '<div style="font-weight: 700; color: var(--green-700);">' + formattedQty + ' ' + (data.unit || '') + '</div>' +
+          '</div>' +
+          '<div>' +
+            '<div style="color: var(--ink-soft); font-size: 11px;"><span class="lang-sw">Jumla Thamani</span><span class="lang-en">Total Value</span></div>' +
+            '<div style="font-weight: 700; color: var(--gold-700);">TSh ' + formattedValue + '</div>' +
+          '</div>' +
+          '<div>' +
+            '<div style="color: var(--ink-soft); font-size: 11px;"><span class="lang-sw">Wastani</span><span class="lang-en">Average</span></div>' +
+            '<div style="font-weight: 600;">' + (data.count > 0 ? (data.totalValue / data.count).toLocaleString('en-TZ', {maximumFractionDigits: 0}) : 0) + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+  }
 
   // 7. QUESTIONS MANAGEMENT
   window.loadQuestions = async function () {
