@@ -11,7 +11,12 @@
   * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
   button, a, input, select, textarea { touch-action: manipulation; }
 
-  /* --- BULLETPROOF FULL PAGE BACKGROUND --- */
+  /* AI Loading Animation */
+  @keyframes spin { 
+    100% { transform: rotate(360deg); } 
+  }
+
+  /* --- FULL PAGE BACKGROUND --- */
   body.admin-background {
     position: relative;
     min-height: 100vh;
@@ -279,6 +284,13 @@
         <span class="stat-pill" id="countPill">0 <span class="lang-sw">majibu</span><span class="lang-en">responses</span></span>
         <input class="text-input search-input" id="searchInput" type="search" placeholder="Tafuta / Search..." oninput="renderTable()">
         <div style="display:flex; gap:10px;">
+          <button class="btn btn-primary btn-sm" id="summarizeBtn" onclick="summarizeFeedbackWithAI()">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:6px;">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>
+  <span class="lang-sw">Fupisha Maoni (AI)</span>
+  <span class="lang-en">Summarize Feedback (AI)</span>
+</button>
           <button class="btn btn-ghost btn-sm" onclick="loadSubmissions()"><span class="lang-sw">Onyesha Upya</span><span class="lang-en">Refresh</span></button>
           <button class="btn btn-gold btn-sm" onclick="exportCsv()"><span class="lang-sw">Pakua CSV</span><span class="lang-en">Export CSV</span></button>
           <button class="btn btn-primary btn-sm" onclick="generateWadauMalighafiReport()" id="generateReportBtn" style="display:none;">
