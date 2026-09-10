@@ -441,7 +441,7 @@
         return; // Exits the function here if offline
       }
 
-      // ONLINE MODE: Proceed with normal Supabase submission
+          // ONLINE MODE: Proceed with normal Supabase submission
       try {
         var tableName = formId === "wadau-malighafi" ? "wadau_malighafi_responses" : "nanenane_responses";
         const { error } = await supabaseClient.from(tableName).insert([{ form_data: payload }]);
@@ -457,6 +457,8 @@
         if (progressWrap) progressWrap.style.display = "none";
         window.scrollTo({ top: 0, behavior: "smooth" });
 
+        // Clear the draft and sync any pending offline data
+        clearDraft();
         syncPendingData();
 
       } catch (err) {
@@ -471,7 +473,6 @@
       }
     });
   }
-
   // ---------- RESET FUNCTION ----------
   window.resetForm = function () {
     var confirmMsg = lang === "sw" 
@@ -573,13 +574,175 @@
     mkoaSelect.addEventListener("change", populateDistricts);
   }
 
-  // ---------- INITIALIZATION ----------
-  // (Keep your existing buildDots(), setupOtherToggles(), etc. below this line)
+  // ============================================================
+  // DYNAMIC D1 FIELDS BASED ON C1 SELECTIONS
+  // ============================================================
+  function updateD1Fields() {
+    var container = document.getElementById("dynamic-d1-container");
+    if (!container) return;
+    
+    var checkedBoxes = document.querySelectorAll('input[name="bidhaa[]"]:checked');
+    container.innerHTML = "";
+    
+    if (checkedBoxes.length === 0) {
+      container.innerHTML = '<p class="lang-sw" style="color:var(--ink-soft); font-size:13px;">Tafadhali chagua bidhaa kwanza katika Sehemu C1.</p><p class="lang-en" style="color:var(--ink-soft); font-size:13px;">Please select products first in Section C1.</p>';
+      return;
+    }
+    
+    checkedBoxes.forEach(function(checkbox) {
+      var product = checkbox.value;
+      var safeName = product.replace(/[^a-zA-Z0-9]/g, '_'); // Sanitize for HTML name attribute
+      
+      var row = document.createElement("div");
+      row.style.cssText = "display:grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap:10px; margin-bottom:12px; padding:12px; background:var(--line, #f3f4f6); border-radius:8px; align-items:center;";
+      
+      // Product Label
+      var label = document.createElement("div");
+      label.style.fontWeight = "600";
+      label.style.fontSize = "14px";
+      label.style.color = "var(--ink, #1f2937)";
+      label.textContent = product;
+      row.appendChild(label);
+      
+      // Kiasi Input
+      var kiasi = document.createElement("input");
+      kiasi.className = "text-input";
+      kiasi.type = "text";
+      kiasi.name = "kiasi_" + safeName;
+      kiasi.placeholder = "Kiasi / Qty";
+      row.appendChild(kiasi);
+      
+      // Kipimo Input
+      var kipimo = document.createElement("input");
+      kipimo.className = "text-input";
+      kipimo.type = "text";
+      kipimo.name = "kipimo_" + safeName;
+      kipimo.placeholder = "Kipimo / Unit";
+      row.appendChild(kipimo);
+      
+      // Thamani Input
+      var thamani = document.createElement("input");
+      thamani.className = "text-input";
+      thamani.type = "text";
+      thamani.name = "thamani_" + safeName;
+      thamani.placeholder = "Thamani TSh";
+      row.appendChild(thamani);
+      
+      container.appendChild(row);
+    });
+  }
+
+  function setupD1DynamicFields() {
+    var checkboxes = document.querySelectorAll('input[name="bidhaa[]"]');
+    checkboxes.forEach(function(cb) {
+      cb.addEventListener("change", updateD1Fields);
+    });
+    updateD1Fields(); // Run once on load
+  }
+
+    // ============================================================
+  // DRAFT SAVE & RESTORE
+  // ============================================================
+  var draftKey = "tantrade_draft_" + formId;
+
+  window.saveDraft = function() {
+    var formData = new FormData(form);
+    var payload = {};
+    formData.forEach(function(value, key) {
+      if (key === "bot-field" || key === "form-name") return;
+      if (payload.hasOwnProperty(key)) {
+        if (Array.isArray(payload[key])) {
+          payload[key].push(value);
+        } else {
+          payload[key] = [payload[key], value];
+        }
+      } else {
+        payload[key] = value;
+      }
+    });
+    
+    var draftData = {
+      step: current,
+      payload: payload,
+      timestamp: new Date().toISOString()
+    };
+    
+    try {
+      localStorage.setItem(draftKey, JSON.stringify(draftData));
+      alert(lang === "sw" ? "Rasimu imehifadhiwa! Unaweza kuendelea baadaye." : "Draft saved! You can continue later.");
+    } catch (err) {
+      console.error("Failed to save draft:", err);
+      alert(lang === "sw" ? "Imeshindikana kuhifadhi rasimu." : "Failed to save draft.");
+    }
+  };
+
+  function loadDraft() {
+    try {
+      var saved = localStorage.getItem(draftKey);
+      if (!saved) return false;
+      
+      var draftData = JSON.parse(saved);
+      
+      var msg = lang === "sw" 
+        ? "Kuna rasimu iliyohifadhiwa tarehe " + new Date(draftData.timestamp).toLocaleString() + ". Je, unataka kuendelea nayo?" 
+        : "A draft saved on " + new Date(draftData.timestamp).toLocaleString() + " was found. Do you want to resume?";
+        
+      if (!confirm(msg)) {
+        localStorage.removeItem(draftKey);
+        return false;
+      }
+      
+      current = draftData.step;
+      var payload = draftData.payload;
+      
+      form.reset(); // Clear form before restoring
+      
+      for (var key in payload) {
+        var value = payload[key];
+        var inputs = form.querySelectorAll('[name="' + cssEscape(key) + '"]');
+        
+        if (inputs.length > 0) {
+          var firstInput = inputs[0];
+          if (firstInput.type === "checkbox" || firstInput.type === "radio") {
+            var valuesArray = Array.isArray(value) ? value : [value];
+            inputs.forEach(function(inp) {
+              inp.checked = valuesArray.includes(inp.value);
+            });
+          } else if (firstInput.tagName === "TEXTAREA" || firstInput.tagName === "INPUT") {
+            firstInput.value = Array.isArray(value) ? value[0] : value;
+          }
+        }
+      }
+      
+      // Re-trigger dynamic UI updates
+      setupOtherToggles();
+      if (formId === "wadau-malighafi") {
+        updateD1Fields();
+        populateDistricts();
+      }
+      
+      return true;
+    } catch (err) {
+      console.error("Failed to load draft:", err);
+      return false;
+    }
+  }
+
+  function clearDraft() {
+    localStorage.removeItem(draftKey);
+  }
   
-  // ---------- INITIALIZATION ----------
+    // ---------- INITIALIZATION ----------
   buildDots();
   setupOtherToggles();
-  showStep(0);
+  
+  if (formId === "wadau-malighafi") {
+    setupD1DynamicFields();
+  }
+  
+  var hasDraft = loadDraft();
+  showStep(hasDraft ? current : 0);
+  
   if (typeof window.setLang === 'function') {
     window.setLang("sw");
   }
