@@ -509,7 +509,7 @@
   // ============================================================
   // CASCADING DISTRICT DROPDOWN LOGIC
   // ============================================================
-  const districtsByRegion = {
+    const districtsByRegion = {
     "Arusha": ["Arusha City", "Arusha", "Karatu", "Longido", "Monduli", "Ngorongoro", "Simanjiro"],
     "Dar es Salaam": ["Ilala", "Kinondoni", "Kigamboni", "Temeke", "Ubungo"],
     "Dodoma": ["Bahi", "Chamwino", "Chemba", "Dodoma City", "Kondoa", "Kongwa", "Mpwapwa"],
@@ -532,7 +532,14 @@
     "Pwani": ["Bagamoyo", "Kibaha Town", "Kibaha", "Kisarawe", "Mafia", "Mkuranga", "Rufiji"],
     "Rukwa": ["Kalambo", "Nkasi", "Sumbawanga Town", "Sumbawanga"],
     "Ruvuma": ["Mbinga", "Songea Town", "Songea", "Tunduru"],
-    "Shinyanga": ["Kahama Town", "Kahama", "Kishapu", "Shinyanga Town", "Shinyanga"],
+    "Shinyanga": [
+      "Halmashauri ya Manispaa ya Shinyanga",
+      "Halmashauri ya Wilaya ya Shinyanga",
+      "Halmashauri ya Manispaa ya Kahama",
+      "Halmashauri ya Wilaya ya Kishapu",
+      "Halmashauri ya Wilaya ya Msalala",
+      "Halmashauri ya Wilaya ya Ushetu"
+    ],
     "Simiyu": ["Bariadi", "Busega", "Itilima", "Maswa", "Meatu"],
     "Singida": ["Iramba", "Manyoni", "Singida City", "Singida"],
     "Songwe": ["Ileje", "Mbozi", "Songwe"],
@@ -542,7 +549,6 @@
     "Unguja Kusini": ["Kusini"],
     "Unguja Mjini Magharibi": ["Mjini Magharibi"]
   };
-
   function populateDistricts() {
     var regionSelect = document.getElementById("mkoa");
     var districtSelect = document.getElementById("wilaya");
