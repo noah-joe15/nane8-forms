@@ -984,7 +984,7 @@
     return categories;
   }
 
-  // Generate Product KPI Data for PDF
+    // Generate Product KPI Data for PDF
   function generateProductKPITableData() {
     var products = {};
     
@@ -1053,6 +1053,7 @@
     });
   }
 
+  // --- Main Report Generator ---
   window.generateWadauMalighafiReport = async function() {
     if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF library not loaded. Please try again.'); return; }
     if (allSubmissions.length === 0) { alert('No responses to generate report.'); return; }
@@ -1067,7 +1068,9 @@
     var analysis = generateSmartRecommendations(allSubmissions);
     var categories = categorizeResponses(allSubmissions);
     
+    // ========================================
     // COVER PAGE
+    // ========================================
     drawGradientRect(doc, 0, 0, pageWidth, pageHeight, BRAND.blueDark, BRAND.blue);
     doc.setFillColor(0, 104, 71);
     doc.circle(pageWidth - 30, 40, 50, 'F');
@@ -1119,7 +1122,9 @@
     doc.setFontSize(8);
     doc.text('CONFIDENTIAL - For Internal Use Only', pageWidth / 2, pageHeight - 15, { align: 'center' });
     
+    // ========================================
     // TABLE OF CONTENTS
+    // ========================================
     doc.addPage();
     doc.setFillColor(255, 255, 255);
     doc.rect(0, 0, pageWidth, pageHeight, 'F');
@@ -1129,11 +1134,11 @@
       { num: '03', title: 'Key Insights', desc: 'Critical observations from data analysis' },
       { num: '04', title: 'Regional Distribution', desc: 'Geographic breakdown of responses' },
       { num: '05', title: 'Commodity Analysis', desc: 'Product-level stakeholder distribution' },
-      { num: '05b', title: 'Production Statistics', desc: 'Total quantity and value by product' },
-      { num: '06', title: 'Stakeholder Profile', desc: 'Types of respondents and their roles' },
-      { num: '07', title: 'Processing Capacity', desc: 'Value addition levels analysis' },
-      { num: '08', title: 'Strategic Recommendations', desc: 'AI-generated action plan' },
-      { num: '09', title: 'Conclusion & Next Steps', desc: 'Final remarks and implementation roadmap' }
+      { num: '06', title: 'Production Statistics', desc: 'Total quantity and value by product' },
+      { num: '07', title: 'Stakeholder Profile', desc: 'Types of respondents and their roles' },
+      { num: '08', title: 'Processing Capacity', desc: 'Value addition levels analysis' },
+      { num: '09', title: 'Strategic Recommendations', desc: 'AI-generated action plan' },
+      { num: '10', title: 'Conclusion & Next Steps', desc: 'Final remarks and implementation roadmap' }
     ];
     tocItems.forEach(function(item) {
       doc.setTextColor(BRAND.blue[0], BRAND.blue[1], BRAND.blue[2]);
@@ -1143,11 +1148,11 @@
       doc.setTextColor(31, 41, 55);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
-      doc.text(item.title, margin + 15, tocY + 8);
+      doc.text(item.title, margin + 20, tocY + 8);
       doc.setTextColor(BRAND.gray[0], BRAND.gray[1], BRAND.gray[2]);
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);
-      doc.text(item.desc, margin + 15, tocY + 14);
+      doc.text(item.desc, margin + 20, tocY + 14);
       doc.setDrawColor(229, 231, 235);
       doc.setLineDashPattern([1, 1], 0);
       doc.line(margin + 80, tocY + 10, pageWidth - margin - 10, tocY + 10);
@@ -1155,7 +1160,9 @@
       tocY += 22;
     });
     
+    // ========================================
     // EXECUTIVE SUMMARY
+    // ========================================
     doc.addPage();
     var y = drawSectionHeader(doc, 20, '02', 'EXECUTIVE SUMMARY', 'Strategic Overview');
     doc.setTextColor(31, 41, 55);
@@ -1186,7 +1193,9 @@
     doc.text('Top Commodity: ' + (analysis.statistics.topCommodity || 'N/A') + ' | Underutilized Factories: ' + analysis.statistics.underutilizedFactories + ' | Data Collection Period: Sept 2026', margin + 6, y + 14);
     doc.text('Assessment Scope: Production, Markets, Processing, Finance, Infrastructure, Policy', margin + 6, y + 20);
     
+    // ========================================
     // KEY INSIGHTS
+    // ========================================
     doc.addPage();
     y = drawSectionHeader(doc, 20, '03', 'KEY INSIGHTS', 'Critical Observations from Data Analysis');
     analysis.insights.forEach(function(insight) {
@@ -1194,7 +1203,9 @@
       y += drawInsightBox(doc, margin, y, contentWidth, insight.type, insight.category, insight.text);
     });
     
+    // ========================================
     // REGIONAL DISTRIBUTION
+    // ========================================
     doc.addPage();
     y = drawSectionHeader(doc, 20, '04', 'REGIONAL DISTRIBUTION', 'Geographic Breakdown of Responses');
     var regionData = Object.keys(categories.byRegion).map(function(r) {
@@ -1212,7 +1223,9 @@
       theme: 'grid'
     });
     
+    // ========================================
     // COMMODITY ANALYSIS
+    // ========================================
     doc.addPage();
     y = drawSectionHeader(doc, 20, '05', 'COMMODITY ANALYSIS', 'Product-Level Stakeholder Distribution');
     var commodityData = Object.keys(categories.byCommodity).map(function(c) {
@@ -1230,9 +1243,11 @@
       theme: 'grid'
     });
     
-    // PRODUCTION STATISTICS (NEW SECTION)
+    // ========================================
+    // PRODUCTION STATISTICS (FIXED WIDTHS)
+    // ========================================
     doc.addPage();
-    y = drawSectionHeader(doc, 20, '05b', 'PRODUCTION STATISTICS', 'Total Quantity and Value by Product');
+    y = drawSectionHeader(doc, 20, '06', 'PRODUCTION STATISTICS', 'Total Quantity and Value by Product');
     var productData = generateProductKPITableData();
     if (productData.length > 0) {
       doc.autoTable({
@@ -1240,14 +1255,14 @@
         margin: { left: margin, right: margin },
         head: [['Product', 'Total Quantity', 'Total Value', 'Responses', 'Avg Value']],
         body: productData,
-        styles: { font: 'helvetica', fontSize: 9, cellPadding: 3 },
+        styles: { font: 'helvetica', fontSize: 8, cellPadding: 3 },
         headStyles: { fillColor: BRAND.gold, textColor: 255, fontStyle: 'bold', halign: 'center' },
         columnStyles: { 
-          0: { cellWidth: 70 }, 
-          1: { cellWidth: 40, halign: 'right' }, 
-          2: { cellWidth: 50, halign: 'right' },
-          3: { cellWidth: 30, halign: 'center' },
-          4: { cellWidth: 40, halign: 'right' }
+          0: { cellWidth: 55 }, 
+          1: { cellWidth: 35, halign: 'right' }, 
+          2: { cellWidth: 45, halign: 'right' },
+          3: { cellWidth: 20, halign: 'center' },
+          4: { cellWidth: 25, halign: 'right' }
         },
         alternateRowStyles: { fillColor: BRAND.goldLight },
         theme: 'grid'
@@ -1259,9 +1274,11 @@
       doc.text('No production data available yet.', margin, y + 10);
     }
     
+    // ========================================
     // STAKEHOLDER PROFILE
+    // ========================================
     doc.addPage();
-    y = drawSectionHeader(doc, 20, '06', 'STAKEHOLDER PROFILE', 'Types of Respondents and Their Roles');
+    y = drawSectionHeader(doc, 20, '07', 'STAKEHOLDER PROFILE', 'Types of Respondents and Their Roles');
     var stakeholderData = Object.keys(categories.byStakeholderType).map(function(s) {
       return [s, categories.byStakeholderType[s], ((categories.byStakeholderType[s] / analysis.statistics.totalResponses) * 100).toFixed(1) + '%'];
     }).sort(function(a, b) { return parseInt(b[1]) - parseInt(a[1]); });
@@ -1277,9 +1294,11 @@
       theme: 'grid'
     });
     
+    // ========================================
     // PROCESSING CAPACITY
+    // ========================================
     doc.addPage();
-    y = drawSectionHeader(doc, 20, '07', 'PROCESSING CAPACITY', 'Value Addition Levels Analysis');
+    y = drawSectionHeader(doc, 20, '08', 'PROCESSING CAPACITY', 'Value Addition Levels Analysis');
     var processingData = Object.keys(categories.byProcessingLevel).map(function(p) {
       return [p, categories.byProcessingLevel[p], ((categories.byProcessingLevel[p] / analysis.statistics.totalResponses) * 100).toFixed(1) + '%'];
     });
@@ -1295,9 +1314,11 @@
       theme: 'grid'
     });
     
+    // ========================================
     // STRATEGIC RECOMMENDATIONS
+    // ========================================
     doc.addPage();
-    y = drawSectionHeader(doc, 20, '08', 'STRATEGIC RECOMMENDATIONS', 'AI-Generated Action Plan Based on Data Analysis');
+    y = drawSectionHeader(doc, 20, '09', 'STRATEGIC RECOMMENDATIONS', 'AI-Generated Action Plan Based on Data Analysis');
     doc.setTextColor(31, 41, 55);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
@@ -1310,9 +1331,11 @@
       y += drawRecommendationCard(doc, margin, y, contentWidth, idx + 1, rec.category, rec.action, rec.impact, rec.timeline);
     });
     
+    // ========================================
     // CONCLUSION & NEXT STEPS
+    // ========================================
     doc.addPage();
-    y = drawSectionHeader(doc, 20, '09', 'CONCLUSION & NEXT STEPS', 'Final Remarks and Implementation Roadmap');
+    y = drawSectionHeader(doc, 20, '10', 'CONCLUSION & NEXT STEPS', 'Final Remarks and Implementation Roadmap');
     doc.setTextColor(31, 41, 55);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
@@ -1367,7 +1390,9 @@
     doc.text('Date: ' + new Date().toLocaleDateString('en-GB'), margin, y + 10);
     doc.text('Signature: ___________________', pageWidth - margin - 60, y + 10);
     
-    // FOOTER
+    // ========================================
+    // MODERN FOOTER (All Pages)
+    // ========================================
     var pageCount = doc.getNumberOfPages();
     for (var i = 1; i <= pageCount; i++) {
       doc.setPage(i);
@@ -1392,7 +1417,6 @@
     
     doc.save('TanTrade-Market-Assessment-Report-' + new Date().toISOString().slice(0, 10) + '.pdf');
   };
-
   // 10. INITIALIZATION
   console.log("[INIT] Admin app starting...");
   setLang("sw");
