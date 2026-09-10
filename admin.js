@@ -732,6 +732,179 @@
   // 9. MODERN PDF REPORT GENERATION (WADAU MALIGHAFI)
   // =====================================================
 
+  // ============================================================
+  // AI INTEGRATION (Translation, Sentiment, Dynamic Insights)
+  // ============================================================
+  const AI_API_KEY = "AQ.Ab8RN6JSk0V_6UQDEriy5J2DIxDK2uUsy37vuJvSHOFlGLWlbg";
+  
+  // NOTE: If your key is NOT from Google Gemini, change this endpoint and headers.
+  // For Groq: "https://api.groq.com/openai/v1/chat/completions"
+  // For OpenAI: "https://api.openai.com/v1/chat/completions"
+  const AI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${AI_API_KEY}`;
+
+  // Core AI Caller Function
+  async function callAI(prompt) {
+    try {
+      const response = await fetch(AI_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.1 } // Low temp for consistent, factual outputs
+        })
+      });
+      const data = await response.json();
+      if (data.candidates && data.candidates[0].content) {
+        return data.candidates[0].content.parts[0].text;
+      }
+      throw new Error("Invalid AI response structure");
+    } catch (error) {
+      console.error("AI API Error:", error);
+      return null;
+    }
+  }
+
+  // 1. Auto-Translate Swahili to English
+  window.translateTextAI = async function(text) {
+    if (!text || text.trim().length < 5) return text;
+    const prompt = `Translate the following Swahili text to professional English. Return ONLY the translation, no explanations: "${text}"`;
+    const result = await callAI(prompt);
+    return result ? result.replace(/^"|"$/g, '').trim() : text; // Fallback to original if AI fails
+  };
+
+  // 2. Sentiment Analysis with SVG Icons (No Emojis)
+  window.analyzeSentimentAI = async function(text) {
+    if (!text || text.trim().length < 10) return { sentiment: "Neutral", icon: "" };
+    
+    const prompt = `Analyze the sentiment of this text. Reply with EXACTLY one word: "Positive", "Negative", or "Neutral". Text: "${text}"`;
+    const result = await callAI(prompt);
+    const sentiment = result ? result.trim().replace(/[^a-zA-Z]/g, "") : "Neutral";
+    
+    // SVG Icons based on sentiment
+    const icons = {
+      "Positive": `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B6E4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`,
+      "Negative": `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`,
+      "Neutral": `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`
+    };
+    
+    return { 
+      sentiment: icons[sentiment] ? sentiment : "Neutral", 
+      icon: icons[sentiment] || icons["Neutral"] 
+    };
+  };
+
+  // 3. Summarize Feedback with AI (Updated: No Emojis, SVG Icons)
+  window.summarizeFeedbackWithAI = async function() {
+    const comments = allSubmissions
+      .map(sub => sub.maoni_mengine)
+      .filter(comment => comment && comment.trim().length > 10)
+      .slice(0, 20);
+
+    if (comments.length === 0) {
+      alert("Hakuna maoni ya kutosha ya kufupisha. / Not enough comments to summarize.");
+      return;
+    }
+
+    const prompt = `
+      You are an expert data analyst for TanTrade. 
+      Read the following survey responses about market challenges.
+      Summarize the key themes into exactly 3 concise bullet points in Swahili.
+      Focus on actionable insights for policymakers.
+      Responses: ${comments.join(" | ")}
+    `;
+
+    const btn = document.getElementById("summarizeBtn");
+    if (!btn) return;
+    
+    const aiIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:6px; animation: spin 1s linear infinite;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>`;
+    
+    const originalText = btn.innerHTML;
+    btn.innerHTML = aiIcon + " Inachakata... (Processing...)";
+    btn.disabled = true;
+
+    try {
+      const summary = await callAI(prompt);
+      if (summary) {
+        // Display in a clean, styled alert or you can render this into a modal/div
+        alert("MUHTASARI WA AI (AI SUMMARY):\n\n" + summary);
+      } else {
+        throw new Error("Failed to generate summary");
+      }
+    } catch (error) {
+      console.error("AI Summarization Error:", error);
+      alert("Imeshindikana kupata muhtasari. Tafadhali hakikisha una mtandao kisha jaribu tena.");
+    } finally {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
+  };
+
+  // 4. Dynamic PDF Insights (Replaces hardcoded recommendations)
+  async function generateDynamicAIRecommendations(data) {
+    // Gather key metrics to feed the AI
+    const totalResponses = data.length;
+    const sellingRaw = data.filter(r => r.asilimia_thamani && r.asilimia_thamani.includes('0%')).length;
+    const rawPercentage = totalResponses > 0 ? ((sellingRaw / totalResponses) * 100).toFixed(1) : 0;
+    
+    const topCommodities = {};
+    data.forEach(r => {
+      if (r['bidhaa[]']) {
+        const bids = Array.isArray(r['bidhaa[]']) ? r['bidhaa[]'] : [r['bidhaa[]']];
+        bids.forEach(b => { topCommodities[b] = (topCommodities[b] || 0) + 1; });
+      }
+    });
+    const topCommodity = Object.keys(topCommodities).reduce((a, b) => topCommodities[a] > topCommodities[b] ? a : b, 'Unknown');
+
+    const dataSummary = `
+      Total Responses: ${totalResponses}
+      Percentage selling raw (0% value addition): ${rawPercentage}%
+      Most common commodity: ${topCommodity}
+    `;
+
+    const prompt = `
+      You are a senior trade policy advisor for TanTrade. 
+      Based on this survey data summary: "${dataSummary}"
+      Generate exactly 3 strategic, actionable recommendations to increase local value addition.
+      
+      You MUST reply with ONLY a valid JSON array of objects in this exact format:
+      [
+        {"category": "Policy & Regulation", "action": "Specific actionable step", "impact": "High", "timeline": "6-12 months"},
+        {"category": "Infrastructure", "action": "Specific actionable step", "impact": "Medium", "timeline": "1-2 years"},
+        {"category": "Financial Services", "action": "Specific actionable step", "impact": "High", "timeline": "3-6 months"}
+      ]
+      Do not include any markdown formatting or text outside the JSON array.
+    `;
+
+    try {
+      const aiResponse = await callAI(prompt);
+      if (aiResponse) {
+        // Clean up markdown code blocks if the AI adds them
+        const cleanJson = aiResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+        const parsedRecommendations = JSON.parse(cleanJson);
+        
+        return {
+          insights: [
+            { type: rawPercentage > 50 ? 'critical' : 'warning', category: 'Value Addition Gap', text: `${rawPercentage}% of stakeholders export raw materials, highlighting a critical need for local processing incentives.` }
+          ],
+          recommendations: parsedRecommendations,
+          statistics: {
+            totalResponses: totalResponses,
+            sellingRawPercentage: rawPercentage,
+            topCommodity: topCommodity,
+            regionCount: new Set(data.map(r => r.mkoa).filter(Boolean)).size,
+            underutilizedFactories: data.filter(r => r.sababu_kutotumia_ukomo && r.sababu_kutotumia_ukomo.length > 0).length,
+            commodities: topCommodities
+          }
+        };
+      }
+    } catch (error) {
+      console.error("Dynamic AI Recommendations failed, falling back to defaults:", error);
+    }
+
+    // FALLBACK: If AI fails, return the original hardcoded logic so the PDF still generates
+    return generateSmartRecommendations(data);
+  }
+  
   var BRAND = {
     blue: [11, 61, 145],
     blueDark: [6, 40, 100],
@@ -1065,7 +1238,22 @@
     var margin = 15;
     var contentWidth = pageWidth - 2 * margin;
     
-    var analysis = generateSmartRecommendations(allSubmissions);
+    // Show a brief loading state on the button while AI thinks
+const reportBtn = document.getElementById("generateReportBtn");
+const originalBtnText = reportBtn ? reportBtn.innerHTML : "";
+if (reportBtn) {
+  reportBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:6px; animation: spin 1s linear infinite;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Inachambua Data...`;
+  reportBtn.disabled = true;
+}
+
+// Await the AI-generated insights
+var analysis = await generateDynamicAIRecommendations(allSubmissions);
+
+// Restore button
+if (reportBtn) {
+  reportBtn.innerHTML = originalBtnText;
+  reportBtn.disabled = false;
+}
     var categories = categorizeResponses(allSubmissions);
     
     // ========================================
