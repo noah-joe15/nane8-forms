@@ -184,9 +184,9 @@
         </div>
 
         <div class="field" data-field="kiwango_shughuli">
-          <label class="field-label"><span class="lang-sw">C6. Kiwango cha shughuli (kadirio la wafanyakazi na mtaji)</span><span class="lang-en">C6. Scale of activity (estimated workers & capital)</span><span class="req">*</span></label>
+          <label class="field-label"><span class="lang-sw">C6. Kiwango cha shughuli (kadirio la wafanyakazi na mtaji)</span><span class="lang-en">C6. Scale of activity (estimated workers & capital)</span><span class=""></span></label>
           <div class="options">
-            <label class="option"><input type="radio" name="kiwango_shughuli" value="Kidogo sana (Micro: 1-4 wafanyakazi, hadi Mil. 5)" required><span class="option-box">Kidogo sana (Micro)</span></label>
+            <label class="option"><input type="radio" name="kiwango_shughuli" value="Kidogo sana (Micro: 1-4 wafanyakazi, hadi Mil. 5)"><span class="option-box">Kidogo sana (Micro)</span></label>
             <label class="option"><input type="radio" name="kiwango_shughuli" value="Kidogo (Small: 5-49 wafanyakazi, Mil. 5-200)"><span class="option-box">Kidogo (Small)</span></label>
             <label class="option"><input type="radio" name="kiwango_shughuli" value="Kati (Medium: 50-99 wafanyakazi, Mil. 200-800)"><span class="option-box">Kati (Medium)</span></label>
             <label class="option"><input type="radio" name="kiwango_shughuli" value="Kubwa (Large: 100+ wafanyakazi, Zaidi ya Mil. 800)"><span class="option-box">Kubwa (Large)</span></label>
@@ -201,12 +201,11 @@
         <span class="section-eyebrow">Sehemu D</span>
         <h2 class="section-title"><span class="lang-sw">Uzalishaji na Upatikanaji wa Malighafi</span><span class="lang-en">Production & Raw Material Availability</span></h2>
         
-        <div class="field" data-field="kiasi_mwaka1">
+                <div class="field" data-field="kiasi_mwaka1">
           <label class="field-label"><span class="lang-sw">D1. Kiasi kilichozalishwa/kununuliwa mwaka 2025 (Kiasi, Kipimo, Thamani TSh)</span><span class="lang-en">D1. Quantity produced/bought in 2025 (Qty, Unit, Value TSh)</span></label>
-          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
-            <input class="text-input" type="text" name="kiasi_2024" placeholder="Kiasi / Qty">
-            <input class="text-input" type="text" name="kipimo_2024" placeholder="Kipimo / Unit">
-            <input class="text-input" type="text" name="thamani_2024" placeholder="Thamani TSh / Value">
+          <div id="dynamic-d1-container" style="display:flex; flex-direction:column; gap:12px;">
+            <p class="lang-sw" style="color:var(--ink-soft); font-size:13px;">Tafadhali chagua bidhaa kwanza katika Sehemu C1.</p>
+            <p class="lang-en" style="color:var(--ink-soft); font-size:13px;">Please select products first in Section C1.</p>
           </div>
         </div>
 
@@ -601,19 +600,21 @@
       </div>
     </div>
 
-    <!-- STEP NAVIGATION -->
+       <!-- STEP NAVIGATION -->
     <div class="step-nav" id="stepNav">
       <button type="button" class="btn btn-ghost" id="btnBack" onclick="goStep(-1)" style="visibility: hidden;"><span class="lang-sw">Nyuma</span><span class="lang-en">Back</span></button>
       
-      <button type="button" class="btn btn-ghost" id="btnReset" onclick="resetForm()" style="display: none; color: var(--danger); border-color: var(--danger); margin-left: auto;">
+      <button type="button" class="btn btn-ghost" id="btnSaveDraft" onclick="saveDraft()" style="margin-left: auto; color: var(--green-700); border-color: var(--green-700);">
+        <span class="lang-sw">Hifadhi Rasimu</span><span class="lang-en">Save Draft</span>
+      </button>
+
+      <button type="button" class="btn btn-ghost" id="btnReset" onclick="resetForm()" style="color: var(--danger); border-color: var(--danger);">
         <span class="lang-sw">Anza Upya</span><span class="lang-en">Start Over</span>
       </button>
 
       <button type="button" class="btn btn-primary" id="btnNext" onclick="goStep(1)" style="margin-left: 10px;"><span class="lang-sw">Endelea</span><span class="lang-en">Continue</span></button>
       <button type="submit" class="btn btn-gold" id="btnSubmit" style="display: none; margin-left: 10px;"><span class="lang-sw">Tuma Dodoso</span><span class="lang-en">Submit Survey</span></button>
     </div>
-  </form>
-</div>
 
 <!-- CRITICAL: Correct Supabase Initialization Block -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
